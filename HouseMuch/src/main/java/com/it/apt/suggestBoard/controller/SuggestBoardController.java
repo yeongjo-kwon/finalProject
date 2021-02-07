@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.it.apt.common.BoardUtility;
 import com.it.apt.common.PaginationInfo;
 import com.it.apt.common.SearchVO;
 import com.it.apt.common.Utility;
@@ -189,12 +190,12 @@ public class SuggestBoardController {
 		//[1] PaginationInfo
 		PaginationInfo pagingInfo=new PaginationInfo();
 		//블록 당 보여질 페이지수, 페이지 당 보여질 레코드 수 상수 처리한 거 가져오기
-		pagingInfo.setBlockSize(Utility.BLOCK_SIZE); 
-		pagingInfo.setRecordCountPerPage(Utility.RECORD_COUNT);
+		pagingInfo.setBlockSize(BoardUtility.BLOCK_SIZE); 
+		pagingInfo.setRecordCountPerPage(BoardUtility.RECORD_COUNT);
 		pagingInfo.setCurrentPage(searchVo.getCurrentPage());
 		
 		//[2] SearchVo 세팅
-		searchVo.setRecordCountPerPage(Utility.RECORD_COUNT);
+		searchVo.setRecordCountPerPage(BoardUtility.RECORD_COUNT);
 		searchVo.setFirstRecordIndex(pagingInfo.getFirstRecordIndex());
 		
 		List<Map<String, Object>> list

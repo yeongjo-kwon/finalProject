@@ -6,7 +6,27 @@
 <link rel="stylesheet" type="text/css"
 	href="${pageContext.request.contextPath}/resources/userBoard/css/boardPaging.css">
 
+<style type="text/css">
+.tbStyle{
+	background-color: #7db2490d;
+}
+
+</style>
 <script type="text/javascript">
+	$(function(){
+		tbStyle();
+		
+		$('#chkAll').click(function(){
+			//만약에 최상단 체크박스가 체크되면
+			if($(this).prop("checked")){
+				$('input[name=chk]').prop("checked",true); //전체 선택
+			}else{ //아니면
+				$('input[name=chk]').prop("checked",false); //전체 해제
+			}
+		});
+		
+	});
+
 	function btWrite(){
 		location.href="<c:url value='/userBoard/userBoardWrite.do'/>";
 	}
@@ -16,17 +36,13 @@
 		$('form[name=frmPage]').submit();
 	}
 	
-	$(function(){
-		$('#chkAll').click(function(){
-			//만약에 최상단 체크박스가 체크되면
-			if($(this).prop("checked")){
-				$('input[name=chk]').prop("checked",true); //전체 선택
-			}else{ //아니면
-				$('input[name=chk]').prop("checked",false); //전체 해제
-			}
+	function tbStyle(){
+		$('.tbBoard tbody tr').mouseover(function(){
+			$(this).addClass('tbStyle');
+		}).mouseout(function(){
+			$(this).removeClass('tbStyle');
 		});
-
-	});
+	}
 </script>
 
 <link
@@ -120,9 +136,13 @@
 							</c:if>
 							<td>${map['BOARD_NO'] }</td>
 							<td>${map['BOARD_CTG_NAME'] }</td>
-							<td><a
-								href="<c:url value='/userBoard/userBoardDetail.do?boardNo=${boardNo }'/>"
-								style="color: black;"> ${map['BOARD_TITLE'] }</a></td>
+							<td>
+								<c:if test="${!empty map['BOARD_FILENAME'] }">
+									<img alt="파일이미지" src="<c:url value='/resources/aptUser_images/file.gif'/>">
+								</c:if>
+								<a href="<c:url value='/userBoard/userBoardDetail.do?boardNo=${boardNo }'/>"
+									style="color: black;"> ${map['BOARD_TITLE'] }</a>
+							</td>
 							<td>${map['MEMBER_NAME'] }</td>
 							<td><fmt:formatDate value="${map['BOARD_REGDATE'] }"
 									pattern="yyyy-MM-dd" /></td>

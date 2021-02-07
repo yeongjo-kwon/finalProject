@@ -21,6 +21,7 @@
 		<result property="memberNo" column="MEMBER_NO"  />
 		<result property="aptNo" column="APT_NO" />
 		<result property="memberName" column="MEMBER_NAME" />
+		<result property="bStorageNo" column="B_STORAGE_NO" />
 		<result property="boardFilename" column="BOARD_FILENAME" />
 		<result property="boardOriginalFilename" column="BOARD_ORIGINAL_FILENAME" />
 		<result property="boardFilesize" column="BOARD_FILESIZE" />
@@ -67,11 +68,12 @@
 		WHERE BOARD_NO=#{boardNo}
 	</select>
 	
-	<!-- <update id="updateSuggestBoard" parameterType="suggestBoardVo">
-		UPDATE SUGGEST_BOARD
-		SET SUGG_CTG_NO=#{suggCtgNo}, SUGG_TITLE=#{suggTitle}, SUGG_CONTENT=#{suggContent}
-		WHERE SUGG_BOARD_NO=#{suggBoardNo} AND MEMBER_NO=#{memberNo}
-	</update> -->
+	<update id="updateUserBoard" parameterType="userBoardVo">
+		UPDATE BOARD
+		SET BOARD_CTG_NO=${boardCtgNo}, BOARD_TITLE=#{boardTitle}, 
+			BOARD_CONTENT=#{boardContent}, MEMBER_NO=#{memberNo}, APT_NO=#{aptNo}
+		WHERE BOARD_NO=#{boardNo} AND MEMBER_NO=#{memberNo}
+	</update>
 	
 	<select id="selectTotalRecordFromUserBoard" parameterType="searchVo" 
 		resultType="int">
@@ -141,6 +143,18 @@
 				,#{boardOriginalFilename}
 				,#{boardFilesize})
 	</insert>
+	
+	<update id="updateFileUpload" parameterType="userBoardVo">
+		UPDATE BOARD_STORAGE
+		SET BOARD_FILENAME=#{boardFilename}, BOARD_ORIGINAL_FILENAME=#{boardOriginalFilename}, 
+			BOARD_FILESIZE=#{boardFilesize}
+		WHERE BOARD_NO=#{boardNo}
+	</update>
+	
+	<select id="selectByNoBoardStorage" parameterType="int" resultType="int">
+		SELECT COUNT(*) FROM BOARD_STORAGE
+		WHERE BOARD_NO=#{boardNo}
+	</select>
 </mapper>
 
 

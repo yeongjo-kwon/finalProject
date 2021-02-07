@@ -81,7 +81,6 @@ function exit(){
 					<textarea class="form-control" name="suggContent" rows="5"
 						id="smartEditor" data-rule="required"
 						data-msg="Please write something for us" placeholder="내용을 입력하세요."></textarea>
-					<div class="validate"></div>
 					<script>
 						var oEditors = [];
 						nhn.husky.EZCreator.createInIFrame({ 

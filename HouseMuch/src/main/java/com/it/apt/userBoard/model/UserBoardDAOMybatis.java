@@ -69,5 +69,21 @@ public class UserBoardDAOMybatis implements UserBoardDAO{
 		return sqlSession.insert(namespace+"userBoardFileUpload",vo);
 	}
 
+	@Override
+	public int updateUserBoard(UserBoardVO vo) {
+		return sqlSession.update(namespace+"updateUserBoard",vo);
+	}
+
+	@Override
+	public int updateFileUpload(UserBoardVO vo) {
+		return sqlSession.update(namespace+"updateFileUpload",vo);
+	}
+
+	@Override
+	public int selectByNoBoardStorage(int boardNo) {
+		return sqlSession.selectOne(namespace+"selectByNoBoardStorage",boardNo);
+	}
+
+
 	
 }
