@@ -101,6 +101,11 @@ public class NoticeBoardDAOMyBatis implements NoticeBoardDAO{
 		return sqlSession.update(namespace+"updateNoticeStorage",vo);
 	}
 
+	@Override
+	public List<NoticeBoardVO> selectScdByMonth(NoticeBoardVO vo) {
+		return sqlSession.selectList(namespace+"selectScdByMonth",vo);
+	}
+
 
 	
 	

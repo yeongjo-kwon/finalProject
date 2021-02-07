@@ -28,9 +28,18 @@ public class NoticeBoardVO extends MemberVO{
 	private String startDateStr;	//str시작일
 	private String endDateStr;		//str종료일
 	
+	private String searchMonth;		//검색할 달 
+	
+	//검색할 달 getter/setter
+	public String getSearchMonth() {
+		return searchMonth;
+	}
+
+	public void setSearchMonth(String searchMonth) {
+		this.searchMonth = searchMonth;
+	}
 	
 //============================================여기까지 [공지사항 + 일정] 관련 변수
-	
 	/** 검색조건 */
 	private String searchCondition = "";
 	
@@ -295,23 +304,23 @@ public class NoticeBoardVO extends MemberVO{
 	public void setNoticeFilesize(long noticeFilesize) {
 		this.noticeFilesize = noticeFilesize;
 	}
-	
+
 	//HOUSEHOLD_CODE 꼭 toString에 추가할 것
+
 	@Override
 	public String toString() {
-		return "NoticeBoardVO [noticeNo=" + noticeNo + ", nCtgNo=" + nCtgNo + ", noticeTitle=" + noticeTitle
+		return "NoticeBoardVO "
+				+"[*** 1.기본공지***]noticeNo=" + noticeNo + ", nCtgNo=" + nCtgNo + ", noticeTitle=" + noticeTitle
 				+ ", noticeContent=" + noticeContent + ", noticeRegdate=" + noticeRegdate + ", memberNo=" + memberNo
 				+ ", noticeReadcount=" + noticeReadcount + ", aptNo=" + aptNo + ", nCtgName=" + nCtgName 
-				+ "//n//n,::::여기부터 스케줄:::: scdNo="+ scdNo + ", scdContent=" + scdContent 
-				+ ", startDate=" + startDate + ", endDate=" + endDate
+				+ ",[*** 2.일정공지***] scdNo="+ scdNo + ", scdContent=" + scdContent + ", startDate=" + startDate + ", endDate=" + endDate
 				+ ", startDateStr=" + startDateStr + ", endDateStr=" + endDateStr 
-				+ "//n//n,::::여기부터페이징&검색:::: searchCondition="+ searchCondition 
-				+ ", searchKeyword=" + searchKeyword + ", searchUseYn=" + searchUseYn
-				+ "//n , currentPage=" + currentPage + ", blockSize=" + blockSize + ", firstRecordIndex=" + firstRecordIndex
-				+ ", lastRecordIndex=" + lastRecordIndex + ", recordCountPerPage=" + recordCountPerPage
-				+ "//n//n,::::작성자세대코드:::: getHouseholdCode()=" + getHouseholdCode()
-				+"//n//n ::::공지첨부파일:::: [nStorageNo=" + nStorageNo + ", noticeNo=" + noticeNo 
-				+ "//n, noticeFilename="+ noticeFilename + ", noticeOriginalFilename=" + noticeOriginalFilename 
-				+ "//n, noticeFilesize="+ noticeFilesize + "]";
+				+ ",[*** 3.달력에서보낼 검색 달 ***] searchMonth=" + searchMonth
+				+ ",[*** 4.페이징용 ***] searchCondition=" + searchCondition + ", searchKeyword=" + searchKeyword + ", searchUseYn="
+				+ searchUseYn + ", currentPage=" + currentPage + ", blockSize=" + blockSize + ", firstRecordIndex="
+				+ firstRecordIndex + ", lastRecordIndex=" + lastRecordIndex + ", recordCountPerPage="+ recordCountPerPage 
+				+ ",[*** 5.자료실 ***] nStorageNo=" + nStorageNo + ", noticeFilename=" + noticeFilename + ", noticeOriginalFilename=" + noticeOriginalFilename + ", noticeFilesize=" + noticeFilesize
+				+ ",[*** 6.회원정보 ***] getHouseholdCode()=" + getHouseholdCode() + ", getId()=" + getId() + ", getMemberName()="
+				+ getMemberName() + ", getEmail()=" + getEmail() + "]";
 	}
 }

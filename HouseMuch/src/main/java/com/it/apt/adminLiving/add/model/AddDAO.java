@@ -12,6 +12,7 @@ public interface AddDAO {
 	//전체부가시설 수 (검색어로 검색된)
 	int selectTotalRecord(AddFacilityInfoVO vo);
 	
-	
+	//부가시설 정보 등록
+	int insertAddInfo(AddFacilityInfoVO vo);
 
 }

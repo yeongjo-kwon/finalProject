@@ -1,6 +1,7 @@
 package com.it.apt.living.controller;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpSession;
 
@@ -11,7 +12,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.it.apt.adminLiving.add.model.AddFacilityInfoVO;
 import com.it.apt.adminLiving.add.model.AddService;
@@ -56,34 +59,36 @@ public class AddController {
 
 	
 	
+	
 	@RequestMapping("/addFacilityList.do")
-	public String adminNotiList(@ModelAttribute AddFacilityInfoVO vo
+	public String addInfoList_list(@ModelAttribute AddFacilityInfoVO vo
 			,@RequestParam(required = false) String searchKeyword
 			,Model model, HttpSession session) {
-		logger.info("[입주민] 부가시설 리스트 조회 ,들어온직후 vo={} ",vo);
-
+		logger.info("[입주민]#### 부가시설 리스트 조회 ,들어온직후 vo={} ",vo);
+		
 		//카테고리 리스트 가져오기
 //		List<AddCategoryVO> addCtgList = addService.selectAddCategory();
 //		model.addAttribute("addCtgList",addCtgList);
 		
 		
 		//상속받은 searchVo에 검색어 파라미터 넣음
-		if(searchKeyword!=null && !searchKeyword.isEmpty()) {
-			vo.setSearchKeyword(searchKeyword);
+		if( (searchKeyword!=null && !searchKeyword.isEmpty())
+				&& (searchKeyword!=null && !searchKeyword.isEmpty())) {
+			vo.setSearchKeyword(searchKeyword);//번호값(뷰에서 index)
 		}
-		logger.info("[입주민] 부가시설 검색어 파람, searchKeyword={}",vo.getSearchKeyword());
-
+		logger.info("[입주민]#### 부가시설 검색어 파람, searchKeyword={}",vo.getSearchKeyword());
+		
 		MemberVO memVo=(MemberVO)session.getAttribute("memVo");
 		vo.setHouseholdCode(memVo.getHouseholdCode()); //해당 아파트NO 부가시설만 조회 
-				
+		
 		//페이징 처리 관련 셋팅
 		//[1] PaginationInfo 생성
 		PaginationInfo pager = new PaginationInfo();
 		pager.setBlockSize(Utility.BLOCK_SIZE);
 		pager.setRecordCountPerPage(10);	   //한페이지에 글 10줄씩 세팅
 		pager.setCurrentPage(vo.getCurrentPage());
-		logger.info("지금 pager에들어간 현재페이지 ,vo.getCurrentPage()={} ",vo.getCurrentPage());
-
+		logger.info("####지금 pager에들어간 현재페이지 ,vo.getCurrentPage()={} ",vo.getCurrentPage());
+		
 		//[2] 검색어변수 noticeBoardVO에 셋팅
 		vo.setRecordCountPerPage(10);
 		vo.setFirstRecordIndex(pager.getFirstRecordIndex());
@@ -91,17 +96,17 @@ public class AddController {
 		
 		
 		List<AddFacilityInfoVO> list = addService.selectAllAddFacility(vo);
-		logger.info("[입주민] 부가시설 전체 목록 list.size={}",list.size());
+		logger.info("####[입주민] 부가시설 전체 목록 list.size={}",list.size());
 		
 		//[3] [2]에서 검색어로 검색 된 + 로그인한회원의 HOUSEHOLDCODE로 조회한 APT_NO의 부가시설 총 레코드 수를 
 		int totalRecord=addService.selectTotalRecord(vo);
-		logger.info("[입주민] 검색된 부가시설 개수, totalRecord={}", totalRecord);		
+		logger.info("####[입주민] 검색된 부가시설 개수, totalRecord={}", totalRecord);		
 		pager.setTotalRecord(totalRecord);		//-------------------> pager에 세팅
 		
 		
 		model.addAttribute("list",list);
 		model.addAttribute("pager", pager);
-
+		
 		//http://localhost:9090/apt/living/add/addFacilityList.do
 		return "living/add/addFacilityList";
 	}

@@ -136,9 +136,14 @@ function pageFunc(curPage){
                             
                             <div class="item-img text-center p-0" >
                                 <a href="app-ecommerce-details.html">
-                                <img class="img-fluid card-img-top" 
-                                src="${pageContext.request.contextPath}/resources/aptAdmin_images/thumbnail-default.svg" 
-                                	alt="시설썸네일" /></a>
+                            <c:if test="${empty vo.addinfoImgOriginalFilename }">
+                                <img class="img-fluid card-img-top" alt="시설썸네일"
+                                src="${pageContext.request.contextPath}/resources/aptAdmin_images/thumbnail-default.svg"/></a>
+                            </c:if>    
+                            <c:if test="${!empty vo.addinfoImgOriginalFilename }">
+                                <img class="img-fluid card-img-top" alt="${vo.addinfoImgOriginalFilename}" 
+                                src=""/></a>
+                            </c:if>
                             </div>
                             
                             <div class="card-body">

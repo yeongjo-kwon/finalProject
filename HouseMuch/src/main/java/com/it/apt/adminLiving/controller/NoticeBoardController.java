@@ -107,8 +107,6 @@ public class NoticeBoardController {
 
 
 			// [공지 + 일정까지 등록성공 후 2] -------------------------------------------> 2. 파일업로드 있으면 파일업로드 
-			String noticeOriginalFilename="", noticeFilename="";
-			long noticeFilesize=0;	  //파일첨부 없이 글만 등록되면 DB에는 이 초기값들로 insert
 			try {
 				
 				/*
@@ -127,9 +125,9 @@ public class NoticeBoardController {
 				logger.info("파일리스트 fileList.size()={}",fileList.size());
 				//첨부한거 다 가져와
 				for (Map<String, Object> fileMap : fileList) {
-					noticeOriginalFilename = (String)fileMap.get("originalFileName");
-					noticeFilename = (String)fileMap.get("fileName");
-					noticeFilesize = (Long)fileMap.get("fileSize");
+					String noticeOriginalFilename = (String)fileMap.get("originalFileName");
+					String noticeFilename = (String)fileMap.get("fileName");
+					long noticeFilesize = (Long)fileMap.get("fileSize");
 					
 					//업로드된 값이 있다면 담은값으로, 없다면 초기화한 값으로 vo에 셋팅
 					vo.setNoticeFilename(noticeFilename);
@@ -137,7 +135,8 @@ public class NoticeBoardController {
 					vo.setNoticeOriginalFilename(noticeOriginalFilename);
 					
 					
-					fileResult +=noticeService.insertNoticeStorage(vo);
+					fileResult = noticeService.insertNoticeStorage(vo);
+					logger.info("파일엽로드 결과 fileResult()={}",fileResult);
 					
 				}//for
 				 
@@ -222,7 +221,7 @@ public class NoticeBoardController {
 	//*************************************   공지 수정   ********************************************//
 	@RequestMapping(value = "/adminNotiEdit.do",method = RequestMethod.GET)
 	public String adminNotiEdit(@RequestParam(defaultValue = "0") int noticeNo
-			, Model model, HttpSession session, HttpServletRequest request) {
+			, Model model, HttpServletRequest request) {
 
 
 		logger.info("공지 수정 화면보여주기,파라미터 글번호 noticeNo={}",noticeNo);
@@ -237,7 +236,7 @@ public class NoticeBoardController {
 		NoticeBoardVO vo = noticeService.selectNoticeByNo(noticeNo);// 공지정보 담고, 
 		logger.info("파일조회 전 공지글번호로 조회결과 ,vo={}",vo);
 
-		vo = noticeService.selectNoticeStorageByNoticeNo(noticeNo);//파일정보도 같은 vo에 담고
+		//vo = noticeService.selectNoticeStorageByNoticeNo(noticeNo);//파일정보도 같은 vo에 담고
 		String fileInfo 
 		= noticeService.getFileInfo(vo.getNoticeOriginalFilename(), vo.getNoticeFilesize(), request); //여기서 자꾸nullpointer야...아침에 갑자기그냥 됨 ㅋㅋㅋ
 		logger.info("파일인포fileInfo={}", fileInfo);
@@ -331,7 +330,7 @@ public class NoticeBoardController {
 	}
 
 
-	//*******************************************  공지 삭제   *******************************************//
+	//*******************************************  공지 삭제 (일정+첨부파일 같이 삭제 )  *******************************************//
 
 	@RequestMapping(value = "/adminNotiDel.do", method =RequestMethod.GET)
 	public void delNotice(@RequestParam(defaultValue = "0") int noticeNo,@RequestParam (required = false) String oldFileName) {
@@ -381,9 +380,9 @@ public class NoticeBoardController {
 		model.addAttribute("url",url);
 		return "common/message";
 
-		
-	
 	}
+	
+	
 	
 }
 

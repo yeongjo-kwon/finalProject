@@ -14,41 +14,11 @@
 			}
 		});
 		
-	
-/* 		
-      $('#noticeContent').keyup(function (e){
-          var content = $(this).val();
-          $(this).height(((content.split('\n').length + 1) * 1.5) + 'em');
-          $('#counter').html(content.length + '/300');
-      });
-      
-      $('#noticeContent').on('keyup', function() {
-
-    		if($(this).val().length > 50) {
-
-    	alert("글자수는 50자로 이내로 제한됩니다.");
-
-    			$(this).val($(this).val().substring(0, 50));
-
-    		}
-
-    	}); */
-      
-    /*   $('#noticeContent').keyup(); */
-		
-		
-		
 		//공지등록 이벤트
 		$('#noticeOK').on('click', function(){
-			
-/* 			var noticeContent = $('#blog-editor-container').find('.editor').html();	//에디터안에서
-			$('#noticeContent').val(noticeContent); */
-		
-			
 			//데이트피커로 받아온 날짜 str
 			var scdStr =  $('#scdDate').val();//"2021-02-09 to 2021-05-06"
 												  //"012345678901234567890123"
-												  
 			//시작일 종료일 각각 찢어서 히든에 값 넣기												  
 			var startDateStr = scdStr.substr(0,10);
 			var endDateStr = scdStr.substr(14,24);
@@ -60,7 +30,6 @@
 			$('form[name=frmNotice]').submit(function(){
 				location.href="<c:url value='/admin/adminLiving/adminNoti/adminNotiRegister.do'/>";
 			});
-			
 			
 		});
 		
@@ -78,9 +47,6 @@
 				$('#filepath').append("첨부된 파일&nbsp;:&nbsp;&nbsp;"+files[i].name+"<br>");
 	        }
         });
-    	
-    	
-    	
 	
 	});
 </script>
@@ -95,6 +61,7 @@
 	line-height:2;
 	font-size: 1.2em;
 }
+
 
 </style>
 
@@ -206,10 +173,15 @@
 												<div id="blog-editor-wrapper">
 													<label for="noticeContent">공지 내용</label>
 													<div id="blog-editor-container" >
+													
 													<textarea id="noticeContent" name="noticeContent" class="form-control"></textarea>
 													<!-- 	<div class="editor" style="min-height:600px;" id="livingEditor">
 															에디터에 공지 내용 넣을 것  noticeContent
 													</div> -->
+													
+													
+													
+													
 													</div>
 												</div>
 											</div>
