@@ -267,7 +267,7 @@ $(function() {
                               			<!-- 일반 파일첨부 끝-->
                               			
                                             <div class="col-6 mt-3" style="text-align: left;">							<!-- 에러남  $noticeFilename=${vo.noticeFilename}  -->
-                                            <a href="<c:url value='/admin/adminLiving/adminNoti/adminNotiDel.do?noticeNo=${vo.noticeNo }$noticeFilename=${vo.noticeFilename}'/>">
+                                            <a href="<c:url value='/admin/adminLiving/adminNoti/adminNotiDel.do?noticeNo=${vo.noticeNo }&noticeFilename=${vo.noticeFilename}'/>">
                                                 <button type="button" class="btn btn-outline-danger col-4">공지 삭제</button>
                                             </a>
                                             </div>    

@@ -166,8 +166,8 @@ function pageFunc(curPage){
 		<colgroup>
 			<col style="width: 10%;" />
 			<col style="width: 15%;" />
-			<col style="width: 35%;" />
-			<col style="width: 20%;" />
+			<col style="width: 45%;" />
+			<col style="width: 10%;" />
 			<col style="width: 10%;" />
 			<col style="width: 10%;" />
 		</colgroup>
@@ -198,7 +198,7 @@ function pageFunc(curPage){
 			<!-- 레코드반복시작 -->
 			<c:if test="${!empty list}">
 				<c:forEach var="vo" items="${list}">
-					<tr onclick="location.href='<c:url value="/living/noti/noticeDetail.do?noticeNo=${vo.noticeNo}"/>'" 
+					<tr onclick="location.href='<c:url value="/living/noti/noticeDetail.do?noticeNo=${noticeNo}"/>'" 
 						class="table-hover table-hover-animation">
 					<!-- 공지글 번호 -->
 						<td class="text-center">
@@ -206,45 +206,17 @@ function pageFunc(curPage){
 						</td>
 
 						<!-- 공지글 카테고리 -->
-						<td class="text-left">${vo.nCtgName }</td>
+						<td class="text-center">${vo.nCtgName }</td>
 
 						<!-- 공지글 제목 -->
-						<td class="text-left">${vo.noticeTitle }</td>
+						<td class="text-center">${vo.noticeTitle }</td>
 
-					
 						<!-- 첨부-->
-					<c:choose>
-						<c:when test="${!empty vo.noticeFilename }">
-							<td class="text-left small">
-								<a href="<c:url value='/living/noti/download.do?noticeNo=${param.noticeNo}&noticeFilename=${vo.noticeFilename }'/>">
-								<img alt="첨부파일 있음" src="${pageContext.request.contextPath}/resources/aptUser_images/file_icon.png">${vo.noticeOriginalFilename }
-								</a>
-							</td>
-						</c:when>
-						<c:otherwise>
-							<td class="text-left x-small">
-							<a href="javascript:void(0);">
-								<%-- <img alt="첨부파일 없음" src="${pageContext.request.contextPath}/resources/aptUser_images/file_null_icon.png"> --%>
-								<span>&nbsp;&nbsp;&nbsp;&nbsp;</span>
-							</a>
-							</td>
-						</c:otherwise>
-					</c:choose>
-					
-					
-					
-						<!-- 첨부-->
-					<%-- <c:if test="${!empty vo.noticeFilename }">
 						<td class="text-center">
 							<img alt="첨부파일아이콘" 
 							src="${pageContext.request.contextPath}/resources/aptUser_images/file_icon.png">
 						</td>
-					</c:if>
-					<c:if test="${empty vo.noticeFilename }">
-						<td class="text-center">
-							<p>X</p>
-     					 </td>
-					</c:if> --%>
+
 
 						<!-- 작성일-->
 						<td class="text-center"><fmt:formatDate value="${vo.noticeRegdate }"

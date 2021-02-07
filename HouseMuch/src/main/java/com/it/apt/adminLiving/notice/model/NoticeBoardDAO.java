@@ -55,5 +55,8 @@ public interface NoticeBoardDAO {
 	//// 공지글번호로 전부 삭제
 	int deleteForDeleteNoticeStorage(int noticeNo);
 	
+	//***********월에해당되는 일정리스트 가져오기
+	List<NoticeBoardVO> selectScdByMonth(NoticeBoardVO vo);
+	
 
 }

@@ -195,6 +195,11 @@ public class NoticeBoardServiceImpl implements NoticeBoardService{
 		return noticeBoardDao.updateNoticeStorage(vo);
 	}
 
+	@Override
+	public List<NoticeBoardVO> selectScdByMonth(NoticeBoardVO vo) {
+		return noticeBoardDao.selectScdByMonth(vo);
+	}
+
 
 
 	

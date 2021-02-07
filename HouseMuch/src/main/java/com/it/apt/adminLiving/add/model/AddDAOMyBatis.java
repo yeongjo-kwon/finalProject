@@ -24,6 +24,10 @@ public class AddDAOMyBatis implements AddDAO{
 	public int selectTotalRecord(AddFacilityInfoVO vo) {
 		return sqlSession.selectOne(namespace+"selectTotalRecord",vo);
 	}
+	@Override
+	public int insertAddInfo(AddFacilityInfoVO vo) {
+		return sqlSession.insert(namespace+"insertAddInfo",vo);
+	}
 	
 	
 	

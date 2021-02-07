@@ -32,7 +32,7 @@ $(function(){
 		var CtgNo = index;
 		console.log("선택한카테고리 번호는"+CtgNo); 
 		
-	/*	$.ajax({
+		$.ajax({
 			url: "<c:url value='/living/add/addInfoCategoryList.do'/>",
 			type:'get',
 			dataType:'json',
@@ -59,7 +59,7 @@ $(function(){
 					
 			}
 		}); 
-*/
+
 });
 	
 		
@@ -97,6 +97,7 @@ $(function(){
 .btn{
 	background-color:#5c9f24;
 	border-color: #5c9f24;
+	color: #ffffff;
 }
 .btn:hover{
 	background-color:#326717;
@@ -136,8 +137,7 @@ $(function(){
 <!-- 오른쪽섹션인 col-9안에서 검색바랑 파라미터 넘기는거 일단 넣음 -->
 <!-- searchKeyword , searchCondition 보내는 frmSearch 시작 -->     
                 <!-- 검색어, 검색조건 넘기는 frmPage -->
-                <form name="frmPage" 
-                method="post" action='<c:url value="/living/add/addFacilityList.do"/>'>
+                <form name="frmPage">
 								<input type="hidden" name="currentPage"> 
 							<input type="hidden" name="searchCondition" value="${param.searchCondition }" >
 							<input type="hidden" name="searchKeyword"	value="${param.searchKeyword }" >
@@ -167,9 +167,9 @@ $(function(){
 
 <!-- 시설카드 div : 시작   class="row"  -->
         <div class="row mt-10" id="addInfoList">
-	<div id="divResult">아몰라</div>
+	<div id="divResult"></div>
 <!-- 시설카드 반복구간 : 시작 class="col-lg-4 col-md-6 mb-4"  -->
-			<c:if test="${empty list }">
+			<!-- 	<c:if test="${empty list }">
 					<p>등록된 부가시설이 없습니다</p>
 				</c:if>
 				<c:if test="${!empty list }">
@@ -205,7 +205,7 @@ $(function(){
 						</div>
 						
 					</c:forEach>
-				</c:if>		
+				</c:if>		-->
 						<!-- 시설 카드1개 : 끝  -->
 <!-- 시설카드 반복구간 : 끝  -->
 

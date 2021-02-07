@@ -8,7 +8,7 @@ public class AddFacilityInfoVO extends SearchVO{
 					// houseHoldCode toString에 꼭 같이 추가할 것
 	//ADDITIONAL_FACILITY_INFO 테이블
 	private int addCtgNo;
-	private int addCtgName; //부가시설 분류명
+	private String addCtgName; //부가시설 분류명
 	
 	private int addNo;
 	private String addName;
@@ -52,10 +52,10 @@ public class AddFacilityInfoVO extends SearchVO{
 	public void setAddNo(int addNo) {
 		this.addNo = addNo;
 	}
-	public int getAddCtgName() {
+	public String getAddCtgName() {
 		return addCtgName;
 	}
-	public void setAddCtgName(int addCtgName) {
+	public void setAddCtgName(String addCtgName) {
 		this.addCtgName = addCtgName;
 	}
 	public String getAddName() {
@@ -157,22 +157,5 @@ public class AddFacilityInfoVO extends SearchVO{
 				+ householdCode + ", totalOrderCnt=" + totalOrderCnt + ", orderCnt=" + orderCnt + ", toString()="
 				+ super.toString() + "]";
 	}
-		
 	
-	
-	
-	
-	
-	
-	
-	
-	
-
-	
-
-	
-
-
-
-
 }

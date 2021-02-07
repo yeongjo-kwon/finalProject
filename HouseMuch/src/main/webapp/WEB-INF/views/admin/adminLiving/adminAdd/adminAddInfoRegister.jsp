@@ -17,10 +17,10 @@ $(function(){
 	/* 
 	-유효성 검사 Ajax사용
 	*/
-	$('#suggTitle').focus();
+	$('#addName').focus();
 	
 	$('form[name=frmWrite]').find('#btOK').click(function(){
-		if($('#addCtgNo').val()==0){
+	/*	if($('#addCtgNo').val()==0){
 			alert('시설 분류를 선택하세요.');
 			event.preventDefault();
 			$('#addCtgNo').focus();
@@ -28,46 +28,43 @@ $(function(){
 			alert('시설명을 입력하세요.');
 			event.preventDefault();
 			$('#addName').focus();
-		}else if($('[name="suggContent"]').val()==0){
+		}else if($('[name="addContent"]').val()==0){
 			alert('내용을 입력하세요.');
 			event.preventDefault();
 			$('[name="addContent"]').focus();
 		}
-		
+	*/	
 		oEditors.getById["smartEditor"].exec("UPDATE_CONTENTS_FIELD", []);
 		$("#smartEditor").value = $("#smartEditor").value.replace(/<br>$/, "");
 		location.href='<c:url value="/admin/adminLiving/adminAdd/adminAddInfoList.do"/>';
 	});
 	
 	//파일첨부시 첨부파일명 가져오는이벤트
-	$('input[name="addinfoImgFilename"]').change(function(e){
+	$('input[name="addinfoImgFile"]').change(function(e){
 		// 원래 여러번 첨부하면 맨 마지만꺼만 첨부되는건데 텍스트가 안없어지고 계속 보여짐 
 		// -> 그래서 그 전에 첨부해서 나왔던 텍스트 사라지고 다시 맨 마지막에 첨부되서 파일명 보이는것만 보이게 하는거임, 어차피 처리되는건 중복없이 한개씩 맨 마지막에 선택한 애들만 들어감
-		$('#filepath').text('');
+		$('#fileText').text('');
 		
-		var files=$('input[name="addinfoImgFilename"]')[0].files;
+		var files=$('input[name="addinfoImgFile"]')[0].files;
         
         for(var i= 0; i<files.length; i++){
 			//첨부파일명 텍스트 가져와서 <p>안에 넣기 : 안해도 첨부는 됨
-        	var filepath = $('#filepath').text();
-			$('#filepath').append("첨부된 파일&nbsp;:&nbsp;&nbsp;"+files[i].name+"<br>");
+        	var fileText = $('#fileText').text();
+			$('#fileText').append("첨부된 파일&nbsp;:&nbsp;&nbsp;"+files[i].name+"<br>");
         }
     });
-	
-	
+
 	
 });
 
 /* function작업 */
 function exit(){
-	if(confirm('작성중인 글쓰기를 종료하시겠습니까?')){
-		location.href="<c:url value='/suggestBoard/suggestBoardList.do'/>";
+	if(confirm('작성중인 작업을 종료하시겠습니까?')){
+		location.href="<c:url value='/admin/adminLiving/adminAdd/adminAddInfoList.do'/>";
 	}else{
 		event.preventDefault();
 	}
 }
-
-
 
 
 </script>
@@ -126,13 +123,11 @@ function exit(){
                                         </div>
                                     </div>
                                     <!-- Form -->
-                                    <form action="<c:url value='/admin/adminLiving/adminAdd/adminAddInfoRegister.do'/>" method="post" 
-                                     class="mt-2" name="frmWrite" >
+                                    <form action="<c:url value='/admin/adminLiving/adminAdd/adminAddInfoRegister.do'/>" 
+                                    method="post" class="mt-2" name="frmWrite" enctype="multipart/form-data">
                                      
                                      <!-- hidden친구들 -->
                                      <!-- <input type="hidden" name="addNo" title="시설 번호는 수정에서만"> -->
-                                     <input type="hidden" name="addCtgNo" title="시설분류번호">
-                                     <input type="hidden" name="addCtgNo" title="aptNo">
                                      <!-- hidden친구들 : 끝-->
                                      
                                         <div class="row">
@@ -148,10 +143,10 @@ function exit(){
                                                 <div class="form-group mb-2">
                                                     <label for="addCtgNo">시설 분류</label>
                                                     <select id="addCtgNo" name="addCtgNo" class="form-control">
-                                                        <option value="1">특화시설</option>
-                                                        <option value="2">교육시설</option>
-                                                        <option value="3">문화시설</option>
-                                                        <option value="4">스포트시설</option>
+                                                        <option value="1">특화 시설</option>
+                                                        <option value="2">교육 시설</option>
+                                                        <option value="3">문화 시설</option>
+                                                        <option value="4">스포츠 시설</option>
                                                         <option value="5">편의시설(무료)</option>
                                                     </select>
                                                 </div>
@@ -225,13 +220,15 @@ function exit(){
                                                         <div class="media-body">
                                                             <h5 class="mb-1 mt-1">썸네일 이미지 첨부</h5>
                                                             <small class="text-muted">새로운 썸네일 이미지를 등록하면 기존의 썸네일 이미지는 삭제됩니다.</small>
+                                                            <p class="my-50" id="fileText" name="fileText"></p>
                                                             <!--  -->
-                                                                <a href="javascript:void(0);" id="blog-image-text" ><span class="my-50 d-block" id="filepath"></span></a>
+                                                                <a href="javascript:void(0);" id="blog-image-text" ><span class="my-50 d-block" id="fileText"></span></a>
                                                             <div class="d-inline-block">
                                                                 <div class="form-group mb-0">
                                                                     <div class="custom-file">
-                                                                        <input type="file" class="custom-file-input" id="addinfoImgFilename" accept="image/*" />
-                                                                        <label class="custom-file-label" for="blogCustomFile"></label>
+                                                                      <label class="custom-file-label" for="addinfoImgFile"></label>
+ 															<input type="file" class="custom-file-input notiFileInput" id="addinfoImgFile"
+																name="addinfoImgFile" />
                                                                     </div>
                                                                 </div>
                                                             </div>
@@ -252,7 +249,7 @@ function exit(){
 	                                                <button type="submit" class="btn btn-primary col-4" id="btOK">시설 정보 등록</button>
 	                                            </div> 
 	                                            
-	                                        <%--     <div class="col-6 mt-3" style="text-align: left;">							<!-- 에러남  $noticeFilename=${vo.noticeFilename}  -->
+	                                        <%--     <div class="col-6 mt-3" style="text-align: left;">							<!-- 에러남  $addinfoImgFilename=${vo.addinfoImgFilename}  -->
                                             <a href="<c:url value='/admin/adminLiving/adminNoti/adminAddInfoDel.do'/>">
                                                 <button type="button" class="btn btn-outline-danger col-4">시설 정보 삭제</button>
                                             </a>

@@ -24,5 +24,10 @@ public class AddServiceImpl implements AddService{
 	public int selectTotalRecord(AddFacilityInfoVO vo) {
 		return addDao.selectTotalRecord(vo);
 	}
+
+	@Override
+	public int insertAddInfo(AddFacilityInfoVO vo) {
+		return addDao.insertAddInfo(vo);
+	}
 	
 }

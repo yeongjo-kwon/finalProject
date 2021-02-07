@@ -297,6 +297,22 @@
 		 WHERE NOTICE_NO=#{noticeNo}
 	</delete>
 	
+	<!-- 달에 해당되는 일정 가져오는 쿼리 : 캘린더에 필요-->
+	<select id="selectScdByMonth" parameterType="noticeBoardVo" resultType="noticeBoardVo">
+	   SELECT 
+	   		 SCD_NO
+	   		,SCD_CONTENT 
+	   		,SCD_S_DATE as START_DATE
+		    ,SCD_E_DATE+1 as END_DATE
+	   		,NOTICE_NO
+	   		,APT_NO
+		 FROM SCHEDULER 
+ 	    WHERE APT_NO = (SELECT APT_NO FROM HOUSEHOLD_INFO WHERE HOUSEHOLD_CODE = #{householdCode}) 
+		 <![CDATA[
+		  AND TO_CHAR(SCD_S_DATE ,'YYYY-MM') <= #{searchMonth}
+  		  AND TO_CHAR(SCD_E_DATE ,'YYYY-MM') >= #{searchMonth}
+		  ]]>
+	</select>
 </mapper>
 
 

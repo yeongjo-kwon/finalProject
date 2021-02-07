@@ -1,7 +1,11 @@
 package com.it.apt.adminLiving.controller;
 
+import java.io.IOException;
 import java.util.List;
+import java.util.Properties;
 
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.slf4j.Logger;
@@ -11,12 +15,16 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.it.apt.adminLiving.add.model.AddFacilityInfoVO;
 import com.it.apt.adminLiving.add.model.AddService;
+import com.it.apt.common.LivingFileUtil;
 import com.it.apt.common.PaginationInfo;
 import com.it.apt.common.Utility;
+import com.it.apt.member.model.MemberService;
 import com.it.apt.member.model.MemberVO;
 
 @Controller
@@ -25,17 +33,84 @@ public class AdminAddController {
 
 	private static final Logger logger = LoggerFactory.getLogger(AdminAddController.class);
 	@Autowired private AddService addService;
+	@Autowired private MemberService memberService;
+	@Autowired private LivingFileUtil livingFileUtil;
 	
-	//-------------------------부가시설등록
+	@Resource(name="fileUploadProperties")	//-> context-common.xml 에 넣은 id랑 일치
+	private Properties fileUploadProps;
 	
-	@RequestMapping("/adminAddInfoRegister.do")
+	
+//--------------------------------------------부가시설 정보 등록(+썸넬등록)-------------------------------	
+	
+	@RequestMapping(value = "/adminAddInfoRegister.do",method = RequestMethod.GET)
 	public void InfoRegister() {
 		logger.info("AddInfoRegister - 부가시설 등록 보여주기");
 	}
+
+	@RequestMapping(value = "/adminAddInfoRegister.do",method = RequestMethod.POST)
+	public String InfoRegister_post(@ModelAttribute AddFacilityInfoVO vo
+			 ,HttpServletRequest request
+			 ,HttpSession session, Model model) {
+		logger.info("부가시설 등록 처리, 파라미터 vo={},addinfoImgFile={}",vo);
+		logger.info("아파트번호 받아오나 확인 : aptNo={}",vo.getAptNo());
+		
+		//등록할 때 필요한 정보 조회 : 세션에서 householdCode + 작성자 id 받아와서 aptNo조회 
+		MemberVO memVo = (MemberVO) session.getAttribute("memVo");
+		String householdCode = memVo.getHouseholdCode(); 
+		int writerAptNo = memberService.selectAptNo(memVo.getId());
+		
+		String msg="부가시설 정보 등록 실패",url="/admin/adminLiving/adminAdd/adminAddInfoRegister.do";
+		
+		//등록할 때 필요한 정보 vo에 넣기
+		vo.setAptNo(writerAptNo);
+		vo.setHouseholdCode(householdCode);
+		logger.info("부가시설 등록 처리에 필요한 값 셋팅 : householdCode={},aptNo={}",vo.getHouseholdCode(),vo.getAptNo());
+		
+		//파일업로드 처리
+		MultipartHttpServletRequest multiRequest = (MultipartHttpServletRequest) request;
+       if (!multiRequest.getFile("addinfoImgFile").isEmpty()) { //이미지파일이 있으면
+			try {
+				
+				/*
+				 * [프로퍼티파일에서 행정용으로 지정한 경로]
+				 *  ROOT_FILEPATH = D:\\apt_LivingFile
+				 *	ADD_FILEPATH = \\apt_addFile
+				 */
+				String customPath=fileUploadProps.getProperty("ROOT_FILEPATH")+fileUploadProps.getProperty("ADD_FILEPATH");
+				AddFacilityInfoVO imgVo = livingFileUtil.addinfoImgUp(request, LivingFileUtil.IMAGE_TYPE, customPath);
+
+				//업로드된 값이 있다면 담은값으로, 없다면 초기화한 값으로 vo에 셋팅
+				vo.setAddinfoImgFilename(imgVo.getAddinfoImgFilename());
+				vo.setAddinfoImgOriginalFilename(imgVo.getAddinfoImgOriginalFilename());
+				 
+				logger.info("업로드 성공후 set된 img파일 ====> addinfoImgFilename={}",imgVo.getAddinfoImgFilename());
+				logger.info("set된 원본 img파일 ====> addinfoImgOriginalFilename={}",imgVo.getAddinfoImgOriginalFilename());
+				
+				logger.info("썸네일 업로드 성공");
+			} catch (IllegalStateException e) {
+				logger.info("파일업로드 실패!-IllegalState");
+				e.printStackTrace();
+			} catch (IOException e) {
+				logger.info("파일업로드 실패!-IO");
+				e.printStackTrace();
+			}
+
+	   }//파일if		
+		
+       
+		//DB등록처리
+		int result = addService.insertAddInfo(vo);
+		if(result >0) {
+			msg="부가시설 정보를 등록하였습니다.";
+			url="/admin/adminLiving/adminAdd/adminAddInfoList.do";
+		}
 	
-	
-	
-//--------------------------------------------부가시설 목록 + 페이징+ 검색-------------------------------	
+		model.addAttribute("msg",msg);
+		model.addAttribute("url",url);
+		
+		return "common/message";
+	}
+//-------------------------------------------- 부가시설 목록 + 페이징+ 검색  ----------------------------------------	
 	@RequestMapping("/adminAddInfoList.do")
 	public String adminNotiList(@ModelAttribute AddFacilityInfoVO vo
 			,@RequestParam(required = false) String searchKeyword
@@ -86,5 +161,8 @@ public class AdminAddController {
 		return "admin/adminLiving/adminAdd/adminAddInfoList";
 	}
 
+	
+	
+	
 }
 
