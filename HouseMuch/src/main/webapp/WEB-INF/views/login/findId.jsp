@@ -17,14 +17,84 @@
 .form-row{
 	display:block;
 }
-
 </style>
+
 <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/resources/app-assets/css/components.css">
+
+<script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/member.js"></script>
+<script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/jquery-3.5.1.min.js"></script>
+<script>
+	$(function(){
+		var emailCode="zz";	//이메일 전송 인증번호 저장 위한 코드
+		
+		$("#code").attr("disabled", true); //비활성화
+
+		$('#login').css({
+			"background-color": "#7DB249",
+			"color":"#fff"           	
+		});
+	   
+		$('#sendCode').click(function(){	//인증번호 전송 누르면
+			var email=$('#email2').val();	//입력한 이메일
+    		
+			if($('#name').val().length<1){
+				alert('이름을 입력해주세요');
+				$('#name').focus();
+			}else if(!validate_email(email)){
+				alert('이메일 형식에 맞지 않습니다.');
+				$('#email2').focus();
+			}else{
+				$.ajax({
+        			url:"<c:url value='/login/findIdMail.do'/>",
+        			type:"GET",
+        			data:{
+        				memberName:$('#name').val(),
+        				email:email
+        				},
+        			success:function(data){
+        				$("#code").attr("disabled", false); //활성화
+                		$('#code').next().html('인증번호를 발송했습니다.<br>인증번호가 오지 않으면 입력하신 정보가 회원정보와 일치하는지 <br>확인 해 주세요.');
+                		emailCode = data;
+        			},
+    				error:function(xhr, status, error){
+    					alert('error! : ' + error)
+    				}
+        		});	//ajax
+			}
+			
+		});
+		
+		$('#code').blur(function(){	//인증번호 입력란
+			var inputCode = $('#code').val();	//사용자가 입력한 인증번호
+			if(inputCode==emailCode && inputCode!=null){
+				$(this).next().css("color","#7DB249");
+				$(this).next().html("인증번호가 일치합니다.");
+				$('#chkCodeYn').val("Y");
+			}else if(inputCode==null){
+				$(this).next().css("color","red");
+				$(this).next().html("인증번호를 입력해주세요.");        			        			
+				$('#chkCodeYn').val("N");
+			}else{
+				$(this).next().css("color","red");
+				$(this).next().html("인증번호를 다시 확인해주세요.");        			
+				$('#chkCodeYn').val("N");
+			}
+		});
+		
+		$('#idFrm').submit(function(){
+			if($('#chkCodeYn').val()!="Y"){
+				alert('이메일 인증을 받고 다시 시도해주세요.');
+				$('#sendCode').focus();
+				event.preventDefault();
+			}
+		});
+	   
+	});
+</script>
 
 <!-- 
 	로그인 화면에서 아이디 찾기 누르면 이 페이지로 전송
 	인증번호 보내기 누르면 아래에 인증번호 입력하는 란 활성화
-	인증번호 보내기 누르면 쿠키에 인증번호 저장 되고 이메일에 보낸 인증번호와 쿠키 저장된 인증번호 같으면 (다시 자세히 공부해야함)
 	다음 으로 넘어감 (if문 처리 => 일치하지않으면 alert 일치하지않습니다)
 	
 	비밀번호 찾기 a링크 누르면 비밀번호 찾기 페이지로 이동 
@@ -46,31 +116,31 @@
 				<p>본인확인 이메일 주소와 입력한 이메일 주소가 같아야, 인증번호를 받을 수 있습니다.</p>
 			</div>
 	         
-			<form>
+			<form action="<c:url value='/login/findIdAll.do'/>" method="post" id="idFrm">
 				
 				<div class="form col-lg-12 php-email-form " align="center">
 				
 					<div class="form-group form-row row" align="left" style="display: inline-block;">
 		        		<label for="name">이름</label> 
-		        		<input type="text" class="form-control" name="userName"  style="width:400px;">		 	
+		        		<input type="text" class="form-control" name="memberName" id="name" style="width:400px;">		 	
 					</div>
 					<br>
 					<div class="form-group form-row row " align="left" style="display: inline-block; margin-left:123px;">
-						<label for="email">이메일 주소</label> 
-						<input type="text" class="form-control" name="email" style="width:400px;">
-	            		<div class="validate"></div>			 	
+						<label for="email2">이메일 주소</label> 
+						<input type="text" class="form-control" name="email" id="email2" style="width:400px;">
+	            		<span style="color: red;"></span>			 	
 					</div>
 					<div class="form-group form-row row" style="display:inline">
-						<input type="button" class="btn get-started-btn row" value="인증번호 받기" >
+						<input type="button" class="btn get-started-btn row" value="인증번호 받기" id="sendCode">
 					</div>
 					<br>
 					<div class="form-group form-row row" align="left" style="display: inline-block;">
-	            		<input type="text" class="form-control" name="code" disabled="disabled" placeholder="인증번호 6자리 입력" style="width:400px;">
-	            		<div class="validate"></div>	
+	            		<input type="text" class="form-control" name="code" id="code" placeholder="인증번호 6자리 입력" style="width:400px;">
+	            		<span style="color: red;"></span>	
+	            		<input type="hidden" id="chkCodeYn">	
 					</div>
 					<br><br>
 					<div class="text-center ">
-						<a href="<c:url value='/login/findIdAll.do'/>"> 페이지 이동 TEST !!! 후에 지울거임  </a>
 						<button type="submit">다음</button>
 					</div>
 	

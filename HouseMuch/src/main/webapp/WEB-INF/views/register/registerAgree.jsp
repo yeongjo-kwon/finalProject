@@ -48,7 +48,6 @@
                                     <img alt="하우스머치 로고" src='<c:url value="/resources/aptUser_images/housemuch_logo.png"/>'>
                                 </a>
                                 <h2><b>HouseMuch 서비스 약관에 <br> 동의해주세요.</b></h2>
-								
 								<!-- 약관 동의 !!!  -->
                                 <div class="auth-register-form mt-3" >
                                 
@@ -351,7 +350,10 @@
 					              
 					                              								
                                     <br>
+                                  
                                     <button class="btn btn-block btn-primary" tabindex="4" style="font-size: 15px;" id="next">다음</button>
+   									<input type="hidden" id="householdCode" name="householdCode" value=${param.householdCode }>                             
+                                   
                                 </div>
 
                                
@@ -502,7 +504,8 @@
 	            	alert('필수 항목에 동의를 해주세요!');
 	            	event.preventDefault();
 	            }else{
-	            	location.href='<c:url value="/register/registerMember.do"/>';
+	            	var householdCode = $('#householdCode').val();
+	            	location.href='<c:url value="/register/registerMember.do?householdCode='+householdCode+'"/>';
 	            }
             	
             });

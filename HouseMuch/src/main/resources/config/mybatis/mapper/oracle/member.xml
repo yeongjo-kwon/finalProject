@@ -27,6 +27,32 @@
 		select count(*) from household_info where household_code=#{householdCode}
 	</select>
 	
+	<select id="checkDup" parameterType="String" resultType="int">
+		select count(*) from member_info where id=#{id}
+	</select>
+
+	<select id="checkDupEmail" parameterType="String" resultType="int">
+		select count(*) from member_info where email=#{email}
+	</select>
+	
+	<insert id="insertMember" parameterType="memberVo">
+		<selectKey keyProperty="memberNo" resultType="int" order="BEFORE">
+			select member_info_seq.nextval from dual
+		</selectKey>
+		insert into member_info(member_no, household_code, id, pwd, member_name, email, hp1, hp2, hp3)
+		values(#{memberNo}, #{householdCode}, #{id}, #{pwd}, #{memberName}, #{email}, #{hp1}, #{hp2}, #{hp3})	
+	</insert>
+	
+	<select id="findId" parameterType="memberVo" resultType="String">
+		select id from member_info where member_name=#{memberName} and email=#{email}
+	</select>
+	
+	<update id="updatePwd" parameterType="memberVo">
+		update member_info
+		set pwd=#{pwd}
+		where id=#{id} and member_name=#{memberName} and email=#{email}
+	</update>
+	
 </mapper>
 
 

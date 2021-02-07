@@ -42,7 +42,7 @@
 	
 			<div class="form col-lg-12 php-email-form " align="center">
 			
-				<h3><span> USERID </span></h3>
+				<h3><span> ${id } </span></h3>
 				<br>
 				<input type="button" class="btn subin-button" onclick="location.href='<c:url value="/login/login.do"/>'" value="로그인 하러 가기">
 			</div>     
