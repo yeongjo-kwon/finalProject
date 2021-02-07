@@ -1,0 +1,303 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="config.mybatis.mapper.oracle.noticeBoard">	
+<!--  
+	private int aptNo
+	private int memberNo
+	private int NCtgNo
+	private int noticeContent
+	private int noticeNo
+	private int noticeReadcount
+	private int noticeRegdate
+	private int noticeTitle
+-->
+
+<!-- 공지등록 + 스케줄러 등록  -->
+	<insert id="insertNotice" parameterType="noticeBoardVO"
+		 useGeneratedKeys="true" keyProperty="noticeNo" keyColumn="noticeNo" > 
+		<selectKey keyProperty="noticeNo" resultType="int" order="BEFORE">
+			select NOTICE_BOARD_SEQ.nextval from dual
+		</selectKey>
+			INSERT INTO NOTICE_BOARD(
+			    NOTICE_NO,
+			    N_CTG_NO,
+			    NOTICE_TITLE,
+			    NOTICE_CONTENT,
+			    NOTICE_REGDATE,
+			    MEMBER_NO,
+			    APT_NO
+			)
+			SELECT 
+				 #{noticeNo}
+				,#{nCtgNo}
+			    ,#{noticeTitle}
+			    ,#{noticeContent}
+			    ,SYSDATE
+			    ,#{memberNo}
+			    ,APT_NO
+			 FROM 
+			 	HOUSEHOLD_INFO 
+			 WHERE 
+			 	HOUSEHOLD_CODE = #{householdCode}
+	</insert>
+	
+	<!--작성자정보를 받아서 공지 + 일정 전체 리스트 출력  -->
+<!-- 	<select id="selectAllNoticeList" parameterType="noticeBoardVo" resultType="noticeBoardVo">
+	        SELECT  
+	        	NOTICE_NO
+			    ,N_CTG_NO
+			    ,(SELECT N_CTG_NAME FROM NOTICE_CATEGORY B WHERE B.N_CTG_NO = A.N_CTG_NO) 
+			    	AS N_CTG_NAME 
+			    ,NOTICE_TITLE
+			    ,NOTICE_CONTENT
+			    ,NOTICE_REGDATE
+			    ,MEMBER_NO
+			    ,(SELECT MEMBER_NAME FROM MEMBER_INFO C WHERE A.MEMBER_NO = C.MEMBER_NO) 
+			    	AS MEMBER_NAME 
+			    ,APT_NO
+	        FROM NOTICE_BOARD A
+	        WHERE APT_NO = (SELECT APT_NO FROM HOUSEHOLD_INFO WHERE HOUSEHOLD_CODE = #{householdCode})
+			ORDER BY NOTICE_NO DESC
+	</select> -->
+
+
+<!-- ${searchCondition} : noticeTitle , nCtgName, noticeContent, scdContent 등등 컬럼값들어갈 자리-->
+	
+<!-- 페이징용 필요1 : where 검색조건별 검색어 -->
+<!-- 	<sql id="searchWhere">
+		<where>
+			<if test="searchKeyword != null and searchKeyword != ''">
+				${searchCondition} like '%' || #{searchKeyword} || '%'
+			</if>
+		</where>	
+	</sql>
+	 -->
+<!-- 페이징용 필요2 : 해당 APT_NO의 전체 공지글 수  -->
+	<select id="selectTotalRecord" parameterType="noticeBoardVo" resultType="int">
+		SELECT COUNT(*) 
+		  FROM NOTICE_BOARD N JOIN NOTICE_CATEGORY C
+		  ON N.N_CTG_NO= C.N_CTG_NO
+		   WHERE APT_NO = (SELECT APT_NO FROM HOUSEHOLD_INFO WHERE HOUSEHOLD_CODE = #{householdCode})
+		   <if test="searchKeyword != null and searchKeyword != ''">
+				AND ${searchCondition} like '%' || #{searchKeyword} || '%'
+		   </if>
+	</select>
+	
+<!-- 페이징용 필요 3 : 페이징처리까지 되는 전체 공지리스트 
+           공지카테고리(NOTICE_CATEGORY) + 공지(NOTICE_BOARD) + 일정(SCHEDULER) + 공지자료실(NOTICE_STORAGE) + 아파트번호용(HOUSEHOLD_INFO) + 작성자정보용(MEMBER_INFO) 테이블에서 조회 -->
+	<select id="selectAllNoticeList" parameterType="noticeBoardVo" resultType="noticeBoardVo">
+		SELECT * FROM
+		(
+		  SELECT N.*, ROWNUM as RNUM FROM
+		   (
+			   SELECT M.* from
+			   (
+			   SELECT 
+		        	NOTICE_NO
+				    ,N_CTG_NO
+				    ,(SELECT N_CTG_NAME FROM NOTICE_CATEGORY B WHERE B.N_CTG_NO = A.N_CTG_NO) 
+				    	AS N_CTG_NAME
+				    ,NOTICE_TITLE
+				    ,NOTICE_CONTENT
+				    ,NOTICE_REGDATE
+				    ,MEMBER_NO
+				    ,(SELECT MEMBER_NAME FROM MEMBER_INFO C WHERE A.MEMBER_NO = C.MEMBER_NO) 
+				    	AS MEMBER_NAME
+				    ,(SELECT SCD_NO FROM SCHEDULER S WHERE A.NOTICE_NO = S.NOTICE_NO) 
+				    	AS SCD_NO 
+				    ,(SELECT SCD_CONTENT FROM SCHEDULER S WHERE A.NOTICE_NO = S.NOTICE_NO) 
+				    	AS SCD_CONTENT 				    
+				    ,APT_NO
+				    ,(SELECT N_STORAGE_NO FROM NOTICE_STORAGE F WHERE A.NOTICE_NO = F.NOTICE_NO) 
+				    	AS N_STORAGE_NO 	
+				    ,(SELECT NOTICE_ORIGINAL_FILENAME FROM NOTICE_STORAGE F WHERE A.NOTICE_NO = F.NOTICE_NO) 
+				    	AS NOTICE_ORIGINAL_FILENAME 
+				    ,(SELECT NOTICE_FILENAME FROM NOTICE_STORAGE F WHERE A.NOTICE_NO = F.NOTICE_NO) 
+				    	AS NOTICE_FILENAME 
+				    ,(SELECT NOTICE_FILESIZE FROM NOTICE_STORAGE F WHERE A.NOTICE_NO = F.NOTICE_NO) 
+				    	AS NOTICE_FILESIZE	
+		         FROM NOTICE_BOARD A
+		          WHERE APT_NO = (SELECT APT_NO FROM HOUSEHOLD_INFO WHERE HOUSEHOLD_CODE = #{householdCode})
+			   ) M
+				<if test="searchKeyword != null and searchKeyword != ''">
+					WHERE ${searchCondition} like '%' || #{searchKeyword} || '%'
+				</if>     
+	         ORDER BY NOTICE_NO DESC
+		  )N
+	    )
+	<![CDATA[
+	WHERE RNUM >  #{firstRecordIndex} 
+	  AND RNUM <= #{firstRecordIndex} + #{recordCountPerPage}
+	]]>
+	</select>
+	
+	<!-- 공지글 조회수 증가 : NOTICE_NO가 PK -->
+	<update id="updateReadCount" parameterType="int">
+		UPDATE NOTICE_BOARD
+		   SET NOTICE_READCOUNT=NOTICE_READCOUNT+1 
+		 WHERE NOTICE_NO=#{noticeNo}
+	</update>
+
+	
+	<!-- 공지 글 번호로 조회 -->
+	<select id="selectNoticeByNo" parameterType="int" resultType="noticeBoardVo">
+        SELECT  
+        	 A.NOTICE_NO
+		    ,A.N_CTG_NO
+		    ,(SELECT N_CTG_NAME FROM NOTICE_CATEGORY B WHERE B.N_CTG_NO = A.N_CTG_NO) 
+		    	AS N_CTG_NAME 
+		    ,A.NOTICE_TITLE
+			,A.NOTICE_CONTENT
+		    ,A.NOTICE_REGDATE
+		    ,A.MEMBER_NO
+			,(SELECT MEMBER_NAME FROM MEMBER_INFO C WHERE A.MEMBER_NO = C.MEMBER_NO) 
+				AS MEMBER_NAME 
+		    ,A.APT_NO
+		    ,S.SCD_NO
+		    ,S.SCD_CONTENT 
+		    ,S.SCD_S_DATE as START_DATE
+		    ,S.SCD_E_DATE as END_DATE
+		    ,(SELECT N_STORAGE_NO FROM NOTICE_STORAGE F WHERE A.NOTICE_NO = F.NOTICE_NO) 
+				AS N_STORAGE_NO 	
+            ,(SELECT NOTICE_ORIGINAL_FILENAME FROM NOTICE_STORAGE F WHERE A.NOTICE_NO = F.NOTICE_NO) 
+                AS NOTICE_ORIGINAL_FILENAME 
+            ,(SELECT NOTICE_FILENAME FROM NOTICE_STORAGE F WHERE A.NOTICE_NO = F.NOTICE_NO) 
+                AS NOTICE_FILENAME 
+            ,(SELECT NOTICE_FILESIZE FROM NOTICE_STORAGE F WHERE A.NOTICE_NO = F.NOTICE_NO) 
+                AS NOTICE_FILESIZE	
+        FROM NOTICE_BOARD A, SCHEDULER S 
+       WHERE A.NOTICE_NO = S.NOTICE_NO(+)
+         AND A.NOTICE_NO= #{noticeNo}
+	</select>
+	
+	
+	<!-- 공지 글 수정 -->
+	<update id="updateNotice" parameterType="noticeBoardVo">
+		UPDATE 
+			 NOTICE_BOARD
+  		SET  
+  			 N_CTG_NO=#{nCtgNo}
+			,NOTICE_TITLE=#{noticeTitle}
+			,NOTICE_CONTENT=#{noticeContent}
+ 		WHERE 
+ 			 NOTICE_NO=#{noticeNo}
+	</update>
+	
+	
+	<!-- 일정공지 : 여기들어가는 startDate와 endDate는 java.sql.date형 -->
+	<insert id="insertScheduler" parameterType="noticeBoardVo">
+		<selectKey keyProperty="scdNo" resultType="int" order="BEFORE" >
+			select SCHEDULER_SEQ.NEXTVAL from dual 	
+		</selectKey>
+		insert into SCHEDULER
+		(
+		    SCD_NO
+		   ,SCD_CONTENT
+		   ,SCD_S_DATE
+		   ,SCD_E_DATE
+		   ,NOTICE_NO
+		   ,APT_NO
+		)
+		SELECT
+		    #{scdNo}
+		   ,#{scdContent}
+		   ,#{startDate}
+		   ,#{endDate}
+		   ,#{noticeNo}
+		   ,APT_NO
+		FROM 
+		 	HOUSEHOLD_INFO 
+		WHERE 
+		 	HOUSEHOLD_CODE = #{householdCode}
+	</insert>
+
+
+	<!-- 일정만 조회하기 : 스케줄 테이블에서 noticeNo로  조회해오기-->
+	<select id="selectScdByNoticeNo" parameterType="int" resultType="noticeBoardVo"> 
+		SELECT * 
+		  FROM SCHEDULER 
+    	 WHERE NOTICE_NO=#{noticeNo}
+	</select>
+	
+	<!-- 일정공지 에서 일정 update 시 일정번호로 일정 업데이트 하는  -->
+	<update id="updateScdByScdNo" parameterType="noticeBoardVo">
+		UPDATE SCHEDULER
+	       SET  
+	         SCD_S_DATE  = #{startDate}
+		    ,SCD_E_DATE  = #{endDate}
+		    ,SCD_CONTENT = #{scdContent}
+	     WHERE SCD_NO = #{scdNo}
+	</update>
+	
+	<!-- 일정만 삭제하는 쿼리 : 일정공지를 일반공지로 바꾸거나 / 일정공지를 삭제 할 때 일정삭제시 사용-->
+	<delete id="deleteScdByNoticeNo" parameterType="int">
+		DELETE 
+		  FROM SCHEDULER 
+		 WHERE NOTICE_NO=#{noticeNo}
+	</delete>
+
+	 
+	<!-- 공지삭제할 때 일정도 같이 삭제되는 쿼리 : 0127새벽에 ON DELETE CASECADE추가함 -->
+	<delete id="deleteNoticeWithScdAndFileByNoticeNo" parameterType="int">
+		DELETE FROM NOTICE_BOARD WHERE NOTICE_NO=#{noticeNo}
+	</delete>
+	
+	
+	<!--      파일첨부 관련 쿼리            -->
+	<insert id="insertNoticeStorage" parameterType="noticeBoardVo">
+		<selectKey keyProperty="nStorageNo" resultType="int" order="BEFORE">
+			SELECT NOTICE_STORAGE_SEQ.NEXTVAL FROM DUAL
+		</selectKey>
+		INSERT INTO NOTICE_STORAGE(
+		     N_STORAGE_NO
+			,NOTICE_NO
+			,NOTICE_FILENAME
+			,NOTICE_ORIGINAL_FILENAME
+			,NOTICE_FILESIZE 
+		)VALUES(
+		     #{nStorageNo}
+			,#{noticeNo}
+			,#{noticeFilename}
+			,#{noticeOriginalFilename}
+			,#{noticeFilesize}
+		)
+	</insert>
+	
+	<!-- 공지글번호로 해당되는 파일 전부 조회 : List로 받을 것 , 일단단일로 테스트-->
+	<select id="selectNoticeStorageByNoticeNo" parameterType="int" resultType="noticeBoardVo">
+		SELECT * 
+		  FROM NOTICE_STORAGE
+		 WHERE NOTICE_NO = #{noticeNo}
+		 ORDER BY N_STORAGE_NO DESC
+	</select>
+	
+	<!-- 파일PK 번호로 1개만 삭제 : 파일 수정시 새로운 파일 업데이트 하면 사용 -->
+	<delete id="deleteForEditNoticeStorage" parameterType="int">
+		DELETE 
+		  FROM NOTICE_STORAGE 
+		 WHERE N_STORAGE_NO=#{nStorageNo}
+	</delete>
+	
+	<!-- 단일로하게되서 파일 업데이트 메서드 만들음 ..어차피 단일인서트하니까 그냥 noticeNo로 하자,,배고파-->
+	<update id="updateNoticeStorage" parameterType="noticeBoardVo">
+		UPDATE NOTICE_STORAGE
+		   SET 
+			 NOTICE_FILENAME= #{noticeFilename}
+			,NOTICE_ORIGINAL_FILENAME= #{noticeOriginalFilename}
+			,NOTICE_FILESIZE = #{noticeFilesize}
+		WHERE NOTICE_NO = #{noticeNo}
+	</update>
+
+	<!-- 공지글번호로 전부 삭제 -->
+	<delete id="deleteForDeleteNoticeStorage" parameterType="int">
+		DELETE 
+		  FROM NOTICE_STORAGE 
+		 WHERE NOTICE_NO=#{noticeNo}
+	</delete>
+	
+</mapper>
+
+
+

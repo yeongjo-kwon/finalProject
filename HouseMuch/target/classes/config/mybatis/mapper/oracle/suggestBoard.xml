@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.mybatis.mapper.suggestBoard">
+	<sql id="searchWhere">
+		<where>
+			<if test="searchKeyword!=null and searchKeyword!=''">
+				${searchCondition} like '%' || #{searchKeyword} || '%'
+			</if>
+		</where>
+	</sql>
+	
+	<resultMap type="HashMap" id="detailMap">
+		<result property="suggBoardNo" column="SUGG_BOARD_NO" />
+		<result property="suggCtgName" column="SUGG_CTG_NAME"  />
+		<result property="suggTitle" column="SUGG_TITLE" />
+		<result property="suggContent" column="SUGG_CONTENT" jdbcType="CLOB" javaType="java.lang.String" />
+		<result property="suggRegdate" column="SUGG_REGDATE"  />
+		<result property="memberNo" column="MEMBER_NO"  />
+		<result property="aptNo" column="APT_NO" />
+		<result property="memberName" column="MEMBER_NAME" />
+		<result property="answNo" column="ANSW_NO" />
+		<result property="answRegdate" column="ANSW_REGDATE" />
+	</resultMap>
+	
+	<resultMap type="hashmap" id="answerDetailMap">
+		<result property="answNo" column="ANSW_NO" />
+		<result property="answContent" column="ANSW_CONTENT" jdbcType="CLOB" javaType="java.lang.String"/>
+		<result property="memberNo" column="MEMBER_NO" />
+		<result property="answRegdate" column="ANSW_REGDATE" />
+		<result property="suggBoardNo" column="SUGG_BOARD_NO" />
+		<result property="memberName" column="MEMBER_NAME" />
+	</resultMap>
+	
+	<insert id="insertSuggestBoard" parameterType="suggestBoardVo">
+		<selectKey keyProperty="suggBoardNo" resultType="int" order="BEFORE">
+			select SUGGEST_BOARD_SEQ.NEXTVAL from dual
+		</selectKey>
+		INSERT INTO SUGGEST_BOARD(SUGG_BOARD_NO,SUGG_CTG_NO, SUGG_TITLE, SUGG_CONTENT, MEMBER_NO, APT_NO)
+		VALUES(#{suggBoardNo},#{suggCtgNo},#{suggTitle},#{suggContent},#{memberNo},#{aptNo})
+	</insert>
+	
+	<!-- <select id="selectAllSuggestBoardView" resultType="map">
+		SELECT * FROM V_SELECT_SUGGEST_BOARD
+	</select> -->
+	
+	<!-- 리스트 페이징 처리 -->
+	<select id="selectAllSuggestBoardView" parameterType="searchVo" resultType="map">
+		SELECT *
+		FROM
+		(
+		    SELECT A.*, ROWNUM AS RNUM
+		    FROM
+		    (
+		        SELECT SUGG_BOARD_NO, SUGG_CTG_NAME, SUGG_TITLE, 
+		            SUGG_CONTENT, SUGG_REGDATE, MEMBER_NO, APT_NO, MEMBER_NAME,
+		            ANSW_NO, ANSW_REGDATE
+		        FROM SUGGEST_VIEW
+		        <include refid="searchWhere"/>
+		        <if test="searchKeyword!=null and searchKeyword!=''">
+			        AND APT_NO=#{aptNo}
+		        </if>
+		        <if test="searchKeyword==null and searchKeyword==''">
+			        WHERE APT_NO=#{aptNo}
+			    </if>
+		        ORDER BY SUGG_BOARD_NO DESC
+		    )A
+		)
+		<![CDATA[
+		WHERE RNUM>#{firstRecordIndex} 
+		AND RNUM<=#{firstRecordIndex}+#{recordCountPerPage}
+		]]>
+	</select>
+	
+	<!-- resultmap 필요 -->
+	<select id="selectByNoSuggestBoard" parameterType="int" resultMap="detailMap">
+		SELECT * FROM SUGGEST_VIEW
+		WHERE SUGG_BOARD_NO=#{suggBoardNo}
+	</select>
+	
+	<select id="selectBySuggestCategory" resultType="suggestCategoryVo">
+		SELECT * FROM SUGGEST_CATEGORY
+	</select>
+	
+	<update id="updateSuggestBoard" parameterType="suggestBoardVo">
+		UPDATE SUGGEST_BOARD
+		SET SUGG_CTG_NO=#{suggCtgNo}, SUGG_TITLE=#{suggTitle}, SUGG_CONTENT=#{suggContent}
+		WHERE SUGG_BOARD_NO=#{suggBoardNo} AND MEMBER_NO=#{memberNo}
+	</update>
+	
+	<select id="selectTotalRecordFromSuggestBoard" parameterType="searchVo" 
+		resultType="int">
+		SELECT COUNT(*) FROM SUGGEST_VIEW
+		<include refid="searchWhere"/>
+		<if test="searchKeyword!=null and searchKeyword!=''">
+	        AND APT_NO=#{aptNo}
+        </if>
+        <if test="searchKeyword==null and searchKeyword==''">
+	        WHERE APT_NO=#{aptNo}
+	    </if>
+	</select>
+	
+	<delete id="deleteSuggestBoard" parameterType="int">
+		DELETE FROM SUGGEST_BOARD
+		WHERE SUGG_BOARD_NO=#{suggBoardNo}
+	</delete>
+	
+	<!-- 댓글 -->
+	<!-- 댓글 등록 -->
+	<insert id="insertAnswer" parameterType="suggestAnswerVo">
+		<selectKey keyProperty="answNo" resultType="int" order="BEFORE">
+			select SUGGEST_ANSWER_SEQ.NEXTVAL from dual
+		</selectKey>
+		INSERT INTO SUGGEST_ANSWER(ANSW_NO,ANSW_CONTENT,MEMBER_NO,SUGG_BOARD_NO)
+		VALUES(#{answNo}, #{answContent},#{memberNo},#{suggBoardNo})
+	</insert>
+	
+	<!-- 댓글 resultmap 필요, 조회 -->
+	<select id="selectByNoAnswer" parameterType="int" resultMap="answerDetailMap">
+		SELECT * FROM SUGG_ANSWER_VIEW
+		WHERE SUGG_BOARD_NO=#{suggBoardNo}
+	</select>
+	
+	<!-- 댓글 수정 -->
+	<update id="updateAnswer" parameterType="suggestAnswerVo">
+		UPDATE SUGGEST_ANSWER
+		SET ANSW_CONTENT=#{answContent}
+		WHERE ANSW_NO=#{answNo}
+	</update>
+	
+	<!-- 댓글 삭제 -->
+	<delete id="deleteAnswer" parameterType="int">
+		DELETE FROM SUGGEST_ANSWER
+		WHERE ANSW_NO=#{answNo}
+	</delete>
+	
+	<!-- 접속한 회원의 권한 조회 -->
+	<select id="searchAuthCode" parameterType="int" resultType="map">
+		SELECT * FROM SEARCH_AUTH_VIEW
+		WHERE MEMBER_NO=#{memberNo}
+	</select>
+</mapper>
+
+
+
+
+
+
+
+
+

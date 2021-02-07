@@ -1,0 +1,186 @@
+/*--------------------------------------------------------------
+# Board
+--------------------------------------------------------------*/
+.userBoard .frmUserBoard input, .userBoard .frmUserBoard textarea {
+  border-radius: 0;
+  box-shadow: none;
+  font-size: 14px;
+  height: auto;
+  padding: 10px 15px;
+  border-radius: 4px;
+}
+
+.userBoard .frmUserBoard input:focus, .userBoard .frmUserBoard textarea:focus{
+border-color: #5c9f24;
+}
+
+.userBoard .frmUserBoard button[type="button"] {
+  background: #5c9f24;
+  border: 0;
+  padding: 10px 30px 12px 30px;
+  color: #fff;
+  transition: 0.4s;
+  border-radius: 4px;
+}
+
+.userBoard .frmUserBoard button[type="button"]:hover {
+  background: #6ab82a;
+}
+
+form.frmUserBoard {
+    padding: 15px;
+    text-align: center;
+}
+
+.userBoard {
+  padding: 60px 0;
+}
+
+table.box2 {
+    width: inherit;
+}
+
+.container {
+    padding: 10px;
+    text-align: center;
+}
+
+.text-right button[type="submit"]{
+  background: #5c9f24;
+  border: 0;
+  padding: 10px 30px 12px 30px;
+  color: #fff;
+  transition: 0.4s;
+  border-radius: 4px;
+}
+
+.text-right button[type="submit"]:hover{
+  background: #6ab82a;
+}
+
+.boardDetail table tbody tr td {
+    text-align: left;
+    padding: 5px;
+}
+
+div#comments {
+    padding: 10px;
+}
+
+table.tbUserBoard {
+    width: -webkit-fill-available;
+}
+
+.boardDetail {
+    border: 1px solid lightgray;
+}
+
+table.tbBoard {
+    width: inherit;
+}
+
+#text-right {
+	text-align: right;
+}
+
+.tbBoard thead {
+    background-color: #9e9e9e30;
+}
+
+div#divLeft {
+    float: left;
+}
+
+div#divLeft2 {
+    float: left;
+    margin-left: 10px;
+    width: 950px;
+}
+
+select[name="category"] {
+    height: 40px;
+}
+
+select#divCg {
+    width: 110px;
+}
+
+div#divFile {
+    text-align: left;
+}
+
+.text-right{
+	padding: 10px;
+}
+
+.text-center button[type="submit"]{
+  background: #5c9f24;
+  border: 0;
+  padding: 10px 30px 12px 30px;
+  color: #fff;
+  transition: 0.4s;
+  border-radius: 4px;
+}
+
+.text-center button[type="submit"]:hover{
+  background: #6ab82a;
+}
+
+.text-center {
+	padding: 5px;
+}
+
+.boardContent {
+    border: 1px solid lightgray;
+    height: 400px;
+    text-align: left;
+	padding: 10px;
+}
+
+.userBoard .frmUserBoard input[name="btCancel"], .userBoard .frmUserBoard button[name="btCancel"] {
+  background: #5c9f24;
+  border: 0;
+  padding: 10px 30px 12px 30px;
+  color: #fff;
+  transition: 0.4s;
+  border-radius: 4px;
+}
+
+.userBoard .frmUserBoard input[name="btCancel"]:hover, .userBoard .frmUserBoard button[name="btCancel"]:hover {
+  background: #6ab82a;
+}
+
+.tbUserBoard tbody tr {
+    border-bottom: 1px solid lightgray;
+}
+
+.tbUserBoard tbody tr th {
+    border: 1px solid lightgray;
+    background: #ededed;
+}
+
+input#commContent {
+    height: 150px;
+}
+
+input#answContent {
+    height: 150px;
+}
+
+select#boardCtgNo {
+    height: 40px;
+    color: #495057;
+    border: 1px solid #ced4da;
+	width: 170px;
+}
+
+select#suggCtgNo {
+    height: 40px;
+    color: #495057;
+    border: 1px solid #ced4da;
+    width: 170px;
+}
+
+select[name="searchCondition"] {
+    height: 42px;
+}

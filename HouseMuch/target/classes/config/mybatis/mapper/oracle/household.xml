@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="config.mybatis.mapper.oracle.household">
+	<sql id="searchWhere">
+	   <where>
+	      <if test="searchKeyword!=null and searchKeyword!=''">
+	         ${searchCondition} like '%' || #{searchKeyword} || '%'
+	      </if>
+	      <if test="aptNo!=null and aptNo!=''">
+	        and apt_no=#{aptNo}
+	      </if>
+	   </where>
+	</sql>
+		
+	<select id="selectCodeOwner" parameterType="int" resultType="String">
+		select household_code from household_info where auth_code='OWNER' and apt_no=#{aptNo}
+	</select>
+	
+	<insert id="insertCode" parameterType="householdVo">
+		insert into household_info(household_code,apt_no,dong,ho,auth_code)
+		values(#{householdCode},#{aptNo},#{dong},#{ho},#{authCode})		
+	</insert>
+
+</mapper>
+
+
+

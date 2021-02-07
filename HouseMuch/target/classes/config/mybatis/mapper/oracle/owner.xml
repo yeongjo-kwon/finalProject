@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="config.mybatis.mapper.oracle.owner">	
+	<sql id="searchWhere">
+	   <where>
+	      <if test="searchKeyword!=null and searchKeyword!=''">
+	         ${searchCondition} like '%' || #{searchKeyword} || '%'
+	      </if>
+	   </where>
+	</sql>
+	
+	<select id="selectAllAuth" resultType="authorityVo">
+		select * from authority order by auth_level desc
+	</select>
+	
+	<select id="showResidentByid" resultType="residentVo" parameterType="String">
+		select 
+		hm.h_member_no,
+		hi.household_code, 
+		hi.dong, 
+		hi.ho, 
+		hm.h_memb_name, 
+		hm.birth, 
+		hm.relation 
+		from household_info hi 
+		join household_member hm 
+		on hi.household_code=hm.household_code
+		where hi.auth_code='RESIDENT' and
+		hi.apt_no=(select h.apt_no from household_info h join member_info m on h.household_code=m.household_code where id=#{id})
+	</select>
+
+	<insert id="insertExcelCode" parameterType="map">
+		insert into household_info(
+			household_code,
+			apt_no,
+			dong,
+			ho, 
+			auth_code
+		)
+		<foreach collection="excelContent" item="item" separator="union all">
+		select
+			#{item.A},
+			#{aptNo},
+			#{item.B},
+			#{item.C},
+			'RESIDENT'
+		from dual
+		</foreach>
+	</insert>
+
+	<insert id="insertExcelCodeMem" parameterType="map">
+		insert into household_member(
+			h_member_no,
+			household_code,
+			h_memb_name,
+			birth,
+			relation
+		)values
+		<foreach collection="excelContent" item="item" separator="union all">
+		select
+			household_member_seq.nextval,
+			#{item.A},
+			#{item.D},
+			#{item.E},
+			#{item.F}
+		from dual
+		</foreach>
+	</insert>
+	
+</mapper>
+
+
+

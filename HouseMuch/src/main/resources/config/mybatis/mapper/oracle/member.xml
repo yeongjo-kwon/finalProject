@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="config.mybatis.mapper.oracle.member">	
+
+	<select id="selectPwd" parameterType="string" resultType="string">
+		select pwd from member_info
+		where id=#{id} and outdate is null
+	</select>
+	
+	<select id="selectMember" parameterType="string" resultType="memberVo">
+		select * from member_info where id=#{id}
+	</select>
+	
+	<select id="selectAptNo" parameterType="String" resultType="int">
+		select apt_no from household_info
+		where household_code=(select household_code from member_info where id=#{id})
+	</select>
+	
+	<select id="selectAuth" parameterType="String" resultType="String">
+		select h.auth_code from household_info h join member_info m on h.HOUSEHOLD_CODE=m.HOUSEHOLD_CODE
+		where m.id=#{id}
+	</select>
+	
+	<select id="chkCodeKey" parameterType="String" resultType="int">
+		select count(*) from household_info where household_code=#{householdCode}
+	</select>
+	
+</mapper>
+
+
+

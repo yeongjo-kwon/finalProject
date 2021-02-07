@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="config.mybatis.mapper.oracle.addFacilityInfo">
+<!--  
+ADD_CATEGORY
+ADDITIONAL_FACILITY_INFO
+ADD_ORDER_LIST
+COMP_CONTRACT_LIST ( 업체번호 : MNG_COMP_NO , 필수조건 : IS_ADD_FACILITY 자료형number?)
+-->
+
+	<!-- 부가시설 분류목록  -->	
+	<select id="selectAddCategory" resultType="addCategoryVo">
+		SELECT * FROM ADD_CATEGORY
+	</select>
+
+	<!-- 부가시설 등록 : -->
+ 	<insert id="insertAddInfo" parameterType="addFacilityInfoVO" 
+ 	useGeneratedKeys="true" keyProperty="addNo" keyColumn="addNo">
+ 	<selectKey keyProperty="addNo" resultType="int" order="BEFORE">
+ 		SELECT ADDITIONAL_FACILITY_INFO_SEQ.NEXTVAL FROM DUAL
+ 	</selectKey>
+      INSERT INTO ADDITIONAL_FACILITY_INFO(
+			    ADD_NO
+			   ,ADD_NAME
+			   ,ADD_LOCATION_INFO
+			   ,ADD_CONTENT
+			   ,ADD_PRICE
+			   ,ADD_CTG_NO
+			   ,APT_NO)
+	  SELECT 
+		       	#{addNo}
+		       ,#{addName}
+		       ,#{addLocationInfo}
+		       ,#{addContent}
+		       ,#{addPrice}
+		       ,#{addCtgNo}
+		       ,#{addinfoImgFilename}
+		       ,#{addinfoImgOriginalFilename}
+	    FROM HOUSEHOLD_INFO 
+	   WHERE HOUSEHOLD_CODE = #{householdCode}
+	     AND APT_NO =#{aptNo}
+	     AND AUTH_CODE = 'LIVING_MNG'
+	</insert> 
+<!-- AUTH_CODE여기서 체크하나 .,.? -->
+
+	<!-- 부가시설 전체 목록 조회 : serchVo상속받는 addFacilityInfoVO가 parameter ,ADD_CONTENT는 굳이 안받음-->
+	<select id="selectAllAddFacility" parameterType="addFacilityInfoVO" resultType="addFacilityInfoVO">
+		SELECT * FROM
+	    (
+	        SELECT Y.*, ROWNUM as RNUM FROM
+	        (
+	            SELECT X.* FROM
+	            (
+	              SELECT 
+	                     ADD_NO
+	                    ,ADD_NAME
+	                    ,ADD_CTG_NO
+	                    ,(SELECT COUNT(*) FROM ADD_ORDER_LIST O WHERE A.ADD_NO = O.ADD_NO) 
+	                    	AS ADD_CTG_NAME
+	                    ,ADD_LOCATION_INFO   
+	                    ,ADD_PRICE
+	                    ,ADD_REGDATE               
+	                    ,APT_NO
+	                    ,(SELECT COUNT(*) FROM ADD_ORDER_LIST O WHERE A.ADD_NO = O.ADD_NO)
+                       		AS ORDER_CNT
+	               FROM ADDITIONAL_FACILITY_INFO A
+	              WHERE APT_NO = (SELECT APT_NO FROM HOUSEHOLD_INFO WHERE HOUSEHOLD_CODE = 'HH_LIVING')
+	                AND ADD_OUTDATE IS NULL
+	            ) X
+	            <if test="searchKeyword != null and searchKeyword != ''">
+						WHERE ${searchCondition} like '%' || #{searchKeyword} || '%'
+				</if> 
+	            ORDER BY ADD_REGDATE DESC
+	        )Y
+		)
+		<![CDATA[
+			WHERE RNUM >  #{firstRecordIndex} 
+			  AND RNUM <= #{firstRecordIndex} + #{recordCountPerPage}
+		]]>
+	</select>
+	
+	<!-- APT_NO 에 해당되는 총 부가시설 개수 -->
+	<select id="selectTotalRecord" parameterType="addFacilityInfoVO" resultType="int">
+		SELECT COUNT(*) 
+		  FROM ADDITIONAL_FACILITY_INFO I JOIN ADD_CATEGORY C
+		  ON I.ADD_CTG_NO= C.ADD_CTG_NO
+		   WHERE APT_NO = (SELECT APT_NO FROM HOUSEHOLD_INFO WHERE HOUSEHOLD_CODE = #{householdCode})
+		   <if test="searchKeyword != null and searchKeyword != ''">
+				AND ${searchCondition} like '%' || #{searchKeyword} || '%'
+		   </if>
+	</select>
+	
+	
+</mapper>
+
+
+

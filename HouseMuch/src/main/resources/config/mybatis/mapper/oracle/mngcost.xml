@@ -1,0 +1,252 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="config.mybatis.mapper.oracle.mngcost">
+<!-- 입주자 -->
+	<!-- 관리비 대분류 select 뿌리기 -->
+	<select id="selectMCtgList" resultType="MngcostMainCtgVO">
+		SELECT *
+		FROM MNGCOST_MAIN_CTG
+		ORDER BY MNGCOST_M_CTG_NO
+	</select>
+	
+	<!-- 관리비 대분류 번호에 따른 소분류 select 뿌리기 (ajax)-->
+	<select id="selectSCtgList" parameterType="int"
+			resultType="MngcostSubCtgVO">
+		SELECT *
+		FROM MNGCOST_SUB_CTG
+		WHERE MNGCOST_M_CTG_NO=#{mngcostMCtgNo}
+		ORDER BY MNGCOST_S_CTG_NO
+	</select>
+	
+	<!-- 관리비 (납부 내역) 조회 -->
+	<select id="selectPayList" parameterType="string"
+			resultType="mngcostPaymentListVo">
+		SELECT *
+		FROM MNGCOST_PAYMENT_LIST
+		WHERE HOUSEHOLD_CODE=#{householdCode}
+	</select>
+	
+	<select id="selectMngcostInfoByClaim" parameterType="inquiryInfoVo"
+			resultType="mngcostInfoVo">
+		SELECT *
+		FROM MNGCOST_INFO
+		WHERE APT_NO=#{aptNo}
+		AND TO_CHAR(MNGCOST_USEDATE, 'YYYY-MM')
+            =TO_CHAR(ADD_MONTHS(#{mngcostClaimdate}, -1), 'YYYY-MM')
+        <if test="mngcostSCtgNo!=0">
+        	AND MNGCOST_S_CTG_NO=#{mngcostSCtgNo}
+		</if>
+		<if test="mngcostMCtgNo!=0 and mngcostSCtgNo==0">
+			AND MNGCOST_S_CTG_NO IN
+				(SELECT MNGCOST_S_CTG_NO
+				 FROM MNGCOST_SUB_CTG
+				 WHERE MNGCOST_M_CTG_NO=#{mngcostMCtgNo})
+		</if>
+		ORDER BY MNGCOST_NO
+	</select>
+	
+	<select id="plusAddInfo" parameterType="inquiryInfoVo"
+			resultType="addFacilityInfoVo">
+		SELECT ADD_NAME, ADD_PRICE
+		FROM ADDITIONAL_FACILITY_INFO
+		WHERE ADD_NO
+			IN (SELECT ADD_NO
+				FROM ADD_ORDER_LIST
+				WHERE HOUSEHOLD_CODE=#{householdCode}
+				AND ADD_OUTDATE IS NULL
+				OR TO_CHAR(ADD_OUTDATE, 'YYYY-MM')
+		        	> TO_CHAR(ADD_MONTHS(#{mngcostClaimdate}, -2), 'YYYY-MM'))
+	</select>
+	
+	
+<!-- 관리자 -->
+	<select id="adminSelectMngcostInfo" parameterType="inquiryInfoVo"
+			resultType="mngcostInfoVo">
+		SELECT * FROM MNGCOST_INFO
+		WHERE APT_NO=#{aptNo}
+		
+		<if test="enddate!=null and enddate!=''">
+			AND MNGCOST_USEDATE BETWEEN #{startdate}
+				AND TO_DATE(#{enddate})+1
+		</if>
+		<if test="enddate==null or enddate==''">
+			AND TO_CHAR(MNGCOST_USEDATE, 'YYYY-MM')
+				=TO_CHAR(SYSDATE, 'YYYY-MM')
+        </if>
+        <if test="mngcostSCtgNo!=0">
+        	AND MNGCOST_S_CTG_NO=#{mngcostSCtgNo}
+		</if>
+		<if test="mngcostMCtgNo!=0 and mngcostSCtgNo==0">
+			AND MNGCOST_S_CTG_NO
+				IN (SELECT MNGCOST_S_CTG_NO
+					FROM MNGCOST_SUB_CTG
+					WHERE MNGCOST_M_CTG_NO=#{mngcostMCtgNo})
+		</if>
+		ORDER BY MNGCOST_NO DESC
+	</select>
+	
+	<select id="cntAlreadyOrder" parameterType="inquiryInfoVo"
+			resultType="int">
+		SELECT COUNT(*)
+		FROM(
+			SELECT MNGCOST_CLAIMDATE
+			FROM MNGCOST_PAYMENT_LIST
+			WHERE HOUSEHOLD_CODE
+				IN (SELECT HOUSEHOLD_CODE
+					FROM HOUSEHOLD_INFO
+					WHERE APT_NO=#{aptNo}
+					AND AUTH_CODE='RESIDENT')
+		)
+		WHERE TO_CHAR(ADD_MONTHS(MNGCOST_CLAIMDATE, -1), 'YYYY-MM')
+			=#{startdate}
+	</select>
+	
+	<insert id="insertMngcostInfo" parameterType="mngcostInfoVo">
+		<selectKey keyProperty="mngcostNo" resultType="int" order="BEFORE">
+			SELECT MNGCOST_INFO_SEQ.NEXTVAL FROM DUAL
+		</selectKey>
+		INSERT INTO MNGCOST_INFO
+			(MNGCOST_NO,
+			 MNGCOST_S_CTG_NO,
+			 APT_NO,
+			 MNGCOST_CONTENT,
+			 MNGCOST_PRICE)
+		VALUES(#{mngcostNo},
+			   #{mngcostSCtgNo},
+			   #{aptNo},
+			   #{mngcostContent},
+			   #{mngcostPrice})
+	</insert>
+	
+	<delete id="deleteMngcostInfo" parameterType="int">
+		DELETE MNGCOST_INFO
+		WHERE MNGCOST_NO=#{mngcostNo}
+	</delete>
+	
+	<!-- 관리비 수정내역 + 메인카테고리번호 -->
+	<select id="selectMngcostInfoAddMCtgNo" parameterType="int" resultType="mngcostInfoVo">
+		SELECT MNGCOST_NO,
+				MNGCOST_M_CTG_NO,
+		        I.MNGCOST_S_CTG_NO,
+		        MNGCOST_CONTENT,
+		        MNGCOST_PRICE,
+		        MNGCOST_USEDATE
+		FROM MNGCOST_INFO I JOIN MNGCOST_SUB_CTG S
+		ON I.MNGCOST_S_CTG_NO = S.MNGCOST_S_CTG_NO
+		WHERE MNGCOST_NO=#{mngcostNo}
+	</select>
+	
+	<!-- 관리비 지출내역 수정하기 -->
+	<update id="updateMngcostInfo" parameterType="mngcostInfoVo">
+		UPDATE MNGCOST_INFO
+		SET MNGCOST_S_CTG_NO=#{mngcostSCtgNo},
+			MNGCOST_CONTENT=#{mngcostContent},
+			MNGCOST_PRICE=#{mngcostPrice}
+		WHERE MNGCOST_NO=#{mngcostNo}
+	</update>
+	
+	<!-- 관리비 청구리스트 출력 -->
+	<select id="selectMngcostOrderList" parameterType="int"
+			resultType="hashMap">
+		SELECT I.*, NVL(COMPLETE, '청구대기') ISORDER
+		FROM(
+		    SELECT TO_CHAR(MNGCOST_USEDATE, 'YYYY-MM') YM,
+		            SUM(MNGCOST_PRICE) TPRICE
+		    FROM MNGCOST_INFO
+		    WHERE APT_NO=#{aptNo}
+		    GROUP BY TO_CHAR(MNGCOST_USEDATE, 'YYYY-MM')
+		)I LEFT JOIN
+			(SELECT TO_CHAR(ADD_MONTHS(MNGCOST_CLAIMDATE, -1), 'YYYY-MM') YM,
+		    	(CASE WHEN COUNT(*)>0 THEN '청구완료' END) COMPLETE
+		     FROM MNGCOST_PAYMENT_LIST
+		     WHERE HOUSEHOLD_CODE IN
+		     	(SELECT HOUSEHOLD_CODE
+		         FROM HOUSEHOLD_INFO
+		         WHERE APT_NO=#{aptNo}
+		         AND AUTH_CODE='RESIDENT')
+		     GROUP BY TO_CHAR(ADD_MONTHS(MNGCOST_CLAIMDATE, -1), 'YYYY-MM')) P
+		ON I.YM = P.YM
+		ORDER BY I.YM DESC
+	</select>
+	
+	<!-- 세대별 관리비 청구 -->
+	<insert id="insertMngcostPaymentList" parameterType="inquiryInfoVo">
+		INSERT INTO MNGCOST_PAYMENT_LIST
+		    (MNGCOST_LIST_NO,
+		     HOUSEHOLD_CODE,
+		     MNGCOST_TOTAL_PRICE,
+		     MNGCOST_LIMITDATE,
+		     MNGCOST_CLAIMDATE)
+		SELECT MNGCOST_PAYMENT_LIST_SEQ.NEXTVAL,
+			   M.HOUSEHOLD_CODE,
+			   CEIL(APRICE+(SELECT SUM(MNGCOST_PRICE)
+			       		    FROM MNGCOST_INFO WHERE APT_NO=#{aptNo}
+			                AND TO_CHAR(MNGCOST_USEDATE, 'YYYY-MM')=#{startdate})
+			               		/(SELECT TOTAL_HOUSEHOLD
+						          FROM APARTMENT_INFO
+						          WHERE APT_NO=#{aptNo})),
+		       #{mngcostLimitdate},
+		       <if test="mngcostClaimdate!=null">
+		       		#{mngcostClaimdate}
+		       </if>
+		       <if test="mngcostClaimdate==null">
+		       		SYSDATE
+		       </if>
+		FROM (
+		    SELECT H.HOUSEHOLD_CODE,
+		    	   APT_NO, NVL(TOTAL, 0) APRICE
+		    FROM HOUSEHOLD_INFO H
+		    	LEFT JOIN (SELECT HOUSEHOLD_CODE, SUM(ADD_PRICE) TOTAL
+		                   FROM ADD_ORDER_LIST L
+		                   		JOIN ADDITIONAL_FACILITY_INFO I
+		                   		ON L.ADD_NO = I.ADD_NO
+		                   GROUP BY HOUSEHOLD_CODE)A
+		        ON H.HOUSEHOLD_CODE=A.HOUSEHOLD_CODE
+		    WHERE AUTH_CODE='RESIDENT'
+		)M
+	</insert>
+	
+	<select id="selectMyDongList" parameterType="int" resultType="string">
+		SELECT DISTINCT DONG
+        FROM HOUSEHOLD_INFO
+        WHERE APT_NO=#{aptNo}
+        AND AUTH_CODE='RESIDENT'
+        ORDER BY DONG DESC
+	</select>
+	
+	<select id="selectMyHoList" parameterType="householdVo" resultType="string">
+		SELECT DISTINCT HO
+        FROM HOUSEHOLD_INFO
+        WHERE APT_NO=#{aptNo}
+        AND AUTH_CODE='RESIDENT'
+       	AND DONG=#{dong}
+        ORDER BY DONG DESC
+	</select>
+	
+	<select id="">
+		SELECT MNGCOST_LIST_NO,
+		       DONG,
+		       HO,
+		       MNGCOST_TOTAL_PRICE,
+		       MNGCOST_CLAIMDATE,
+		       MNGCOST_LIMITDATE,
+		       MNGCOST_PAYDATE
+		FROM MNGCOST_PAYMENT_LIST L
+		    JOIN HOUSEHOLD_INFO I
+		    ON L.HOUSEHOLD_CODE = I.HOUSEHOLD_CODE
+		WHERE L.HOUSEHOLD_CODE
+		    IN (SELECT HOUSEHOLD_CODE
+		        FROM HOUSEHOLD_INFO
+		        WHERE APT_NO=1
+		        AND AUTH_CODE='RESIDENT')
+		<if test="dong!=null and dong!=''">
+			AND DONG=5
+		</if>
+		<if test="ho!=null and ho!=''">
+			AND HO=5
+		</if>
+		ORDER BY MNGCOST_CLAIMDATE DESC
+	</select>
+</mapper>

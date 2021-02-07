@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="config.mybatis.mapper.oracle.apart">	
+	<sql id="searchWhere">
+	   <where>
+	      <if test="searchKeyword!=null and searchKeyword!=''">
+	         ${searchCondition} like '%' || #{searchKeyword} || '%'
+	      </if>
+	   </where>
+	</sql>
+	
+	<select id="selectAptNameById" parameterType="string" resultType="string">
+		select apt_name from apartment_info 
+		where apt_no=(select h.apt_no from household_info h join member_info m on h.household_code=m.household_code where id=#{id})
+	</select>
+	
+	<select id="selectAllApt" parameterType="searchVo" resultType="map">
+		select*
+		from(
+		    select T.*, rownum as RNUM
+		    from(
+		        select a.*, h.household_code ,m.member_name,m.hp1,m.hp2, m.hp3, m.email,h.auth_code
+				from apartment_info a join household_info h
+				on a.apt_no = h.apt_no
+				left join member_info m
+				on h.household_code = m.household_code
+				<include refid="searchWhere" />
+	            order by a.apt_no desc
+				)T
+			where auth_code='OWNER'
+		)
+		<![CDATA[
+		where RNUM > #{firstRecordIndex} 
+		AND RNUM <= #{firstRecordIndex} + #{recordCountPerPage}
+		]]>		
+	</select>
+	
+	<select id="selectAptTotalRecord" parameterType="searchVo" resultType="int">
+		select count(*)
+		from(
+		    select T.*, rownum as RNUM
+		    from(
+		        select a.*, h.household_code ,m.member_name,m.hp1,m.hp2, m.hp3, m.email, h.auth_code
+		        from apartment_info a join household_info h
+		        on a.apt_no = h.apt_no
+		        left join member_info m
+		        on h.household_code = m.household_code
+		        order by a.apt_no desc
+		    )T
+		    where auth_code='OWNER'
+		 )
+		<include refid="searchWhere" />
+	</select>	
+	
+	<insert id="insertApt" parameterType="apartVo" useGeneratedKeys="true" keyProperty="aptNo" keyColumn="aptNo" >
+		<selectKey keyProperty="aptNo" resultType="int" order="BEFORE">
+			select apartment_info_seq.nextval from dual
+		</selectKey>
+		insert into apartment_info
+		values(#{aptNo},#{aptName},#{zipcodeSeq},#{address},#{addressDetail},#{totalHousehold})
+	</insert>
+	
+	<select id="selectAptByAptNo" parameterType="int" resultType="apartVo">
+		select * from apartment_info where apt_no=#{aptNo}
+	</select>
+	
+	<delete id="deleteApt" parameterType="int">
+		delete from apartment_info where apt_no=#{aptNo}
+	</delete>
+	
+	<update id="updateApt" parameterType="apartVo">
+		update apartment_info
+		set apt_name=#{aptName}, zipcode_seq=#{zipcodeSeq}, address=#{address}, address_detail=#{addressDetail}, total_household=#{totalHousehold}
+		where apt_no=#{aptNo}
+	</update>
+	
+	<select id="excelApt" resultType="apartExcelVo">
+		select T.*
+		from(
+			select a.*, h.household_code ,m.member_name,m.hp1,m.hp2, m.hp3, m.email,h.auth_code
+			from apartment_info a join household_info h
+			on a.apt_no = h.apt_no
+			left join member_info m
+			on h.household_code = m.household_code and h.auth_code='OWNER'
+         	order by a.apt_no desc
+		)T
+	</select>
+	
+</mapper>
+
+
+

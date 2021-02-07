@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="config.mybatis.mapper.oracle.boardCtg">
+	<sql id="searchWhere">
+		<where>
+			<if test="searchKeyword!=null and searchKeyword!=''">
+				${searchCondition} like '%' || #{searchKeyword} || '%'
+			</if>
+		</where>
+	</sql>
+	
+	<insert id="insertBoardCtg" parameterType="boardCtgVo">
+		<selectKey keyProperty="boardCtgNo" resultType="int" order="BEFORE">
+			SELECT BOARD_CATEGORY_SEQ.NEXTVAL FROM DUAL
+		</selectKey>
+		INSERT INTO BOARD_CATEGORY(BOARD_CTG_NO,APT_NO,BOARD_CTG_NAME)
+		VALUES(#{boardCtgNo},#{aptNo},#{boardCtgName})
+	</insert>
+	
+	<select id="selectAllBoardCtg" resultType="boardCtgVo" parameterType="searchVo">
+		SELECT *
+		FROM
+		(
+		    SELECT A.*, ROWNUM AS RNUM
+		    FROM
+		    (
+		        SELECT BOARD_CTG_NO, APT_NO, BOARD_CTG_NAME
+		        FROM BOARD_CATEGORY
+		        <include refid="searchWhere"/>
+		        <if test="searchKeyword!=null and searchKeyword!=''">
+			        AND APT_NO=#{aptNo}
+		        </if>
+		        <if test="searchKeyword==null and searchKeyword==''">
+			        WHERE APT_NO=#{aptNo}
+			    </if>
+		        ORDER BY BOARD_CTG_NO DESC
+		    )A
+		)
+		<![CDATA[
+		WHERE RNUM>#{firstRecordIndex}  
+		AND RNUM<=#{firstRecordIndex}+#{recordCountPerPage}
+		]]>
+	</select>
+	
+	<select id="selectTotalRecordFromBoardCategory" parameterType="searchVo"
+		resultType="int">
+		SELECT COUNT(*) FROM BOARD_CATEGORY
+		<include refid="searchWhere"/>
+		<if test="searchKeyword!=null and searchKeyword!=''">
+	        AND APT_NO=#{aptNo}
+        </if>
+        <if test="searchKeyword==null and searchKeyword==''">
+	        WHERE APT_NO=#{aptNo}
+	    </if>
+	</select>
+	
+	<update id="updateBoardCtg" parameterType="int">
+		UPDATE BOARD_CATEGORY
+		SET BOARD_CTG_NAME=#{boardCtgName}
+		WHERE BOARD_CTG_NO=#{boardCtgNo}
+	</update>
+	
+	<delete id="deleteBoardCtg" parameterType="int">
+		DELETE FROM BOARD_CATEGORY
+		WHERE BOARD_CTG_NO=#{boardCtgNo}
+	</delete>
+	
+	<select id="selectAllCtg" resultType="boardCtgVo">
+		SELECT * FROM BOARD_CATEGORY
+		ORDER BY BOARD_CTG_NAME
+	</select>
+</mapper>
+
+
+
+
+
+
+
+
+

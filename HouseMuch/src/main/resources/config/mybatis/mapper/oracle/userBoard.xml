@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.mybatis.mapper.userBoard">
+	<sql id="searchWhere">
+		<where>
+			<if test="searchKeyword!=null and searchKeyword!=''">
+				${searchCondition} like '%' || #{searchKeyword} || '%'
+			</if>
+		</where>
+	</sql>
+	
+	<resultMap type="HashMap" id="detailMap">
+		<result property="boardNo" column="BOARD_NO" />
+		<result property="boardCtgName" column="BOARD_CTG_NAME"  />
+		<result property="boardTitle" column="BOARD_TITLE" />
+		<result property="boardContent" column="BOARD_CONTENT" jdbcType="CLOB" javaType="java.lang.String" />
+		<result property="boardRegdate" column="BOARD_REGDATE"  />
+		<result property="boardReadcount" column="BOARD_READCOUNT"  />
+		<result property="memberNo" column="MEMBER_NO"  />
+		<result property="aptNo" column="APT_NO" />
+		<result property="memberName" column="MEMBER_NAME" />
+		<result property="boardFilename" column="BOARD_FILENAME" />
+		<result property="boardOriginalFilename" column="BOARD_ORIGINAL_FILENAME" />
+		<result property="boardFilesize" column="BOARD_FILESIZE" />
+	</resultMap>
+	
+	<insert id="insertUserBoard" parameterType="userBoardVo">
+		<selectKey keyProperty="boardNo" resultType="int" order="BEFORE">
+			select BOARD_SEQ.NEXTVAL from dual
+		</selectKey>
+		INSERT INTO BOARD(BOARD_NO, BOARD_CTG_NO, BOARD_TITLE, BOARD_CONTENT,MEMBER_NO, APT_NO)
+		VALUES(#{boardNo},#{boardCtgNo},#{boardTitle},#{boardContent},#{memberNo},#{aptNo})
+	</insert>
+	
+	<!-- 리스트 페이징 처리 -->
+	<select id="selectAllUserBoardView" parameterType="searchVo" resultType="map">
+		SELECT *
+		FROM
+		(
+		    SELECT A.*, ROWNUM AS RNUM
+		    FROM
+		    (
+		        SELECT BOARD_NO, BOARD_CTG_NAME, BOARD_TITLE, BOARD_CONTENT, BOARD_REGDATE,
+		            BOARD_READCOUNT, MEMBER_NO, APT_NO, MEMBER_NAME, BOARD_FILENAME, BOARD_ORIGINAL_FILENAME, BOARD_FILESIZE
+		        FROM BOARD_VIEW
+		        <include refid="searchWhere"/>
+		        <if test="searchKeyword!=null and searchKeyword!=''">
+			        AND APT_NO=#{aptNo}
+		        </if>
+		        <if test="searchKeyword==null and searchKeyword==''">
+			        WHERE APT_NO=#{aptNo}
+			    </if>
+		        ORDER BY BOARD_NO DESC
+		    )A
+		)
+		<![CDATA[
+		WHERE RNUM>#{firstRecordIndex} 
+		AND RNUM<=#{firstRecordIndex}+#{recordCountPerPage}
+		]]>
+	</select>
+	
+	<!-- resultmap 필요 -->
+	<select id="selectByNoUserBoard" parameterType="int" resultMap="detailMap">
+		SELECT * FROM BOARD_VIEW
+		WHERE BOARD_NO=#{boardNo}
+	</select>
+	
+	<!-- <update id="updateSuggestBoard" parameterType="suggestBoardVo">
+		UPDATE SUGGEST_BOARD
+		SET SUGG_CTG_NO=#{suggCtgNo}, SUGG_TITLE=#{suggTitle}, SUGG_CONTENT=#{suggContent}
+		WHERE SUGG_BOARD_NO=#{suggBoardNo} AND MEMBER_NO=#{memberNo}
+	</update> -->
+	
+	<select id="selectTotalRecordFromUserBoard" parameterType="searchVo" 
+		resultType="int">
+		SELECT COUNT(*) FROM BOARD_VIEW
+		<include refid="searchWhere"/>
+		<if test="searchKeyword!=null and searchKeyword!=''">
+	        AND APT_NO=#{aptNo}
+        </if>
+        <if test="searchKeyword==null and searchKeyword==''">
+	        WHERE APT_NO=#{aptNo}
+	    </if>
+	</select>
+	
+	<delete id="deleteUserBoard" parameterType="int">
+		DELETE FROM BOARD
+		WHERE BOARD_NO=#{boardNo}
+	</delete>
+	
+	<update id="updateBoardReadcount" parameterType="int">
+		UPDATE BOARD
+		SET BOARD_READCOUNT=BOARD_READCOUNT+1
+		WHERE BOARD_NO=#{boardNo}
+	</update>
+	
+	<!-- 댓글 -->
+	<!-- 댓글 등록 -->
+	<insert id="insertAnswer" parameterType="boardCommentVo">
+		<selectKey keyProperty="commNo" resultType="int" order="BEFORE">
+			select BOARD_COMMENT_SEQ.NEXTVAL from dual
+		</selectKey>
+		INSERT INTO BOARD_COMMENT(COMM_NO,COMM_CONTENT,MEMBER_NO,BOARD_NO)
+		VALUES(#{commNo},#{commContent},#{memberNo},#{boardNo})
+	</insert>
+	
+	<!-- 댓글 resultmap 필요, 조회 -->
+	<select id="selectByNoComment" parameterType="int" resultType="map">
+		SELECT * FROM USER_COMMENT_VIEW
+		WHERE BOARD_NO=#{boardNo}
+	</select>
+	
+	<!-- 댓글 수정 -->
+	<update id="updateComment" parameterType="boardCommentVo">
+		UPDATE BOARD_COMMENT
+		SET COMM_CONTENT=#{commContent}
+		WHERE COMM_NO=#{commNo}
+	</update>
+	
+	<!-- 댓글 삭제 -->
+	<delete id="deleteComment" parameterType="int">
+		DELETE FROM BOARD_COMMENT
+		WHERE COMM_NO=#{commNo}
+	</delete>
+	
+	<!-- 파일 업로드 -->
+	<insert id="userBoardFileUpload" parameterType="userBoardVo">
+		<selectKey keyProperty="bStorageNo" resultType="int" order="BEFORE">
+			SELECT BOARD_STORAGE_SEQ.NEXTVAL FROM DUAL
+		</selectKey>
+		INSERT INTO BOARD_STORAGE(B_STORAGE_NO
+								, BOARD_NO
+								, BOARD_FILENAME
+								, BOARD_ORIGINAL_FILENAME
+								, BOARD_FILESIZE)
+		VALUES(#{bStorageNo}
+				,#{boardNo}
+				,#{boardFilename}
+				,#{boardOriginalFilename}
+				,#{boardFilesize})
+	</insert>
+</mapper>
+
+
+
+
+
+
+
+
+
