@@ -4,7 +4,26 @@
 <script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/jquery-3.5.1.min.js"></script>
 <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/resources/userBoard/css/boardPaging.css">
 
+<style type="text/css">
+.tbStyle{
+	background-color: #7db2490d;
+}
+</style>
 <script type="text/javascript">
+	$(function(){
+		tbStyle();
+		
+		$('#chkAll').click(function(){
+			//만약에 최상단 체크박스가 체크되면
+			if($(this).prop("checked")){
+				$('input[name=chk]').prop("checked",true); //전체 선택
+			}else{ //아니면
+				$('input[name=chk]').prop("checked",false); //전체 해제
+			}
+		});
+	
+	});
+
 	function btWrite(){
 		location.href="<c:url value='/suggestBoard/suggestBoardWrite.do'/>";
 	}
@@ -14,17 +33,14 @@
 		$('form[name=frmPage]').submit();
 	}
 	
-	$(function(){
-		$('#chkAll').click(function(){
-			//만약에 최상단 체크박스가 체크되면
-			if($(this).prop("checked")){
-				$('input[name=chk]').prop("checked",true); //전체 선택
-			}else{ //아니면
-				$('input[name=chk]').prop("checked",false); //전체 해제
-			}
+	function tbStyle(){
+		$('.tbBoard tbody tr').mouseover(function(){
+			$(this).addClass('tbStyle');
+		}).mouseout(function(){
+			$(this).removeClass('tbStyle');
 		});
-
-	});
+	}
+	
 </script>
 
 <link
@@ -202,13 +218,12 @@
             		selected="selected"
             	</c:if>>글쓴이
 				</option>
-			</select> <input type="text" name="searchKeyword" title="검색어 입력"
-				value="${param.searchKeyword }"> <input type="submit"
-				name="btCancel" value="검색">
+			</select> 
+			<input type="text" name="searchKeyword" title="검색어 입력"
+				value="${param.searchKeyword }">
+			<input type="submit" name="btCancel" value="검색">
+			<button type="button" onclick="btWrite()">글쓰기</button>
 		</form>
-	</div>
-	<div class="text-right">
-		<button type="submit" onclick="btWrite()">글쓰기</button>
 	</div>
 
 </section>

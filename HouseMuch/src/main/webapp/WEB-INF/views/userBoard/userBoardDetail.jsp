@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@ include file="../mainInc/mainTop.jsp"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 <link
 	href="${pageContext.request.contextPath}/resources/userBoard/css/boardStyle.css"
@@ -20,7 +21,7 @@
 
 	function btDelete() {
 		if(confirm('정말로 삭제하시겠습니까?')){
-			location.href = "<c:url value='/userBoard/userBoardDelete.do?boardNo=${param.boardNo}'/>";
+			location.href = "<c:url value='/userBoard/userBoardDelete.do?boardNo=${param.boardNo}&boardFilename=${map["boardFilename"]}'/>";
 		}else{
 			event.preventDefault();
 		}
@@ -53,7 +54,7 @@
 					<td>${map['boardNo'] }</td>
 					<th>작성일</th>
 					<td><fmt:formatDate value="${map['boardRegdate'] }"
-							pattern="yyyy-MM-dd" /></td>
+							pattern="yyyy-MM-dd HH:mm:ss" /></td>
 				</tr>
 				<tr>
 					<th>이 름</th>
@@ -67,7 +68,16 @@
 				</tr>
 				<tr>
 					<th>첨부파일</th>
-					<td colspan="3">추가예정</td>
+					<td colspan="3">
+						<c:if test="${empty map['boardFilename'] }"></c:if>
+						<c:if test="${!empty map['boardFilename'] }">
+							<a href=
+	"<c:url value='/userBoard/fileDownload.do?bStorageNo=${map["bStorageNo"] }&boardFilename=${map["boardFilename"] }'/>">
+								<img alt="파일이미지" src="<c:url value='/resources/aptUser_images/file.gif'/>">
+									${map['boardOriginalFilename'] }&nbsp;(${map['boardFilesize']/1000 }KB)
+							</a>
+						</c:if>
+					</td>
 				</tr>
 			</table>
 			<div class="boardContent" style="overflow: auto;">${map['boardContent'] }</div>

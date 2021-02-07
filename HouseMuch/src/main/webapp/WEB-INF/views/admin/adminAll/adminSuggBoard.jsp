@@ -2,17 +2,9 @@
 	pageEncoding="UTF-8"%>
 <%@ include file="../adminInc/adminTop.jsp"%>
 
-<style type="text/css">
-button.btn.btn-primary.waves-effect.waves-float.waves-light {
-	margin-top: 10px;
-}
-
+<style>
 .table-responsive {
 	text-align: center;
-}
-
-.row .col-12 .card  .center-block {
-	display: table;
 }
 </style>
 
@@ -51,12 +43,14 @@ button.btn.btn-primary.waves-effect.waves-float.waves-light {
 	}
 </script>
 
-<form action="<c:url value='/admin/adminAll/adminBoardCtg.do'/>"
+
+<form action="<c:url value='/admin/adminAll/adminSuggBoard.do'/>"
 	name="frmPage" method="post">
 	<input type="hidden" name="currentPage"> <input type="hidden"
 		name="searchCondition" value="${param.searchCondition }"> <input
 		type="hidden" name="searchKeyword" value="${param.searchKeyword }">
 </form>
+
 <!-- 여기부터 -->
 <div class="app-content content ">
 	<div class="content-overlay"></div>
@@ -70,119 +64,121 @@ button.btn.btn-primary.waves-effect.waves-float.waves-light {
 			<!-- 첫번째 div -->
 			<div class="content-header-left col-md-9 col-12 mb-2">
 				<div class="col-12">
-					<h2 class="content-header-title float-left mb-0">카테고리 등록 및 조회</h2>
+					<h2 class="content-header-title float-left mb-0">건의사항 관리</h2>
 					<div class="breadcrumb-wrapper">
 						<ol class="breadcrumb">
-							<li class="breadcrumb-item"><a href="index.html">입주민 관리
+							<li class="breadcrumb-item"><a href="index.html">건의사항 관리
 									메인</a></li>
 							<li class="breadcrumb-item"><a
-								href="<c:url value='/admin/adminAll/adminBoardCtg.do'/>">
+								href="<c:url value='/admin/adminAll/adminSuggBoard.do'/>">
 									게시판 카테고리 관리</a></li>
-							<li class="breadcrumb-item active">카테고리 등록 및 조회</li>
+							<li class="breadcrumb-item active">건의사항 관리</li>
 						</ol>
 					</div>
 				</div>
 			</div>
 		</div>
-
-		<!-- 카드 시작 -->
 		<div class="row" id="table-head">
 			<div class="col-12">
 				<div class="card" style="align: right">
-					<div class="col-sm-12 mt-1">
-						<h4 class="card-title">카테고리 등록</h4>
+					<div class="card-header">
+						<h4 class="card-title">아파트 건의게시판 답변 등록 및 조회</h4>
 					</div>
 					<div class="card-body p-0">
-						<!--  <p class="card-text">
-                              Similar to tables and dark tables, use the modifier classes
-                              <code class="highlighter-rouge">.thead-dark</code> to make
-                              <code class="highlighter-rouge">&lt;thead&gt;</code>s appear dark.
-                        </p> -->
-						<div class="col-sm-12 mb-1 p-0">
+						<!--                <p class="card-text">
+                                    Similar to tables and dark tables, use the modifier classes
+                                    <code class="highlighter-rouge">.thead-dark</code> to make
+                                    <code class="highlighter-rouge">&lt;thead&gt;</code>s appear dark.
+                                </p> -->
+
+						<div class="col-12 mb-1 p-0">
 							<!-- 기본 Select -->
-							<div class="col-md-6 col-12 mb-1">
-								<div class="col-12">
-									<form class="needs-validation" novalidate method="post"
-										action="<c:url value='/admin/adminAll/adminBoardCtgInsert.do'/>">
-										<input type="text" class="form-control" name="boardCtgName"
-											id="validationTooltip01" placeholder="카테고리명을 입력하세요."
-											value="${param.boardCtgName }" required />
-										<button class="btn btn-primary" id="btSubmit" type="submit">등록</button>
-									</form>
+							<div class="col-md-2 col-6 mb-1 float-left">
+								<div class="form-group">
+									<!-- <label for="basicSelect">분류</label> -->
+									<select class="form-control" id="basicSelect" name="suggCtgNo">
+										<option value="">건의 분류</option>
+										<!-- 게시판 카테고리 반복문 시작 -->
+										<c:if test="${!empty scList }">
+											<c:forEach var="scVo" items="${scList }">
+												<option value="${scVo.suggCtgNo }">${scVo.suggCtgName }
+												</option>
+											</c:forEach>
+											<!-- 게시판 카테고리 반복문 끝 -->
+										</c:if>
+									</select>
 								</div>
 							</div>
-							<div class="col-md-6 col-12 mt-1">
-								<h4 class="card-title">카테고리 조회</h4>
-							</div>
-							<!-- 여기가 검색창 -->
-							<div class="col-md-6 col-12 mb-1 p-0">
-								<div class="col-md-6 col-12 mb-1 float-left">
-									<form class="needs-validation" novalidate method="post"
-										action="<c:url value='/admin/adminAll/adminBoardCtg.do'/>">
-										<div class="input-group">
-											<input type="text" class="form-control"
-												value="${param.searchKeyword }" id="searchKeyword"
-												name="searchKeyword" placeholder="검색어를 입력하세요"
-												aria-label="Amount" />
-											<div class="input-group-prepend">
-												<button class="btn btn-outline-primary" id="btSearchSubmit"
-													type="submit">
-													<i data-feather="search" style="box-sizing: border-box;"></i>
-												</button>
-											</div>
-									</form>
+							<!-- 기본 Select -->
+							<!-- 여기다 검색창 -->
+							<div class="col-md-4 col-6 mb-1 float-left">
+								<div class="input-group">
+
+									<input type="text" class="form-control"
+										placeholder="검색어를 입력하세요" aria-label="Amount" />
+									<div class="input-group-prepend">
+										<button class="btn btn-outline-primary" type="button">
+											<i data-feather="search" style="box-sizing: border-box;"></i>
+										</button>
+									</div>
 								</div>
 							</div>
+
 						</div>
 					</div>
 					<!-- 여기다 검색창 : 끝 -->
 					<!-- 테이블시작 -->
 
-					<div class="table-responsive">
+					<div class="table-responsive" style="margin-top: 30px;">
 						<table class="table">
 							<thead class="thead-dark"
 								style="background-color: #0E515F; color: #fff; font-size: 1.2em; font-weight: 200;">
 								<tr>
-									<th><input type="checkbox" id="chkAll" /></th>
+									<th scope="col"><input type="checkbox" id="chkAll" /></th>
 									<th class="font-medium-1 text-center">번호</th>
-									<th class="font-medium-1 text-center">카테고리 이름</th>
 									<th class="font-medium-1 text-center">분류</th>
+									<th class="font-medium-1 text-center">제목</th>
+									<th class="font-medium-1 text-center">작성일</th>
+									<th class="font-medium-1 text-center">글쓴이</th>
+									<th class="font-medium-1 text-center">답변일</th>
+									<th class="font-medium-1 text-center">처리</th>
 								</tr>
 							</thead>
-							<tbody class="ctgTbody">
-								<c:if test="${empty ctgList }">
-									<td colspan="4">등록된 카테고리가 없습니다.</td>
-								</c:if>
+							<tbody>
 								<!-- 레코드반복시작 -->
-								<c:if test="${!empty ctgList }">
-									<c:forEach var="vo" items="${ctgList }">
+								<!-- DB 없을 때 -->
+								<c:if test="${empty suggList }">
+									<tr>
+										<td colspan="7">데이터가 존재하지 않습니다.</td>
+									</tr>
+								</c:if>
+								<!-- DB 있을 때 -->
+								<c:if test="${!empty suggList }">
+									<!--게시판 내용 반복문 시작  -->
+									<c:forEach var="map" items="${suggList }">
+										<c:set var="suggBoardNo" value="${map['SUGG_BOARD_NO'] }" />
 										<tr>
 											<td><input type="checkbox" name="chk" id="chk" /></td>
-											<td><span class="font-weight-bold"></span>
-												${vo.boardCtgNo }</td>
-											<td>
-												<!--<span class="badge badge-pill badge-light-primary mr-1">Active</span> -->
-												${vo.boardCtgName }
-											</td>
-											<!-- 포인트다 여기서 수정/삭제 가능 -->
-											<td>
-												<div class="dropdown">
-													<button type="button"
-														class="btn btn-sm dropdown-toggle hide-arrow"
-														data-toggle="dropdown">
-														<i data-feather="more-vertical"></i>
-													</button>
-													<div class="dropdown-menu">
-														<a class="dropdown-item" href="javascript:void(0);"> <i
-															data-feather="edit-2" class="mr-50"></i> <span>Edit</span>
-														</a> <a class="dropdown-item" href="javascript:void(0);">
-															<i data-feather="trash" class="mr-50"></i> <span>Delete</span>
-														</a>
-													</div>
-												</div>
-											</td>
+											<td>${map['SUGG_BOARD_NO'] }</td>
+											<td>${map['SUGG_CTG_NAME'] }</td>
+											<td><a
+												href="<c:url value='/suggestBoard/suggestBoardDetail.do?suggBoardNo=${suggBoardNo }'/>"
+												style="color: black;"> ${map['SUGG_TITLE'] }</a></td>
+											<td><fmt:formatDate value="${map['SUGG_REGDATE'] }"
+													pattern="yyyy-MM-dd" /></td>
+											<td>${map['MEMBER_NAME'] }</td>
+											<c:if test="${!empty map['ANSW_NO']}">
+												<td><fmt:formatDate value="${map['ANSW_REGDATE'] }"
+														pattern="yyyy-MM-dd" /></td>
+												<td>처리완료</td>
+											</c:if>
+											<c:if test="${empty map['ANSW_NO']}">
+												<td>미처리</td>
+												<td>미처리</td>
+											</c:if>
 										</tr>
 									</c:forEach>
+									<!--게시판 내용 반복처리 끝  -->
 								</c:if>
 								<!-- 레코드반복 -->
 							</tbody>
@@ -197,24 +193,25 @@ button.btn.btn-primary.waves-effect.waves-float.waves-light {
 							<ul class="pagination justify-content-center mt-2">
 								<c:if test="${pagingInfo.firstPage>1 }">
 									<li class="page-item prev"><a class="page-link" href="#"
-						onclick="pageFunc(${pagingInfo.firstPage-1})"></a></li>
+										onclick="pageFunc(${pagingInfo.firstPage-1})"></a></li>
 								</c:if>
 								<!-- [1][2][3][4][5][6][7][8][9][10] -->
 								<c:forEach var="i" begin="${pagingInfo.firstPage }"
 									end="${pagingInfo.lastPage }">
 									<c:if test="${i==pagingInfo.currentPage }">
 										<li class="page-item active"><a class="page-link"
-							href="javascript:void(0);" style="background-color: #2FA599;"> ${i}</a></li>
+											href="javascript:void(0);" style="background-color: #2FA599;">
+												${i}</a></li>
 									</c:if>
 									<c:if test="${i!=pagingInfo.currentPage }">
 										<li class="page-item"><a href="#" class="page-link"
-							onclick="pageFunc(${i})">${i }</a>
+											onclick="pageFunc(${i})">${i }</a>
 									</c:if>
 								</c:forEach>
 								<!-- 다음 블럭으로 이동 -->
 								<c:if test="${pagingInfo.lastPage<pagingInfo.totalPage }">
 									<li class="page-item next"><a class="page-link" href="#"
-						onclick="pageFunc(${pagingInfo.lastPage+1})"></a></li>
+										onclick="pageFunc(${pagingInfo.lastPage+1})"></a></li>
 								</c:if>
 							</ul>
 						</nav>
@@ -232,5 +229,6 @@ button.btn.btn-primary.waves-effect.waves-float.waves-light {
 	<!-- content-wrapper -->
 </div>
 <!-- app-content content -->
+
 
 <%@ include file="../adminInc/adminBottom.jsp"%>

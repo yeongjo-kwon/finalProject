@@ -66,6 +66,27 @@ public class UserBoardServiceImpl implements UserBoardService{
 	public int userBoardFileUpload(UserBoardVO vo) {
 		return userBoardDao.userBoardFileUpload(vo);
 	}
+
+	@Override
+	public int updateUserBoard(UserBoardVO vo) {
+		return userBoardDao.updateUserBoard(vo);
+	}
+
+	@Override
+	public int updateFileUpload(UserBoardVO vo) {
+		//파일업로드 테이블에 있는지 체크
+		int cnt=userBoardDao.selectByNoBoardStorage(vo.getBoardNo());
+		
+		int result=0;
+		if(cnt>0) { //기존에 있으면 업데이트
+			result=userBoardDao.updateFileUpload(vo);
+		}else { //없으면 추가
+			result=userBoardDao.userBoardFileUpload(vo);
+		}
+		
+		return result;
+	}
+
 	
 	
 }

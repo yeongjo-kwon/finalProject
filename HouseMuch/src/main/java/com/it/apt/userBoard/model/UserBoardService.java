@@ -17,5 +17,7 @@ public interface UserBoardService {
 	int deleteUserBoard(int boardNo);
 	int updateBoardReadcount(int boardNo);
 	int userBoardFileUpload(UserBoardVO vo);
+	int updateUserBoard(UserBoardVO vo);
+	int updateFileUpload(UserBoardVO vo);
 	
 }

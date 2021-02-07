@@ -17,5 +17,8 @@ public interface UserBoardDAO {
 	int deleteUserBoard(int boardNo);
 	int updateBoardReadcount(int boardNo);
 	int userBoardFileUpload(UserBoardVO vo);
+	int updateUserBoard(UserBoardVO vo);
+	int updateFileUpload(UserBoardVO vo);
+	int selectByNoBoardStorage(int boardNo);
 	
 }
