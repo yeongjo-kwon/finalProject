@@ -150,7 +150,9 @@
 	<!-- 관리비 청구리스트 출력 -->
 	<select id="selectMngcostOrderList" parameterType="int"
 			resultType="hashMap">
-		SELECT I.*, NVL(COMPLETE, '청구대기') ISORDER
+		SELECT I.YM,
+       		   TO_CHAR(I.TPRICE, '999,999,999,999,999')||'원' TPRICE,
+       		   NVL(COMPLETE, '청구대기') ISORDER
 		FROM(
 		    SELECT TO_CHAR(MNGCOST_USEDATE, 'YYYY-MM') YM,
 		            SUM(MNGCOST_PRICE) TPRICE
@@ -188,12 +190,7 @@
 						          FROM APARTMENT_INFO
 						          WHERE APT_NO=#{aptNo})),
 		       #{mngcostLimitdate},
-		       <if test="mngcostClaimdate!=null">
-		       		#{mngcostClaimdate}
-		       </if>
-		       <if test="mngcostClaimdate==null">
-		       		SYSDATE
-		       </if>
+		       #{mngcostClaimdate}
 		FROM (
 		    SELECT H.HOUSEHOLD_CODE,
 		    	   APT_NO, NVL(TOTAL, 0) APRICE
@@ -216,16 +213,16 @@
         ORDER BY DONG DESC
 	</select>
 	
-	<select id="selectMyHoList" parameterType="householdVo" resultType="string">
+	<select id="selectMyHoList" parameterType="int" resultType="string">
 		SELECT DISTINCT HO
         FROM HOUSEHOLD_INFO
         WHERE APT_NO=#{aptNo}
         AND AUTH_CODE='RESIDENT'
-       	AND DONG=#{dong}
-        ORDER BY DONG DESC
+        ORDER BY HO DESC
 	</select>
 	
-	<select id="">
+	<select id="selectMngcostPaymentList" parameterType="householdVo"
+			resultType="hashMap">
 		SELECT MNGCOST_LIST_NO,
 		       DONG,
 		       HO,
@@ -239,13 +236,16 @@
 		WHERE L.HOUSEHOLD_CODE
 		    IN (SELECT HOUSEHOLD_CODE
 		        FROM HOUSEHOLD_INFO
-		        WHERE APT_NO=1
+		        WHERE APT_NO=#{aptNo}
 		        AND AUTH_CODE='RESIDENT')
-		<if test="dong!=null and dong!=''">
-			AND DONG=5
+		<if test='dong!=null and dong!="" and dong!="0"'>
+			AND DONG=#{dong}
 		</if>
-		<if test="ho!=null and ho!=''">
-			AND HO=5
+		<if test='ho!=null and ho!="" and ho!="0"'>
+			AND HO=#{ho}
+		</if>
+		<if test='authCode=="Y"'>
+			AND MNGCOST_PAYDATE IS NULL
 		</if>
 		ORDER BY MNGCOST_CLAIMDATE DESC
 	</select>

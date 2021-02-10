@@ -43,7 +43,6 @@
 			}else if($('#mngcostLimitdate').val() <= currDate){
 				alert("납부기한은 청구일 다음 날부터 선택 가능합니다")
 			}else if($('#startdate').val() < agoMonth){
-				
 				if(confirm("청구 기한이 지난 내역입니다. 사용월 기준 다음 달 말일로 청구를 진행시겠습니까?")){
 					uMonth=$('#startdate').val().split('-');
 					var d3=new Date(uMonth[0], uMonth[1], 0);
@@ -52,7 +51,10 @@
 					
 					$('#frmMngcostPayOrder').submit();
 				}
-			}else $('#frmMngcostPayOrder').submit();
+			}else{
+				$('#mngcostClaimdate').val(formatDate(new Date()));
+				$('#frmMngcostPayOrder').submit();
+			}
 		});
 	});
 	

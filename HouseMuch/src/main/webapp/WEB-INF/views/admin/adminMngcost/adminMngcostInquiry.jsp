@@ -48,6 +48,7 @@
 			if($(this).val().length==0){
 				$('#startdate').val("");
 				$('#btOrder').addClass('disableButton');
+				$('#btOrder').prop("disabled", true);
 			}
 		});
 		

@@ -14,6 +14,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -283,22 +284,29 @@ public class AdminMngcostController {
 		logger.info("세대별 납부내역 조회화면");
 		
 		MemberVO memVo=(MemberVO)session.getAttribute("memVo");
-		List<String> dongList=mngcostService.selectMyDongList(memberService.selectAptNo(memVo.getId()));
+		int aptNo=memberService.selectAptNo(memVo.getId());
+		
+		List<String> dongList=mngcostService.selectMyDongList(aptNo);
 		logger.info("동 리스트 조회 결과 dongList={}", dongList);
 		
-		model.addAttribute("dongList", dongList);
-	}
-	
-	@RequestMapping("/showHoList.do")
-	public List<String> showHoLIst(@ModelAttribute HouseholdVO householdVo, HttpSession session) {
-		MemberVO memVo=(MemberVO)session.getAttribute("memVo");
-		
-		householdVo.setAptNo(memberService.selectAptNo(memVo.getId()));
-		logger.info("호 리스트 조회, 아파트 번호 추가 후 파라미터 householdVo={}", householdVo);
-		
-		List<String> hoList=mngcostService.selectMyHoList(householdVo);
+		List<String> hoList=mngcostService.selectMyHoList(aptNo);
 		logger.info("호 리스트 조회 결과 hoList={}", hoList);
 		
-		return hoList;
+		model.addAttribute("dongList", dongList);
+		model.addAttribute("hoList", hoList);
+	}
+	
+	@ResponseBody
+	@RequestMapping("/amdinPayListInq.do")
+	public List<Map<String, Object>> amdinPayListInq(@ModelAttribute HouseholdVO householdVo,
+			HttpSession session) {
+		MemberVO memVo=(MemberVO)session.getAttribute("memVo");
+		householdVo.setAptNo(memberService.selectAptNo(memVo.getId()));
+		logger.info("관리자 관리비 청구 조회, 아파트 번호 추가 후 파라미터 householdVo={}", householdVo);
+		
+		List<Map<String, Object>> payList=mngcostService.selectMngcostPaymentList(householdVo);
+		logger.info("관리자 관리비 청구 내역 조회 결과 payList={}", payList);
+		
+		return payList;
 	}
 }

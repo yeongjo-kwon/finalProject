@@ -5,31 +5,66 @@
 <script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/yeongjoJs/yjInquiryAjax.js"></script>
 <script type="text/javascript">
 	$(function(){
-		$('select[name="dong"]').change(function(){
-			alert($(this).val());
-			$.ajax({
-				url:"<c:url value='/admin/adminMngcost/showHoList.do'/>",
-				type:"get",
-				data:"dong="+$(this).val(),
-				dataType:"json",
-				success:function(res){
-					if(res.length>0){
-						var str="<option value='0'>호수를 입력하세요</option>";
-						$.each(res, function(idx, item){
-							str+="<option value='"+item.ho+"'>"+item.ho+"호</option>";
-						});
-						$('select[name=ho]').html(str);
-					}
-				},
-				error:function(xhr, status, error){
-					alert("error : "+error);
-				}
-			});
+		payListInqAjax();
+		
+		$('#customSwitch10').change(function(){
+			if($('#notPaid').val()=="Y"){
+				$('#notPaid').val("N");
+			}else if($('#notPaid').val()=="N"){
+				$('#notPaid').val("Y");
+			}
+			
+			payListInqAjax();
 		});
 		
-		$('#customSwitch10').click(function(){
+		$('#btPayListSearch').click(function(){
+			payListInqAjax();
 		});
 	});
+	
+	function payListInqAjax(){
+		$.ajax({
+			url:"<c:url value='/admin/adminMngcost/amdinPayListInq.do'/>",
+			type:"post",
+			data:$('#frmPayListInq').serialize(),
+			dataType:"json",
+			success:function(res){
+				if(res.length>0){
+					var str="";
+					$.each(res, function(idx, item){
+						str+="<tr><td>"+item.MNGCOST_LIST_NO+"</td>";
+						str+="<td>"+formatDate(item.MNGCOST_CLAIMDATE)+"</td>";
+						str+="<td>"+item.DONG+"</td>";
+						str+="<td>"+item.HO+"</td>";
+						str+="<td class='text-right'>"+numFormat(item.MNGCOST_TOTAL_PRICE)+"원</td>";
+						str+="<td>"+formatDate(item.MNGCOST_LIMITDATE)+"</td> <td>";
+						if(item.MNGCOST_PAYDATE==null){
+							str+="<div class='avatar pull-up my-0'><a href='#' class='btn btn-warning'>미납</a></div>";
+						}else{
+							str+=formatDate(item.MNGCOST_PAYDATE);
+						}
+						str+="</td></tr>";
+					});
+					
+					$('#tbPayList').html(str);
+				}
+			},
+			error:function(xhr, status, error){
+				alert("error : "+error)
+			}
+		});
+	};
+	
+	function formatDate(date) {
+	    var d = new Date(date),
+	        year = d.getFullYear(),
+	        month = '' + (d.getMonth() + 1),
+	        day = '' + d.getDate();
+	    if (month.length < 2) month = '0' + month;
+	    if (day.length < 2) day = '0' + day;
+		
+	    return [year, month, day].join('-');
+	};
 </script>
 	<!-- BEGIN: Content-->
 	<div class="app-content content ">
@@ -55,10 +90,6 @@
          </div>
          <div class="content-header-right text-md-right col-md-3 col-12 d-md-block d-none">
            <div class="form-group breadcrumb-right">
-             <div class="dropdown">
-               <button class="btn-icon btn btn-primary btn-round btn-sm dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i data-feather="grid"></i></button>
-               <div class="dropdown-menu dropdown-menu-right"><a class="dropdown-item" href="app-todo.html"><i class="mr-1" data-feather="check-square"></i><span class="align-middle">Todo</span></a><a class="dropdown-item" href="app-chat.html"><i class="mr-1" data-feather="message-square"></i><span class="align-middle">Chat</span></a><a class="dropdown-item" href="app-email.html"><i class="mr-1" data-feather="mail"></i><span class="align-middle">Email</span></a><a class="dropdown-item" href="app-calendar.html"><i class="mr-1" data-feather="calendar"></i><span class="align-middle">Calendar</span></a></div>
-             </div>
            </div>
          </div>
        </div>
@@ -73,6 +104,7 @@
 		        <p class="card-text">
 		        	세대별 납부현황을 조회할 수 있습니다
 		        </p>
+		        <div></div>
 		        <div class="custom-control custom-switch custom-switch-primary float-right">미납내역만 보기&nbsp;
 	              <input type="checkbox" class="custom-control-input" id="customSwitch10" checked />
 	              <label class="custom-control-label" for="customSwitch10">
@@ -80,352 +112,94 @@
 	                <span class="switch-icon-right"><i data-feather="x"></i></span>
 	              </label>
 	            </div>
-	            <div class="col-md-12 mb-1 row">
-	            <div class="col-6">
-            	  <label>동</label>
-	              <select class="select2 form-control form-control-lg" name="dong" id="dong">
-	                <option value="0">동수를 입력하세요</option>
-	                <c:forEach var="dong" items="${dongList}">
-						<option value="${dong}">${dong}동</option>	                
-	                </c:forEach>
-	              </select>
-	            </div>
-	              
-	            <div class="col-6">
-	              <label>호</label>
-	              <select class="select2 form-control form-control-lg" name="ho">
-	                <option value="0">호수를 입력하세요</option>
-	              </select>
-	            </div>
-	            </div>
+	            
+	            <form action="#" id="frmPayListInq" method="post">
+		            <div class="col-md-12 mb-1 row">
+			            <div class="col-5">
+		            	  <label>동</label>
+			              <select class="select2 form-control form-control-lg" name="dong" id="dong">
+			                <option value="0">동수를 입력하세요</option>
+			                <c:forEach var="dong" items="${dongList}">
+								<option value="${dong}">${dong}동</option>	                
+			                </c:forEach>
+			              </select>
+			            </div>
+			            <div class="col-5">
+			              <label>호</label>
+			              <select class="select2 form-control form-control-lg" name="ho" id="ho">
+			                <option value="0">호수를 입력하세요</option>
+			                <c:forEach var="ho" items="${hoList}">
+								<option value="${ho}">${ho}호</option>	                
+			                </c:forEach>
+			              </select>
+			            </div>
+			            <div class="col-2" style="margin-top:22px">
+			            	<a class="btn btn-outline-primary" id="btPayListSearch">
+			            		<i data-feather='search'></i>
+			            	</a>
+			            </div>
+			            <!-- 편의상 authCode에 담는 미납내역필터유무 -->
+			            <input type="hidden" name="authCode" id="notPaid" value="Y">
+		            </div>
+	            </form>
 		      </div>
 		      <div class="table-responsive">
-		        <table class="table">
+		        <table class="table text-center">
+			      <colgroup>
+					  <col style="width:5%;" />
+					  <col style="width:10%;" />
+					  <col style="width:5%;" />
+					  <col style="width:5%;" />
+					  <col style="width:25%;" />
+					  <col style="width:10%;" />
+					  <col style="width:10%;" />
+				  </colgroup>
 		          <thead class="thead-light">
 		            <tr>
-		              <th>Project</th>
-		              <th>Client</th>
-		              <th>Users</th>
-		              <th>Status</th>
-		              <th>Actions</th>
+		              <th>#</th>
+		              <th>청구일</th>
+		              <th>동</th>
+		              <th>호</th>
+		              <th>청구 금액</th>
+		              <th>납부 기한</th>
+		              <th>납부일</th>
 		            </tr>
 		          </thead>
-		          <tbody>
-		            <tr>
-		              <td>
-		                <span class="font-weight-bold">Angular Project</span>
-		              </td>
-		              <td>Peter Charls</td>
-		              <td>
-		                <div class="avatar-group">
-		                  <div
-		                    data-toggle="tooltip"
-		                    data-popup="tooltip-custom"
-		                    data-placement="top"
-		                    title=""
-		                    class="avatar pull-up my-0"
-		                    data-original-title="Lilian Nenez"
-		                  >
-		                    <img
-		                      src="../../../app-assets/images/portrait/small/avatar-s-5.jpg"
-		                      alt="Avatar"
-		                      height="26"
-		                      width="26"
-		                    />
-		                  </div>
-		                  <div
-		                    data-toggle="tooltip"
-		                    data-popup="tooltip-custom"
-		                    data-placement="top"
-		                    title=""
-		                    class="avatar pull-up my-0"
-		                    data-original-title="Alberto Glotzbach"
-		                  >
-		                    <img
-		                      src="../../../app-assets/images/portrait/small/avatar-s-6.jpg"
-		                      alt="Avatar"
-		                      height="26"
-		                      width="26"
-		                    />
-		                  </div>
-		                  <div
-		                    data-toggle="tooltip"
-		                    data-popup="tooltip-custom"
-		                    data-placement="top"
-		                    title=""
-		                    class="avatar pull-up my-0"
-		                    data-original-title="Alberto Glotzbach"
-		                  >
-		                    <img
-		                      src="../../../app-assets/images/portrait/small/avatar-s-7.jpg"
-		                      alt="Avatar"
-		                      height="26"
-		                      width="26"
-		                    />
-		                  </div>
-		                </div>
-		              </td>
-		              <td><span class="badge badge-pill badge-light-primary mr-1">Active</span></td>
-		              <td>
-		                <div class="dropdown">
-		                  <button type="button" class="btn btn-sm dropdown-toggle hide-arrow" data-toggle="dropdown">
-		                    <i data-feather="more-vertical"></i>
-		                  </button>
-		                  <div class="dropdown-menu">
-		                    <a class="dropdown-item" href="javascript:void(0);">
-		                      <i data-feather="edit-2" class="mr-50"></i>
-		                      <span>Edit</span>
-		                    </a>
-		                    <a class="dropdown-item" href="javascript:void(0);">
-		                      <i data-feather="trash" class="mr-50"></i>
-		                      <span>Delete</span>
-		                    </a>
-		                  </div>
-		                </div>
-		              </td>
-		            </tr>
-		            <tr>
-		              <td>
-		                <img
-		                  src="../../../app-assets/images/icons/react.svg"
-		                  class="mr-75"
-		                  height="20"
-		                  width="20"
-		                  alt="React"
-		                />
-		                <span class="font-weight-bold">React Project</span>
-		              </td>
-		              <td>Ronald Frest</td>
-		              <td>
-		                <div class="avatar-group">
-		                  <div
-		                    data-toggle="tooltip"
-		                    data-popup="tooltip-custom"
-		                    data-placement="top"
-		                    title=""
-		                    class="avatar pull-up my-0"
-		                    data-original-title="Lilian Nenez"
-		                  >
-		                    <img
-		                      src="../../../app-assets/images/portrait/small/avatar-s-5.jpg"
-		                      alt="Avatar"
-		                      height="26"
-		                      width="26"
-		                    />
-		                  </div>
-		                  <div
-		                    data-toggle="tooltip"
-		                    data-popup="tooltip-custom"
-		                    data-placement="top"
-		                    title=""
-		                    class="avatar pull-up my-0"
-		                    data-original-title="Alberto Glotzbach"
-		                  >
-		                    <img
-		                      src="../../../app-assets/images/portrait/small/avatar-s-6.jpg"
-		                      alt="Avatar"
-		                      height="26"
-		                      width="26"
-		                    />
-		                  </div>
-		                  <div
-		                    data-toggle="tooltip"
-		                    data-popup="tooltip-custom"
-		                    data-placement="top"
-		                    title=""
-		                    class="avatar pull-up my-0"
-		                    data-original-title="Alberto Glotzbach"
-		                  >
-		                    <img
-		                      src="../../../app-assets/images/portrait/small/avatar-s-7.jpg"
-		                      alt="Avatar"
-		                      height="26"
-		                      width="26"
-		                    />
-		                  </div>
-		                </div>
-		              </td>
-		              <td><span class="badge badge-pill badge-light-success mr-1">Completed</span></td>
-		              <td>
-		                <div class="dropdown">
-		                  <button type="button" class="btn btn-sm dropdown-toggle hide-arrow" data-toggle="dropdown">
-		                    <i data-feather="more-vertical"></i>
-		                  </button>
-		                  <div class="dropdown-menu">
-		                    <a class="dropdown-item" href="javascript:void(0);">
-		                      <i data-feather="edit-2" class="mr-50"></i>
-		                      <span>Edit</span>
-		                    </a>
-		                    <a class="dropdown-item" href="javascript:void(0);">
-		                      <i data-feather="trash" class="mr-50"></i>
-		                      <span>Delete</span>
-		                    </a>
-		                  </div>
-		                </div>
-		              </td>
-		            </tr>
-		            <tr>
-		              <td>
-		                <img
-		                  src="../../../app-assets/images/icons/vuejs.svg"
-		                  class="mr-75"
-		                  height="20"
-		                  width="20"
-		                  alt="Vuejs"
-		                />
-		                <span class="font-weight-bold">Vuejs Project</span>
-		              </td>
-		              <td>Jack Obes</td>
-		              <td>
-		                <div class="avatar-group">
-		                  <div
-		                    data-toggle="tooltip"
-		                    data-popup="tooltip-custom"
-		                    data-placement="top"
-		                    title=""
-		                    class="avatar pull-up my-0"
-		                    data-original-title="Lilian Nenez"
-		                  >
-		                    <img
-		                      src="../../../app-assets/images/portrait/small/avatar-s-5.jpg"
-		                      alt="Avatar"
-		                      height="26"
-		                      width="26"
-		                    />
-		                  </div>
-		                  <div
-		                    data-toggle="tooltip"
-		                    data-popup="tooltip-custom"
-		                    data-placement="top"
-		                    title=""
-		                    class="avatar pull-up my-0"
-		                    data-original-title="Alberto Glotzbach"
-		                  >
-		                    <img
-		                      src="../../../app-assets/images/portrait/small/avatar-s-6.jpg"
-		                      alt="Avatar"
-		                      height="26"
-		                      width="26"
-		                    />
-		                  </div>
-		                  <div
-		                    data-toggle="tooltip"
-		                    data-popup="tooltip-custom"
-		                    data-placement="top"
-		                    title=""
-		                    class="avatar pull-up my-0"
-		                    data-original-title="Alberto Glotzbach"
-		                  >
-		                    <img
-		                      src="../../../app-assets/images/portrait/small/avatar-s-7.jpg"
-		                      alt="Avatar"
-		                      height="26"
-		                      width="26"
-		                    />
-		                  </div>
-		                </div>
-		              </td>
-		              <td><span class="badge badge-pill badge-light-info mr-1">Scheduled</span></td>
-		              <td>
-		                <div class="dropdown">
-		                  <button type="button" class="btn btn-sm dropdown-toggle hide-arrow" data-toggle="dropdown">
-		                    <i data-feather="more-vertical"></i>
-		                  </button>
-		                  <div class="dropdown-menu">
-		                    <a class="dropdown-item" href="javascript:void(0);">
-		                      <i data-feather="edit-2" class="mr-50"></i>
-		                      <span>Edit</span>
-		                    </a>
-		                    <a class="dropdown-item" href="javascript:void(0);">
-		                      <i data-feather="trash" class="mr-50"></i>
-		                      <span>Delete</span>
-		                    </a>
-		                  </div>
-		                </div>
-		              </td>
-		            </tr>
-		            <tr>
-		              <td>
-		                <img
-		                  src="../../../app-assets/images/icons/bootstrap.svg"
-		                  class="mr-75"
-		                  height="20"
-		                  width="20"
-		                  alt="Bootstrap"
-		                />
-		                <span class="font-weight-bold">Bootstrap Project</span>
-		              </td>
-		              <td>Jerry Milton</td>
-		              <td>
-		                <div class="avatar-group">
-		                  <div
-		                    data-toggle="tooltip"
-		                    data-popup="tooltip-custom"
-		                    data-placement="top"
-		                    title=""
-		                    class="avatar pull-up my-0"
-		                    data-original-title="Lilian Nenez"
-		                  >
-		                    <img
-		                      src="../../../app-assets/images/portrait/small/avatar-s-5.jpg"
-		                      alt="Avatar"
-		                      height="26"
-		                      width="26"
-		                    />
-		                  </div>
-		                  <div
-		                    data-toggle="tooltip"
-		                    data-popup="tooltip-custom"
-		                    data-placement="top"
-		                    title=""
-		                    class="avatar pull-up my-0"
-		                    data-original-title="Alberto Glotzbach"
-		                  >
-		                    <img
-		                      src="../../../app-assets/images/portrait/small/avatar-s-6.jpg"
-		                      alt="Avatar"
-		                      height="26"
-		                      width="26"
-		                    />
-		                  </div>
-		                  <div
-		                    data-toggle="tooltip"
-		                    data-popup="tooltip-custom"
-		                    data-placement="top"
-		                    title=""
-		                    class="avatar pull-up my-0"
-		                    data-original-title="Alberto Glotzbach"
-		                  >
-		                    <img
-		                      src="../../../app-assets/images/portrait/small/avatar-s-7.jpg"
-		                      alt="Avatar"
-		                      height="26"
-		                      width="26"
-		                    />
-		                  </div>
-		                </div>
-		              </td>
-		              <td><span class="badge badge-pill badge-light-warning mr-1">Pending</span></td>
-		              <td>
-		                <div class="dropdown">
-		                  <button type="button" class="btn btn-sm dropdown-toggle hide-arrow" data-toggle="dropdown">
-		                    <i data-feather="more-vertical"></i>
-		                  </button>
-		                  <div class="dropdown-menu">
-		                    <a class="dropdown-item" href="javascript:void(0);">
-		                      <i data-feather="edit-2" class="mr-50"></i>
-		                      <span>Edit</span>
-		                    </a>
-		                    <a class="dropdown-item" href="javascript:void(0);">
-		                      <i data-feather="trash" class="mr-50"></i>
-		                      <span>Delete</span>
-		                    </a>
-		                  </div>
-		                </div>
-		              </td>
-		            </tr>
+		          <tbody id="tbPayList">
+		            <!-- 조회 결과 -->
 		          </tbody>
 		        </table>
+		        <!-- 페이저-->
+				<!-- 이전 블럭으로 이동 -->
+				<div class="center-block" style="clear: both; margin: 0 auto;">
+					<nav aria-label="Page navigation">
+						<ul class="pagination justify-content-center mt-2">
+							<c:if test="${pagingInfo.firstPage>1}">
+								<li class="page-item prev"><a class="page-link" href="#"
+									onclick="pageFunc(${pagingInfo.firstPage-1})"></a></li>
+							</c:if>
+							<!-- [1][2][3][4][5][6][7][8][9][10] -->
+							<c:forEach var="i" begin="${pagingInfo.firstPage}"
+									end="${pagingInfo.lastPage}">
+								<c:if test="${i==pagingInfo.currentPage}">
+									<li class="page-item active"><a class="page-link"
+										href="javascript:void(0);" style="background-color: #2FA599;">
+											${i}</a></li>
+								</c:if>
+								<c:if test="${i!=pagingInfo.currentPage}">
+									<li class="page-item"><a href="#" class="page-link"
+										onclick="pageFunc(${i})">${i}</a>
+								</c:if>
+							</c:forEach>
+							<!-- 다음 블럭으로 이동 -->
+							<c:if test="${pagingInfo.lastPage<pagingInfo.totalPage}">
+								<li class="page-item next"><a class="page-link" href="#"
+									onclick="pageFunc(${pagingInfo.lastPage+1})"></a></li>
+							</c:if>
+						</ul>
+					</nav>
+				</div>
+				<!-- 페이저-->
 		      </div>
 		    </div>
 		  </div>
@@ -437,7 +211,3 @@
 
 <!-- ======= End About Section ======= -->
 <%@ include file="../adminInc/adminBottom.jsp"%>
-<script src="${pageContext.request.contextPath}/resources/app-assets/vendors/js/forms/repeater/jquery.repeater.min.js"></script>
-    
-    
-

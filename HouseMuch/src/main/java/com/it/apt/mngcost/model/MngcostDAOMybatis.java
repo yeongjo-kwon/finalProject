@@ -90,7 +90,12 @@ public class MngcostDAOMybatis implements MngcostDAO{
 	}
 
 	@Override
-	public List<String> selectMyHoList(HouseholdVO householdVo) {
-		return sqlSession.selectList(namespace+"selectMyHoList", householdVo);
+	public List<String> selectMyHoList(int aptNo) {
+		return sqlSession.selectList(namespace+"selectMyHoList", aptNo);
+	}
+
+	@Override
+	public List<Map<String, Object>> selectMngcostPaymentList(HouseholdVO householdVo) {
+		return sqlSession.selectList(namespace+"selectMngcostPaymentList", householdVo);
 	}
 }

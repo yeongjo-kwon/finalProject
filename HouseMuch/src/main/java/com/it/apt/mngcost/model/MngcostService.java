@@ -25,5 +25,6 @@ public interface MngcostService {
 	List<Map<String, Object>> selectMngcostOrderList(int aptNo);
 	int insertMngcostPaymentList(InquiryInfoVO inqVo);
 	List<String> selectMyDongList(int aptNo);
-	List<String> selectMyHoList(HouseholdVO householdVo);
+	List<String> selectMyHoList(int aptNo);
+	List<Map<String, Object>> selectMngcostPaymentList(HouseholdVO householdVo);
 }

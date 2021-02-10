@@ -293,7 +293,7 @@ function subMenuScroll(){
                     <ul class="menu-content">
                 
 	      		        <!-- 일반3-1 : 건의 목록-->
-	                	<li><a class="d-flex align-items-center" href="<c:url value='/admin/adminLiving/adminCar/adminCarVisit.do'/>">
+	                	<li><a class="d-flex align-items-center" href="<c:url value='/admin/adminAll/adminSuggBoard.do'/>">
 	                       <i data-feather="circle"></i><span class="menu-item" data-i18n="Shop">건의사항 관리</span></a>
 	                    </li>
 	                </ul>
@@ -453,7 +453,7 @@ function subMenuScroll(){
                         </li>
                         
                         <!-- 회계1-2 : 납입내역 조회 -->
-                        <li><a class="d-flex align-items-center" href="<c:url value='#'/>">
+                        <li><a class="d-flex align-items-center" href="<c:url value='/admin/adminMngcost/adminPaymentListInquiry.do'/>">
                         <i data-feather="circle"></i><span class="menu-item" data-i18n="Shop">납입내역 조회</span></a>
                         </li>
                     </ul>
