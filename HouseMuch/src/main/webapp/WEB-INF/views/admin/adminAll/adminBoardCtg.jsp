@@ -14,6 +14,10 @@ button.btn.btn-primary.waves-effect.waves-float.waves-light {
 .row .col-12 .card  .center-block {
 	display: table;
 }
+
+button#btSearchSubmit {
+    margin-top: 10px;
+}
 </style>
 
 <script type="text/javascript">
@@ -49,6 +53,8 @@ button.btn.btn-primary.waves-effect.waves-float.waves-light {
 		$('input[name=currentPage]').val(curPage);
 		$('form[name=frmPage]').submit();
 	}
+	
+	
 </script>
 
 <form action="<c:url value='/admin/adminAll/adminBoardCtg.do'/>"
@@ -73,7 +79,7 @@ button.btn.btn-primary.waves-effect.waves-float.waves-light {
 					<h2 class="content-header-title float-left mb-0">카테고리 등록 및 조회</h2>
 					<div class="breadcrumb-wrapper">
 						<ol class="breadcrumb">
-							<li class="breadcrumb-item"><a href="index.html">입주민 관리
+							<li class="breadcrumb-item"><a href="<c:url value='/admin/adminAll/adminAllMain.do'/>">입주민 관리
 									메인</a></li>
 							<li class="breadcrumb-item"><a
 								href="<c:url value='/admin/adminAll/adminBoardCtg.do'/>">
@@ -115,21 +121,18 @@ button.btn.btn-primary.waves-effect.waves-float.waves-light {
 								<h4 class="card-title">카테고리 조회</h4>
 							</div>
 							<!-- 여기가 검색창 -->
-							<div class="col-md-6 col-12 mb-1 p-0">
-								<div class="col-md-6 col-12 mb-1 float-left">
+							<div class="col-md-6 col-12 mb-1">
+								<div class="col-12">
 									<form class="needs-validation" novalidate method="post"
 										action="<c:url value='/admin/adminAll/adminBoardCtg.do'/>">
-										<div class="input-group">
-											<input type="text" class="form-control"
-												value="${param.searchKeyword }" id="searchKeyword"
-												name="searchKeyword" placeholder="검색어를 입력하세요"
-												aria-label="Amount" />
-											<div class="input-group-prepend">
-												<button class="btn btn-outline-primary" id="btSearchSubmit"
-													type="submit">
-													<i data-feather="search" style="box-sizing: border-box;"></i>
-												</button>
-											</div>
+										<input type="text" class="form-control"
+											value="${param.searchKeyword }" id="searchKeyword"
+											name="searchKeyword" placeholder="검색어를 입력하세요"
+											aria-label="Amount" />
+										<button class="btn btn-outline-primary" id="btSearchSubmit"
+											type="submit">
+											<i data-feather="search" style="box-sizing: border-box;"></i>
+										</button>
 									</form>
 								</div>
 							</div>
@@ -197,24 +200,25 @@ button.btn.btn-primary.waves-effect.waves-float.waves-light {
 							<ul class="pagination justify-content-center mt-2">
 								<c:if test="${pagingInfo.firstPage>1 }">
 									<li class="page-item prev"><a class="page-link" href="#"
-						onclick="pageFunc(${pagingInfo.firstPage-1})"></a></li>
+										onclick="pageFunc(${pagingInfo.firstPage-1})"></a></li>
 								</c:if>
 								<!-- [1][2][3][4][5][6][7][8][9][10] -->
 								<c:forEach var="i" begin="${pagingInfo.firstPage }"
 									end="${pagingInfo.lastPage }">
 									<c:if test="${i==pagingInfo.currentPage }">
 										<li class="page-item active"><a class="page-link"
-							href="javascript:void(0);" style="background-color: #2FA599;"> ${i}</a></li>
+											href="javascript:void(0);" style="background-color: #2FA599;">
+												${i}</a></li>
 									</c:if>
 									<c:if test="${i!=pagingInfo.currentPage }">
 										<li class="page-item"><a href="#" class="page-link"
-							onclick="pageFunc(${i})">${i }</a>
+											onclick="pageFunc(${i})">${i }</a>
 									</c:if>
 								</c:forEach>
 								<!-- 다음 블럭으로 이동 -->
 								<c:if test="${pagingInfo.lastPage<pagingInfo.totalPage }">
 									<li class="page-item next"><a class="page-link" href="#"
-						onclick="pageFunc(${pagingInfo.lastPage+1})"></a></li>
+										onclick="pageFunc(${pagingInfo.lastPage+1})"></a></li>
 								</c:if>
 							</ul>
 						</nav>

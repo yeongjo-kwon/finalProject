@@ -74,6 +74,36 @@ public class SuggestBoardDAOMybatis implements SuggestBoardDAO{
 		return sqlSession.delete(namespace+"deleteSuggestBoard",suggBoardNo);
 	}
 
+	@Override
+	public List<Map<String, Object>> suggBoardProcessedCases(SearchVO vo) {
+		return sqlSession.selectList(namespace+"suggBoardProcessedCases",vo);
+	}
+
+	@Override
+	public List<Map<String, Object>> suggBoardUnprocessedCases(SearchVO vo) {
+		return sqlSession.selectList(namespace+"suggBoardUnprocessedCases",vo);
+	}
+
+	@Override
+	public int suggBoardNotNull(SearchVO vo) {
+		return sqlSession.selectOne(namespace+"suggBoardNotNull",vo);
+	}
+
+	@Override
+	public int suggBoardNull(SearchVO vo) {
+		return sqlSession.selectOne(namespace+"suggBoardNull",vo);
+	}
+
+	@Override
+	public List<Map<String, Object>> selectAllByUserdashSugg(SearchVO vo) {
+		return sqlSession.selectList(namespace+"selectAllByUserdashSugg",vo);
+	}
+
+	@Override
+	public int selectTotalRecordUserdashSugg(SearchVO vo) {
+		return sqlSession.selectOne(namespace+"selectTotalRecordUserdashSugg",vo);
+	}
+
 
 	
 

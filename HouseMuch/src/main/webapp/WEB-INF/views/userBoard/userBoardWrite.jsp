@@ -13,6 +13,12 @@
 <script type="text/javascript" src="${pageContext.request.contextPath}/SmartEditor2/js/HuskyEZCreator.js"></script>
 <script type="text/javascript" src="//code.jquery.com/jquery-1.11.0.min.js"></script>
 
+<!-- style 작업 -->
+<style type="text/css">
+input#upfile {padding: px 0 15px 0;}
+
+</style>
+
 <!-- js 작업 -->
 <script type="text/javascript">
 $(function(){

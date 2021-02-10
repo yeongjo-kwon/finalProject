@@ -57,7 +57,7 @@
 					<td>${map['suggBoardNo'] }</td>
 					<th>작성일</th>
 					<td><fmt:formatDate value="${map['suggRegdate'] }"
-							pattern="yyyy-MM-dd" /></td>
+							pattern="yyyy-MM-dd HH:mm:ss" /></td>
 				</tr>
 				<tr>
 					<th>분류</th>
@@ -65,7 +65,7 @@
 					<th>답변일</th>
 					<c:if test="${!empty map['answNo'] }">
 						<td><fmt:formatDate value="${map['answRegdate'] }"
-								pattern="yyyy-MM-dd" /></td>
+								pattern="yyyy-MM-dd HH:mm:ss" /></td>
 					</c:if>
 					<c:if test="${empty map['answNo'] }">
 						<td>미처리</td>
@@ -87,7 +87,7 @@
 					<td colspan="3">${map['suggTitle'] }</td>
 				</tr>
 			</table>
-			<div class="boardContent">${map['suggContent'] }</div>
+			<div class="boardContent" style="overflow: auto;">${map['suggContent'] }</div>
 		</div>
 		<c:import url="/suggestBoard/suggestAnswer.do?suggBoardNo=${param.suggBoardNo }"/>
 		<%-- <%@ include file="../suggestBoard/suggestAnswer.jsp" %> --%>

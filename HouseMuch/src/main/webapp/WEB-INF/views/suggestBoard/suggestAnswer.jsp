@@ -41,7 +41,7 @@ div#answerDiv {
 				placeholder="댓글은 관리자만 입력 가능합니다."
 				<c:if test="${!empty map['answNo'] or authMap['AUTH_LEVEL'] eq 1 }">
 				readonly="readonly"
-			</c:if>></textarea>
+			</c:if>>
 			<div class="validate"></div>
 			<!-- 등록 버튼 -->
 			<div class="text-center">
@@ -109,7 +109,7 @@ div#answerDiv {
 					result+= '<a href="#" onclick="answerDelete('+res.answNo+')"> 삭제 </a> </div>';
 				}
 				
-				result+= '<div class="commentContent'+res.answNo+'"> <p style="white-space: pre;">'+res.answContent +'</p>';
+				result+= '<div class="commentContent'+res.answNo+'" style="overflow: auto;"> <p style="white-space: pre;">'+res.answContent +'</p>';
 				result+= '</div></div>';
 		
 		   		$('.answerList').html(result);

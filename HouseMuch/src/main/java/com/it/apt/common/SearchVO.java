@@ -33,8 +33,10 @@ public class SearchVO {
     /**페이지 별 레코드 갯수 (pageSize) */
     private int recordCountPerPage; 
     
-    /**아파트번호*/
+    /**아파트 번호, 건의게시판 답변글 번호, 회원번호*/
     private int aptNo;
+    private int answNo;
+    private int memberNo;
     
    /**
      * 검색 조건을  설정한다.
@@ -50,6 +52,8 @@ public class SearchVO {
     	this.lastRecordIndex = bean.lastRecordIndex;
     	this.recordCountPerPage = bean.recordCountPerPage;
     	this.aptNo = bean.aptNo;
+    	this.answNo = bean.answNo;
+    	this.memberNo = bean.memberNo;
     }
 
     public String getSearchCondition() {
@@ -125,17 +129,29 @@ public class SearchVO {
 		this.aptNo = aptNo;
 	}
 
+	public int getAnswNo() {
+		return answNo;
+	}
+
+	public void setAnswNo(int answNo) {
+		this.answNo = answNo;
+	}
+
+	public int getMemberNo() {
+		return memberNo;
+	}
+
+	public void setMemberNo(int memberNo) {
+		this.memberNo = memberNo;
+	}
+
 	@Override
 	public String toString() {
 		return "SearchVO [searchCondition=" + searchCondition + ", searchKeyword=" + searchKeyword + ", searchUseYn="
 				+ searchUseYn + ", currentPage=" + currentPage + ", blockSize=" + blockSize + ", firstRecordIndex="
 				+ firstRecordIndex + ", lastRecordIndex=" + lastRecordIndex + ", recordCountPerPage="
-				+ recordCountPerPage + ", aptNo=" + aptNo + "]";
+				+ recordCountPerPage + ", aptNo=" + aptNo + ", answNo=" + answNo + ", memberNo=" + memberNo + "]";
 	}
-
-	
-
-	
 
 	
 }

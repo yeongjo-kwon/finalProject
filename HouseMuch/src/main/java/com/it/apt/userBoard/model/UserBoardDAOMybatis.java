@@ -84,6 +84,16 @@ public class UserBoardDAOMybatis implements UserBoardDAO{
 		return sqlSession.selectOne(namespace+"selectByNoBoardStorage",boardNo);
 	}
 
+	@Override
+	public List<Map<String, Object>> selectAllByUserdash(SearchVO vo) {
+		return sqlSession.selectList(namespace+"selectAllByUserdash",vo);
+	}
+
+	@Override
+	public int selectTotalRecordUserdash(SearchVO vo) {
+		return sqlSession.selectOne(namespace+"selectTotalRecordUserdash",vo);
+	}
+
 
 	
 }

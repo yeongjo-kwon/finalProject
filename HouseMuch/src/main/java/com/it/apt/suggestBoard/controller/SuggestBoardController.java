@@ -19,7 +19,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.it.apt.common.BoardUtility;
 import com.it.apt.common.PaginationInfo;
 import com.it.apt.common.SearchVO;
-import com.it.apt.common.Utility;
 import com.it.apt.member.model.MemberService;
 import com.it.apt.member.model.MemberVO;
 import com.it.apt.suggestBoard.model.SuggestAnswerVO;

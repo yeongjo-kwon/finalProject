@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
-	pageEncoding="UTF-8"%>
+    pageEncoding="UTF-8"%>
 <%@ include file="../mainInc/mainTop.jsp"%>
+
 <script type="text/javascript"
 	src="${pageContext.request.contextPath}/resources/js/jquery-3.5.1.min.js"></script>
 <link rel="stylesheet" type="text/css"
@@ -121,7 +122,7 @@
 				<!-- DB 없을 때 -->
 				<c:if test="${empty userList }">
 					<tr>
-						<td colspan="6">데이터가 존재하지 않습니다.</td>
+						<td colspan="7">데이터가 존재하지 않습니다.</td>
 					</tr>
 				</c:if>
 				<!-- DB 있을 때 -->
@@ -186,7 +187,7 @@
 		</nav>
 		<!--  페이지 번호 끝 -->
 	</div>
-	<div class="form">
+	<div class="formSearch">
 		<form class="frmUserBoard" method="post" name="frmUserBoard"
 			action='<c:url value="/userBoard/userBoardList.do"/>'>
 			<select name="searchCondition">
@@ -218,8 +219,9 @@
 			<input type="submit" name="btCancel" value="검색">
 			<button type="button" onclick="btWrite()">글쓰기</button>
 		</form>
+	
 	</div>
-
 </section>
 
+<div class="clearfix"></div>
 <%@ include file="../mainInc/mainBottom.jsp"%>

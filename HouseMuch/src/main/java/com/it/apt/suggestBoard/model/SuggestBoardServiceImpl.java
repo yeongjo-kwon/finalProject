@@ -72,5 +72,35 @@ public class SuggestBoardServiceImpl implements SuggestBoardService{
 		return suggDao.deleteSuggestBoard(suggBoardNo);
 	}
 
+	@Override
+	public List<Map<String, Object>> suggBoardProcessedCases(SearchVO vo) {
+		return suggDao.suggBoardProcessedCases(vo);
+	}
+
+	@Override
+	public List<Map<String, Object>> suggBoardUnprocessedCases(SearchVO vo) {
+		return suggDao.suggBoardUnprocessedCases(vo);
+	}
+
+	@Override
+	public int suggBoardNotNull(SearchVO vo) {
+		return suggDao.suggBoardNotNull(vo);
+	}
+
+	@Override
+	public int suggBoardNull(SearchVO vo) {
+		return suggDao.suggBoardNull(vo);
+	}
+
+	@Override
+	public List<Map<String, Object>> selectAllByUserdashSugg(SearchVO vo) {
+		return suggDao.selectAllByUserdashSugg(vo);
+	}
+
+	@Override
+	public int selectTotalRecordUserdashSugg(SearchVO vo) {
+		return suggDao.selectTotalRecordUserdashSugg(vo);
+	}
+
 	
 }

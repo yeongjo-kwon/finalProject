@@ -19,5 +19,7 @@ public interface UserBoardService {
 	int userBoardFileUpload(UserBoardVO vo);
 	int updateUserBoard(UserBoardVO vo);
 	int updateFileUpload(UserBoardVO vo);
+	List<Map<String, Object>> selectAllByUserdash(SearchVO vo);
+	int selectTotalRecordUserdash(SearchVO vo);
 	
 }

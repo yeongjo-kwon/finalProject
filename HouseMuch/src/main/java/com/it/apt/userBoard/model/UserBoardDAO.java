@@ -20,5 +20,7 @@ public interface UserBoardDAO {
 	int updateUserBoard(UserBoardVO vo);
 	int updateFileUpload(UserBoardVO vo);
 	int selectByNoBoardStorage(int boardNo);
+	List<Map<String, Object>> selectAllByUserdash(SearchVO vo);
+	int selectTotalRecordUserdash(SearchVO vo);
 	
 }

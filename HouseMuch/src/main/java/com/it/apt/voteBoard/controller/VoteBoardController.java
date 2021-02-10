@@ -22,5 +22,10 @@ public class VoteBoardController {
    public void boardList() {
       logger.info("입주민투표 게시판 글 상세보기 - voteBoardList");
    }
+   
+   @RequestMapping("/voteComingSoon.do")
+   public void voteComingSoon() {
+	   logger.info("입주민투표 커밍순 - voteComingSoon");
+   }
 }
 

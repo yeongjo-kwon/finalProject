@@ -87,6 +87,16 @@ public class UserBoardServiceImpl implements UserBoardService{
 		return result;
 	}
 
+	@Override
+	public List<Map<String, Object>> selectAllByUserdash(SearchVO vo) {
+		return userBoardDao.selectAllByUserdash(vo);
+	}
+
+	@Override
+	public int selectTotalRecordUserdash(SearchVO vo) {
+		return userBoardDao.selectTotalRecordUserdash(vo);
+	}
+
 	
 	
 }

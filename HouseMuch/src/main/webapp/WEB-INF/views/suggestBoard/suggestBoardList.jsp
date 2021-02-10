@@ -1,6 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
-	pageEncoding="UTF-8"%>
+    pageEncoding="UTF-8"%>
 <%@ include file="../mainInc/mainTop.jsp"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+
 <script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/jquery-3.5.1.min.js"></script>
 <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/resources/userBoard/css/boardPaging.css">
 
@@ -54,9 +56,9 @@
 
 		<form action="<c:url value='/suggestBoard/suggestBoardList.do'/>"
 			name="frmPage" method="post">
-			<input type="hidden" name="currentPage"> <input type="hidden"
-				name="searchCondition" value="${param.searchCondition }"> <input
-				type="hidden" name="searchKeyword" value="${param.searchKeyword }">
+			<input type="hidden" name="currentPage"> 
+			<input type="hidden" name="searchCondition" value="${param.searchCondition }"> 
+			<input type="hidden" name="searchKeyword" value="${param.searchKeyword }">
 		</form>
 
 		<div class="section-title">
@@ -142,9 +144,17 @@
 							</c:if>
 							<td>${map['SUGG_BOARD_NO'] }</td>
 							<td>${map['SUGG_CTG_NAME'] }</td>
-							<td><a
-								href="<c:url value='/suggestBoard/suggestBoardDetail.do?suggBoardNo=${suggBoardNo }'/>"
-								style="color: black;"> ${map['SUGG_TITLE'] }</a></td>
+							<td><a href="<c:url value='/suggestBoard/suggestBoardDetail.do?suggBoardNo=${suggBoardNo }'/>"
+									style="color: black;"> 
+									<!-- 제목이 긴 경우 일부만 보여주기 -->
+									<c:if test="${fn:length(map['SUGG_TITLE'])>=30}">
+										${fn:substring(map['SUGG_TITLE'],0,30) } ...
+									</c:if>
+									<c:if test="${fn:length(map['SUGG_TITLE'])<30}">
+										${map['SUGG_TITLE'] }
+									</c:if>
+								</a>
+							</td>
 							<td><fmt:formatDate value="${map['SUGG_REGDATE'] }"
 									pattern="yyyy-MM-dd" /></td>
 							<td>${map['MEMBER_NAME'] }</td>
@@ -197,7 +207,7 @@
 		</nav>
 			<!--  페이지 번호 끝 -->
 	</div>
-	<div class="form">
+	<div class="formSearch">
 		<form class="frmUserBoard" method="post" name="frmUserBoard"
 			action='<c:url value="/suggestBoard/suggestBoardList.do"/>'>
 			<select name="searchCondition">
@@ -228,4 +238,5 @@
 
 </section>
 
+<div class="clearfix"></div>
 <%@ include file="../mainInc/mainBottom.jsp"%>

@@ -20,23 +20,21 @@
 	</insert>
 	
 	<select id="selectAllBoardCtg" resultType="boardCtgVo" parameterType="searchVo">
-		SELECT *
-		FROM
+		SELECT * FROM
 		(
-		    SELECT A.*, ROWNUM AS RNUM
-		    FROM
-		    (
-		        SELECT BOARD_CTG_NO, APT_NO, BOARD_CTG_NAME
-		        FROM BOARD_CATEGORY
-		        <include refid="searchWhere"/>
-		        <if test="searchKeyword!=null and searchKeyword!=''">
-			        AND APT_NO=#{aptNo}
-		        </if>
-		        <if test="searchKeyword==null and searchKeyword==''">
-			        WHERE APT_NO=#{aptNo}
-			    </if>
+			SELECT B.*, ROWNUM AS RNUM
+			FROM
+			(
+			    SELECT A.*
+			    FROM
+			    (
+			        SELECT BOARD_CTG_NO, APT_NO, BOARD_CTG_NAME
+			        FROM BOARD_CATEGORY
+				    WHERE APT_NO=#{aptNo}
+			    )A
+			    <include refid="searchWhere"/>
 		        ORDER BY BOARD_CTG_NO DESC
-		    )A
+			)B
 		)
 		<![CDATA[
 		WHERE RNUM>#{firstRecordIndex}  
@@ -46,14 +44,14 @@
 	
 	<select id="selectTotalRecordFromBoardCategory" parameterType="searchVo"
 		resultType="int">
-		SELECT COUNT(*) FROM BOARD_CATEGORY
+		SELECT COUNT(*)
+		FROM
+		(
+			SELECT * 
+			FROM BOARD_CATEGORY
+		    WHERE APT_NO=#{aptNo}
+	    )
 		<include refid="searchWhere"/>
-		<if test="searchKeyword!=null and searchKeyword!=''">
-	        AND APT_NO=#{aptNo}
-        </if>
-        <if test="searchKeyword==null and searchKeyword==''">
-	        WHERE APT_NO=#{aptNo}
-	    </if>
 	</select>
 	
 	<update id="updateBoardCtg" parameterType="int">

@@ -18,4 +18,11 @@ public interface SuggestBoardDAO {
 	int deleteAnswer(int answNo);
 	Map<String, Object> searchAuthCode(int memberNo);
 	int deleteSuggestBoard(int suggBoardNo);
+	List<Map<String, Object>> suggBoardProcessedCases(SearchVO vo);
+	List<Map<String, Object>> suggBoardUnprocessedCases(SearchVO vo);
+	int suggBoardNotNull(SearchVO vo);
+	int suggBoardNull(SearchVO vo);
+	List<Map<String, Object>> selectAllByUserdashSugg(SearchVO vo);
+	int selectTotalRecordUserdashSugg(SearchVO vo);
+	
 }

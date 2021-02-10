@@ -12,12 +12,12 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.it.apt.adminAll.model.BoardCtgService;
 import com.it.apt.adminAll.model.BoardCtgVO;
+import com.it.apt.adminAll.model.adminAllService;
+import com.it.apt.apart.model.ApartService;
+import com.it.apt.apart.model.ApartVO;
 import com.it.apt.common.BoardUtility;
 import com.it.apt.common.PaginationInfo;
 import com.it.apt.common.SearchVO;
@@ -37,10 +37,24 @@ public class AdminAllController {
 	@Autowired BoardCtgService ctgService;
 	@Autowired MemberService memberService;
 	@Autowired SuggestBoardService suggService;
+	@Autowired adminAllService adminAllService;
+	@Autowired ApartService aptService;
 
 	@RequestMapping("/adminAllMain.do")
-	public void adminAll() {
+	public void adminAll(HttpSession session, Model model) {
 		logger.info("관리자 공통메인뷰페이지 보여주기 - adminAllMain");
+		
+		MemberVO memVo=(MemberVO) session.getAttribute("memVo");
+		String id=memVo.getId();
+		logger.info("세션값 memVo={}",memVo);
+		
+		int aptNo=memberService.selectAptNo(id);
+		logger.info("로그인한 회원의 아파트번호, aptNo={}",aptNo);
+		
+		ApartVO aptVo=aptService.selectAptByAptNo(aptNo);
+		logger.info("===> 아파트 정보 aptVo={}",aptVo);
+		
+		model.addAttribute("aptVo", aptVo);
 	}
 
 	/* 입주민 게시판 카테고리 관리 */
@@ -115,9 +129,11 @@ public class AdminAllController {
 	
 	@RequestMapping("/adminSuggBoard.do")
 	public String adminSuggBoard(@ModelAttribute SearchVO searchVo
+			,@ModelAttribute SearchVO searchVoN
 			,HttpSession session
 			,Model model){
-		logger.info("건의게시판 관리화면 보여주기, 파라미터 searchVo={}",searchVo);
+		logger.info("건의게시판 관리화면 보여주기, 파라미터 처리완료된 searchVo={}, 미처리된 searchVoN={}"
+				,searchVo,searchVoN);
 		
 		MemberVO memVo=(MemberVO) session.getAttribute("memVo");
 		
@@ -132,7 +148,9 @@ public class AdminAllController {
 		//2
 		//페이징 처리 관련 세팅
 		//[1] PaginationInfo
-		PaginationInfo pagingInfo=new PaginationInfo();
+		
+		//###########################처리 완료 건 ###########################
+		/*PaginationInfo pagingInfo=new PaginationInfo();
 		//블록 당 보여질 페이지수, 페이지 당 보여질 레코드 수 상수 처리한 거 가져오기
 		pagingInfo.setBlockSize(BoardUtility.BLOCK_SIZE); 
 		pagingInfo.setRecordCountPerPage(BoardUtility.RECORD_COUNT);
@@ -140,15 +158,39 @@ public class AdminAllController {
 		
 		//[2] SearchVo 세팅
 		searchVo.setRecordCountPerPage(BoardUtility.RECORD_COUNT);
-		searchVo.setFirstRecordIndex(pagingInfo.getFirstRecordIndex());
+		searchVo.setFirstRecordIndex(pagingInfo.getFirstRecordIndex());*/
 		
-		List<Map<String, Object>> list
-			=suggService.selectAllSuggestBoardView(searchVo);
-		logger.info("건의 게시판 목록 결과, list.size={}",list.size());
 		
-		int totalRecord=suggService.selectTotalRecordFromSuggestBoard(searchVo);
-		logger.info("건의 게시판 글 개수, totalRecord={}",totalRecord);
-		pagingInfo.setTotalRecord(totalRecord);
+		//###########################미처리 건 ###########################
+		PaginationInfo pagingInfoN=new PaginationInfo();
+		//블록 당 보여질 페이지수, 페이지 당 보여질 레코드 수 상수 처리한 거 가져오기
+		pagingInfoN.setBlockSize(BoardUtility.BLOCK_SIZE); 
+		pagingInfoN.setRecordCountPerPage(BoardUtility.RECORD_COUNT);
+		pagingInfoN.setCurrentPage(searchVoN.getCurrentPage());
+		
+		//[2] SearchVo 세팅
+		searchVoN.setRecordCountPerPage(BoardUtility.RECORD_COUNT);
+		searchVoN.setFirstRecordIndex(pagingInfoN.getFirstRecordIndex());
+		
+		
+		/*########################### 처리 완료 건 ###########################*/
+		/*List<Map<String, Object>> list
+			=suggService.suggBoardProcessedCases(searchVo);
+		logger.info("건의 게시판 처리 완료 건 조회 결과, list.size={}",list.size());
+		
+		int totalRecord=suggService.suggBoardNotNull(searchVo);
+		logger.info("건의 게시판 글 개수(처리완료 건), totalRecord={}",totalRecord);
+		pagingInfo.setTotalRecord(totalRecord);*/
+		
+		/*########################### 미처리 건 ###########################*/
+		List<Map<String, Object>> unList
+			=suggService.suggBoardUnprocessedCases(searchVoN);
+		logger.info("건의 게시판 미처리 건 조회 결과, unList.size={}",unList.size());
+		
+		int totalRecordN=suggService.suggBoardNull(searchVoN);
+		logger.info("건의 게시판 글 개수(미처리 건), totalRecordN={}",totalRecordN);
+		pagingInfoN.setTotalRecord(totalRecordN);
+		
 		
 		Map<String, Object> authMap
 			=suggService.searchAuthCode(memberNo);
@@ -159,8 +201,10 @@ public class AdminAllController {
 		logger.info("건의게시판 카테고리 scList.size={}", scList.size());	
 		
 		//3
-		model.addAttribute("suggList", list);
-		model.addAttribute("pagingInfo", pagingInfo);
+		//model.addAttribute("suggList", list); //처리완료
+		//model.addAttribute("pagingInfo", pagingInfo); //처리완료
+		model.addAttribute("suggUnList", unList); //미처리
+		model.addAttribute("pagingInfoN", pagingInfoN); //미처리
 		model.addAttribute("authMap", authMap);
 		model.addAttribute("scList", scList);
 		

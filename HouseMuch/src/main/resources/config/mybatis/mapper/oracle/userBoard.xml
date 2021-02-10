@@ -37,24 +37,23 @@
 	
 	<!-- 리스트 페이징 처리 -->
 	<select id="selectAllUserBoardView" parameterType="searchVo" resultType="map">
-		SELECT *
+		SELECT * 
 		FROM
 		(
-		    SELECT A.*, ROWNUM AS RNUM
-		    FROM
-		    (
-		        SELECT BOARD_NO, BOARD_CTG_NAME, BOARD_TITLE, BOARD_CONTENT, BOARD_REGDATE,
-		            BOARD_READCOUNT, MEMBER_NO, APT_NO, MEMBER_NAME, BOARD_FILENAME, BOARD_ORIGINAL_FILENAME, BOARD_FILESIZE
-		        FROM BOARD_VIEW
-		        <include refid="searchWhere"/>
-		        <if test="searchKeyword!=null and searchKeyword!=''">
-			        AND APT_NO=#{aptNo}
-		        </if>
-		        <if test="searchKeyword==null and searchKeyword==''">
-			        WHERE APT_NO=#{aptNo}
-			    </if>
-		        ORDER BY BOARD_NO DESC
-		    )A
+			SELECT B.*, ROWNUM AS RNUM
+			FROM
+			(
+			    SELECT A.*
+			    FROM
+				(
+			        SELECT BOARD_NO, BOARD_CTG_NAME, BOARD_TITLE, BOARD_CONTENT, BOARD_REGDATE,
+			            BOARD_READCOUNT, MEMBER_NO, APT_NO, MEMBER_NAME, BOARD_FILENAME, BOARD_ORIGINAL_FILENAME, BOARD_FILESIZE
+			        FROM BOARD_VIEW
+				    WHERE APT_NO=#{aptNo}
+				 )A
+			    <include refid="searchWhere"/>
+			    ORDER BY BOARD_NO DESC
+			)B
 		)
 		<![CDATA[
 		WHERE RNUM>#{firstRecordIndex} 
@@ -77,14 +76,14 @@
 	
 	<select id="selectTotalRecordFromUserBoard" parameterType="searchVo" 
 		resultType="int">
-		SELECT COUNT(*) FROM BOARD_VIEW
-		<include refid="searchWhere"/>
-		<if test="searchKeyword!=null and searchKeyword!=''">
-	        AND APT_NO=#{aptNo}
-        </if>
-        <if test="searchKeyword==null and searchKeyword==''">
-	        WHERE APT_NO=#{aptNo}
-	    </if>
+		SELECT COUNT(*)
+		FROM
+		(
+			SELECT * 
+			FROM BOARD_VIEW
+			WHERE APT_NO=#{aptNo}
+		)
+		<include refid="searchWhere" />
 	</select>
 	
 	<delete id="deleteUserBoard" parameterType="int">
@@ -154,6 +153,43 @@
 	<select id="selectByNoBoardStorage" parameterType="int" resultType="int">
 		SELECT COUNT(*) FROM BOARD_STORAGE
 		WHERE BOARD_NO=#{boardNo}
+	</select>
+	
+	<!-- 입주민 대시보드 - 입주민 게시판 조회 -->
+	<select id="selectAllByUserdash" parameterType="searchVo" resultType="map">
+		SELECT * 
+		FROM
+		(
+			SELECT B.*, ROWNUM AS RNUM
+			FROM
+			(
+			    SELECT A.*
+			    FROM
+				(
+			        SELECT BOARD_NO, BOARD_CTG_NAME, BOARD_TITLE, BOARD_CONTENT, BOARD_REGDATE,
+			            BOARD_READCOUNT, MEMBER_NO, APT_NO, MEMBER_NAME, BOARD_FILENAME, BOARD_ORIGINAL_FILENAME, BOARD_FILESIZE
+			        FROM BOARD_VIEW
+				    WHERE APT_NO=#{aptNo} AND MEMBER_NO=#{memberNo}
+				 )A
+			    <include refid="searchWhere"/>
+			    ORDER BY BOARD_NO DESC
+			)B
+		)
+		<![CDATA[
+		WHERE RNUM>#{firstRecordIndex} 
+		AND RNUM<=#{firstRecordIndex}+#{recordCountPerPage}
+		]]>
+	</select>
+	
+	<select id="selectTotalRecordUserdash" parameterType="searchVo" resultType="int">
+		SELECT COUNT(*)
+		FROM
+		(
+			SELECT * 
+			FROM BOARD_VIEW
+			WHERE APT_NO=#{aptNo} AND MEMBER_NO=#{memberNo}
+		)
+		<include refid="searchWhere" />
 	</select>
 </mapper>
 

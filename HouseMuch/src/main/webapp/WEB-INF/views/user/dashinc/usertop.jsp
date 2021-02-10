@@ -174,7 +174,31 @@
 <!-- END: Custom CSS-->
 
 <!-- 비교 -->
-
+<style type="text/css">
+.main-menu.menu-light .navigation > li.active > a {
+    background: #7DB249 !important;
+    background: #7DB249;
+    /* box-shadow: 0 0 10px 1px rgb(191 227 223); */
+    color: #FFFFFF;
+    font-weight: 400;
+    border-radius: 4px;
+}
+a {
+    color: #7DB249;
+    text-decoration: none;
+    background-color: transparent;
+}
+.table .thead-dark th {
+    color: #FFFFFF;
+    background-color: #7DB249 !important;
+}
+.main-menu.menu-light .navigation > li ul .active {
+    background: #7DB249;
+    background: linear-gradient(118deg, #2FA599);
+    border-radius: 4px;
+    z-index: 1;
+}
+</style>
 
 
 
@@ -405,7 +429,7 @@
 						class="brand-logo"> </span>
 						<div class="brand-text">
 							<img alt="하우스머치입주민로고"
-								src='<c:url value="/resources/aptAdmin_images/housemuch_adminLogo.png" />'>
+								src='<c:url value="/resources/aptUser_images/housemuch_logo.png" />'>
 						</div>
 				</a></li>
 				<li class="nav-item nav-toggle"><a
@@ -464,6 +488,28 @@
 				<li class=" navigation-header"><span
 					data-i18n="Apps &amp; Pages">우리 아파트</span><i
 					data-feather="more-horizontal"></i></li>
+				<!-- 내 글 목록 -->
+				<li class=" nav-item"><a class="d-flex align-items-center"
+					href="#"><i data-feather='menu'></i><span class="menu-title text-truncate"
+						data-i18n="eCommerce">내 글 목록</span></a>
+					<ul class="menu-content">
+						<!-- 내 게시글 조회 -->
+						<li><a class="d-flex align-items-center"
+							href="<c:url value='/userDash/boardList.do'/>">
+								<i data-feather="circle"></i><span class="menu-item"
+								data-i18n="Shop">내 게시글 조회</span>
+						</a></li>
+					</ul>
+					<ul class="menu-content">
+						<!-- 건의게시글 조회 -->
+						<li><a class="d-flex align-items-center"
+							href="<c:url value='/userDash/suggList.do'/>">
+								<i data-feather="circle"></i><span class="menu-item"
+								data-i18n="Shop">내 건의글 조회</span>
+						</a></li>
+					</ul>
+					</li>
+
 
 				<!-- 내 부가시설 -->
 				<li class=" nav-item"><a class="d-flex align-items-center"

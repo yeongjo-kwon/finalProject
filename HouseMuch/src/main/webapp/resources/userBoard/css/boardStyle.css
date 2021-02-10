@@ -28,7 +28,7 @@ border-color: #5c9f24;
 }
 
 form.frmUserBoard {
-    padding: 15px;
+    padding: 10px;
     text-align: center;
 }
 
@@ -38,11 +38,6 @@ form.frmUserBoard {
 
 table.box2 {
     width: inherit;
-}
-
-.container {
-    padding: 10px;
-    text-align: center;
 }
 
 .text-right button[type="submit"]{
@@ -69,6 +64,7 @@ div#comments {
 
 table.tbUserBoard {
     width: -webkit-fill-available;
+    text-align: center;
 }
 
 .boardDetail {
@@ -77,6 +73,7 @@ table.tbUserBoard {
 
 table.tbBoard {
     width: inherit;
+    text-align: center;
 }
 
 #text-right {
@@ -183,4 +180,16 @@ select#suggCtgNo {
 
 select[name="searchCondition"] {
     height: 42px;
+}
+
+.tbUserBoard tbody tr th {
+    width: 25%;
+}
+
+.tbUserBoard tbody tr td {
+    width: 25%;
+}
+
+.form {
+    border: 1px solid lightgray;
 }
