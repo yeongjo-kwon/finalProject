@@ -157,5 +157,22 @@ public class AddFacilityInfoVO extends SearchVO{
 				+ householdCode + ", totalOrderCnt=" + totalOrderCnt + ", orderCnt=" + orderCnt + ", toString()="
 				+ super.toString() + "]";
 	}
+		
 	
+	
+	
+	
+	
+	
+	
+	
+	
+
+	
+
+	
+
+
+
+
 }

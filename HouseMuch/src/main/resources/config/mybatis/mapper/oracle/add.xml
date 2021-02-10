@@ -105,7 +105,7 @@ ADD_ORDER_LIST
 	                    ,(SELECT COUNT(*) FROM ADD_ORDER_LIST O WHERE A.ADD_NO = O.ADD_NO)
                        		AS ORDER_CNT
 	               FROM ADDITIONAL_FACILITY_INFO A
-	              WHERE APT_NO = (SELECT APT_NO FROM HOUSEHOLD_INFO WHERE HOUSEHOLD_CODE = 'HH_LIVING')
+	              WHERE APT_NO = (SELECT APT_NO FROM HOUSEHOLD_INFO WHERE HOUSEHOLD_CODE = #{householdCode})
 	                AND ADD_OUTDATE IS NULL
 	            ) X
 	            <if test="searchKeyword != null and searchKeyword != ''">
@@ -133,11 +133,7 @@ ADD_ORDER_LIST
 				AND ADD_CTG_NO = #{addCtgNo} 
 		   </if> 
 	</select>
-	
-	<!--  -->
-	<select id="">
-	
-	</select>
+
 	
 	
 </mapper>

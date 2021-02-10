@@ -747,7 +747,7 @@ A HORIZONTAL event
 
 }
 .fc .fc-daygrid-day-events {
-    margin-top: 1px; /* needs to be margin, not padding, so that available cell height can be computed */
+    margin-top: 2px; /* needs to be margin, not padding, so that available cell height can be computed */
   }
 .fc {
 
@@ -802,7 +802,7 @@ A HORIZONTAL event
 }
 .fc .fc-daygrid-event {
     z-index: 6;
-    margin-top: 1px;
+    margin-top: 2px;
   }
 .fc .fc-daygrid-event.fc-event-mirror {
     z-index: 7;
@@ -873,8 +873,10 @@ A HORIZONTAL event
   position: relative; /* for z-indexes assigned later */
   white-space: nowrap;
   border-radius: 3px; /* dot event needs this to when selected */
-  font-size: .85em;
-  font-size: var(--fc-small-font-size, .85em);
+  font-size: 1em;
+  font-size: var(--fc-small-font-size, 1em);
+  line-height:2;
+  
 }
 /* --- the rectangle ("block") style of event --- */
 .fc-daygrid-block-event .fc-event-time {
@@ -882,7 +884,7 @@ A HORIZONTAL event
   }
 .fc-daygrid-block-event .fc-event-time,
   .fc-daygrid-block-event .fc-event-title {
-    padding: 1px;
+    padding: 2px;
   }
 /* --- the dot style of event --- */
 .fc-daygrid-dot-event {

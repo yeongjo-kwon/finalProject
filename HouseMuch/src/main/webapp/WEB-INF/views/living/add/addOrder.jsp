@@ -116,9 +116,9 @@ input[type=checkbox]:unchecked {
 
 <main id="main">
 	<!-- ======= Breadcrumbs ======= -->
-	<section class="breadcrumbs">
-		<div class="container">
-			<div class="d-flex justify-content-between align-items-center">
+	<section class="breadcrumbs" style="position: fixed; width:100%; z-index:99;">
+		<div class="container fixed">
+			<div class="d-flex justify-content-between align-items-center fixed">
 				<h2 class="mt-2" style="line-height: 2; vertical-align: middle;">부가시설 이용 신청</h2>
 				<ol style="font-size:0.9em; line-height: 3;">
 					<li><a href="<c:url value='/main/main.do'/>">Home</a></li>
@@ -132,10 +132,10 @@ input[type=checkbox]:unchecked {
 	<!-- End Breadcrumbs -->
 
 </main>
-<div class="clearfix mt-10" style="height:100px"></div>
+
     <!-- ======= Contact Section ======= -->
     <section id="contact" class="contact" style="min-height:500px;vertical-align:center;">
-      <div class="container" >
+           <div class="container" style="margin-top:200px;">
 
         <div class="section-title">
           <h2 id="title">이용약관 동의 및 신청&nbsp;&nbsp;&nbsp;</h2>
