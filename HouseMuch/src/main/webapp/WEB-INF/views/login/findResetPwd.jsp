@@ -20,14 +20,37 @@
 </style>
 
 <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/resources/app-assets/css/components.css">
-
-<!-- 
-	findPwd 에서 if문 처리 후 인증코드가 각각 일치하면 넘어오는 페이지
-	비밀번호 재설정 페이지
-	해당 아이디의 새로운 비밀번호 적고 변경하기 누르면 alert 변경되었습니다 로그인 창으로 이동
+<script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/jquery-3.5.1.min.js"></script>
+<script>
+$(function(){
+	$('#pwd').blur(function(){
+		if($(this).val().length<1){
+			$(this).next().html('비밀번호를 입력해주세요');
+		}else{
+			$(this).next().html('');
+		}
+	});
 	
-	#userId에 넘어온 아이디 넣어주기. form 마저 작성
- -->
+	$('#pwd2').blur(function(){
+		if($('#pwd').val()!=$('#pwd2').val()){
+			$(this).next().html('비밀번호가 일치하지 않습니다');
+			$('#chkPwd').val('N');
+		}else{
+			$(this).next().html('');        			
+			$('#chkPwd').val('Y');
+		}
+	});
+	
+	$('#reset').submit(function(){
+		if($('#chkPwd').val()!="Y"){
+			$('.error').focus();
+			event.preventDefault();
+			return false;
+		}
+	});
+	
+});
+</script>
 
 <!-- ======= Section ======= -->
 	<section class="contact">
@@ -41,21 +64,21 @@
 				다른 아이디나 사이트에서 사용한 적 없는 안전한 비밀번호로 변경해 주세요.</p>
 			</div>
 	         
-            <form class="auth-login-form mt-2" action="#" method="POST">
-				
+            <form class="auth-login-form mt-2" method="POST" id="reset">
+				<input type="hidden" id="chkPwd">
 				<div class="form col-lg-12 php-email-form " align="center">
 				
-					<input type="hidden" id="userId">
-					
 					<br>
 					<div class="form-group form-row row">
 						<div >
-							<input type="password" class="form-control" style="width:400px;" id="newPwd" name="login-password"  placeholder="새 비밀번호를 입력해주세요" />
+							<input type="password" class="form-control" style="width:400px;" id="pwd" name="pwd"  placeholder="새 비밀번호를 입력해주세요" />
+							<span class="error"></span>
 						</div>
 					</div>
 					<div class="form-group form-row row">
 						<div >
-							<input type="password" class="form-control" style="width:400px;" id="newPwd2" name="login-password" placeholder="새 비밀번호 확인"  />
+							<input type="password" class="form-control" style="width:400px;" id="pwd2" name="login-password" placeholder="새 비밀번호 확인"  />
+							<span class="error"></span>
 						</div>
 					</div>
 

@@ -2,7 +2,7 @@ package com.it.apt.adminOwner.model;
 
 public class ResidentVO {
 	private int hMemberNo;
-	private String household_code;
+	private String householdCode;
 	private String dong;
 	private String ho;
 	private String hMembName;
@@ -15,11 +15,11 @@ public class ResidentVO {
 	public void sethMemberNo(int hMemberNo) {
 		this.hMemberNo = hMemberNo;
 	}
-	public String getHousehold_code() {
-		return household_code;
+	public String getHouseholdCode() {
+		return householdCode;
 	}
-	public void setHousehold_code(String household_code) {
-		this.household_code = household_code;
+	public void setHouseholdCode(String householdCode) {
+		this.householdCode = householdCode;
 	}
 	public String getDong() {
 		return dong;
@@ -54,7 +54,7 @@ public class ResidentVO {
 	
 	@Override
 	public String toString() {
-		return "ResidentVO [hMemberNo=" + hMemberNo + ", household_code=" + household_code + ", dong=" + dong + ", ho="
+		return "ResidentVO [hMemberNo=" + hMemberNo + ", householdCode=" + householdCode + ", dong=" + dong + ", ho="
 				+ ho + ", hMembName=" + hMembName + ", birth=" + birth + ", relation=" + relation + "]";
 	}
 

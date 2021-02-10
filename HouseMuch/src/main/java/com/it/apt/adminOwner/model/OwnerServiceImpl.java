@@ -5,8 +5,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.it.apt.common.ExcelRead;
 import com.it.apt.common.ExcelReadOption;
@@ -14,6 +17,8 @@ import com.it.apt.member.model.MemberService;
 
 @Service
 public class OwnerServiceImpl implements OwnerService{
+	private final static Logger logger = LoggerFactory.getLogger(OwnerServiceImpl.class);
+	
 	@Autowired private OwnerDAO ownerDao;
 	@Autowired private MemberService memberService;
 
@@ -28,22 +33,23 @@ public class OwnerServiceImpl implements OwnerService{
 	}
 
 	@Override
+	@Transactional
 	public void excelUpload(File destFile, String id) {
 		ExcelReadOption excelReadOption = new ExcelReadOption();
-		System.out.println("파일경로:"+destFile.getAbsolutePath());
+		logger.info("파일경로:{}",destFile.getAbsolutePath());
 		//파일경로 추가
         excelReadOption.setFilePath(destFile.getAbsolutePath());
         
         //추출할 컬럼 명 추가
-        excelReadOption.setOutputColumns("A","B","C","D","E","F");
+        excelReadOption.setOutputColumns("A","B","C","D","E","F","G");
       
         // 시작 행
         excelReadOption.setStartRow(2);
 
         List<Map<String, String>>excelContent = ExcelRead.read(excelReadOption);
         
-        System.out.println("excelContent.size()="+excelContent.size());
-        System.out.println("excelContent="+excelContent);
+        logger.info("excelContent.size()={}",excelContent.size());
+        logger.info("excelContent={}",excelContent);
         
         int aptNo=memberService.selectAptNo(id);
         
@@ -51,20 +57,27 @@ public class OwnerServiceImpl implements OwnerService{
         paramMap.put("excelContent", excelContent);
         paramMap.put("aptNo", aptNo);
         
-        System.out.println("paramMap="+paramMap);
+        logger.info("paramMap={}",paramMap);
         
         //여기서부터 작업 시작
-        
+        int cnt=0;
         try {
         	//insert 작업
-        	ownerDao.insertExcelCode(paramMap);
-        	ownerDao.insertExcelCodeMem(paramMap);
+        	cnt=ownerDao.insertExcelCode(paramMap);
+        	logger.info("@@@@@@@@@@@ [1] 번째 작업 cnt={}", cnt);
         	
+        	cnt=ownerDao.insertExcelCodeMem(paramMap);
+        	logger.info("@@@@@@@@@@@@@ [2] 번째 작업 cnt={}", cnt);
         } catch (Exception e) {
         	e.printStackTrace();
         }	
 
 		
+	}
+
+	@Override
+	public int delAllResInfo() {
+		return ownerDao.delAllResInfo();
 	}
 	
 	

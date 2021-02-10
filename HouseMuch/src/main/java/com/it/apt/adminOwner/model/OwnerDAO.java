@@ -8,4 +8,5 @@ public interface OwnerDAO {
 	List<ResidentVO> showResidentByid(String id);
 	int insertExcelCode(Map<String, Object> map);
 	int insertExcelCodeMem(Map<String, Object> map);
+	int delAllResInfo();
 }

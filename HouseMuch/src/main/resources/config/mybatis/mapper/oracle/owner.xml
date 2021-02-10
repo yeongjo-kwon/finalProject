@@ -41,10 +41,10 @@
 		)
 		<foreach collection="excelContent" item="item" separator="union all">
 		select
-			#{item.A},
-			#{aptNo},
 			#{item.B},
+			#{aptNo},
 			#{item.C},
+			#{item.D},
 			'RESIDENT'
 		from dual
 		</foreach>
@@ -57,17 +57,21 @@
 			h_memb_name,
 			birth,
 			relation
-		)values
+		)
 		<foreach collection="excelContent" item="item" separator="union all">
 		select
-			household_member_seq.nextval,
 			#{item.A},
-			#{item.D},
+			#{item.B},
 			#{item.E},
-			#{item.F}
+			#{item.F},
+			#{item.G}
 		from dual
 		</foreach>
 	</insert>
+	
+	<delete id="delAllResInfo">
+		delete from household_info where auth_code='RESIDENT'
+	</delete>
 	
 </mapper>
 
