@@ -1002,7 +1002,7 @@ footer.footer-border {
 
 .main-menu .navbar-header .navbar-brand .brand-text {
   color : #2FA599;
-  padding-left : 1rem;
+  /* padding-left : 1rem; */
   margin-bottom : 0;
   font-weight : 600;
   letter-spacing : 0.01rem;
