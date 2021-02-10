@@ -25,7 +25,6 @@
 	로그인 화면 혹은 아이디 찾기에서 비밀번호 찾기 누르면 나오는 페이지
 	비밀번호 찾기 => 비밀번호 재설정 할거임
 	인증번호 보내기 누르면 아래에 인증번호 입력하는 란 활성화
-	인증번호 보내기 누르면 쿠키에 인증번호 저장 되고 이메일에 보낸 인증번호와 쿠키 저장된 인증번호 같으면 (다시 자세히 공부해야함)
 	다음 으로 넘어감 (if문 처리 => 일치하지않으면 alert 일치하지않습니다)
 	
 	아이디 찾기 a링크 누르면 아이디 찾기 페이지로 이동 
@@ -42,40 +41,27 @@
 			
 			<div align="center" style="margin-bottom:50px;"><img src="<c:url value='/resources/common_img/findPwd.png'/>" alt="findId"></div>
 			
-			<div style="width:800px; float: left; margin-left: 300px; margin-bottom: 50px; ">
+			<div style="width:800px; float: left; margin-left: 300px; " class="mb-4">
 				<h4>비밀번호가 기억이 나지 않으시나요?</h4>
-				<p>비밀번호를 재설정 할 계정과 해당 계정에 등록한 이메일을 입력해주세요.</p>
+				<p>비밀번호를 찾고자 하는 아이디를 입력해 주세요.</p>
 			</div>
 	         
-			<form>
+			<form action="<c:url value='/login/findPwdChkId.do'/>" method="get">
 				
 				<div class="form col-lg-12 php-email-form " align="center">
 				
 					<div class="form-group form-row row" align="left" style="display: inline-block;">
-		        		<label for="userId">아이디</label> 
-		        		<input type="text" class="form-control" name="userId"  style="width:400px;">		 	
+		        		<label for="id">아이디</label> 
+		        		<input type="text" class="form-control" name="id"  style="width:400px;">		 	
 					</div>
 					<br>
-					<div class="form-group form-row row " align="left" style="display: inline-block; margin-left:123px;">
-						<label for="email">이메일 주소</label> 
-						<input type="text" class="form-control" name="email" style="width:400px;">
-	            		<div class="validate"></div>			 	
-					</div>
-					<div class="form-group form-row row" style="display:inline">
-						<input type="button" class="btn get-started-btn row" value="인증번호 받기" >
-					</div>
 					<br>
-					<div class="form-group form-row row" align="left" style="display: inline-block;">
-	            		<input type="text" class="form-control" name="code" disabled="disabled" placeholder="인증번호 6자리 입력" style="width:400px;">
-	            		<div class="validate"></div>	
-					</div>
-					<br><br>
 					<div class="text-center ">
-						<a href="<c:url value='/login/findResetPwd.do'/>"> 페이지 이동 TEST !!! 후에 지울거임  </a>
 						<button type="submit">다음</button>
 					</div>
 	
 				</div>     
+				
 			</form>    
  			
  			<div class="divider my-2">

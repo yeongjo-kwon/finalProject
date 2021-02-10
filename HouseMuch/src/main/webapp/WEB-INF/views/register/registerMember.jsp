@@ -95,7 +95,7 @@
 									
 			 						<div class="form-group mt-1" id="hideMail">
 										<input type="hidden" id="codeChk">
-										<input type="tel" class="form-control" name="chkMail" id="chkMail" placeholder="인증번호 입력" tabindex="6" readonly="readonly">
+										<input type="tel" class="form-control" name="chkMail" id="chkMail" placeholder="인증번호 입력" tabindex="6">
 										<span class="error"></span>
 									</div>
 									
@@ -235,6 +235,9 @@
     	var emailCode="";	//이메일 전송 인증번호 저장 위한 코드
     
         $(function(){
+        	
+        	$("#chkMail").attr("disabled", true); //비활성화
+        	
         	if (feather) {
                 feather.replace({
                     width: 14,
@@ -365,7 +368,7 @@
 		        			type:"GET",
 		        			data:{email:email},
 		        			success:function(data){
-		        				$('#chkMail').removeAttr("readonly");
+		        				$("#chkMail").attr("disabled", false); //활성화
 		                		$('#chkMail').next().html('인증번호를 발송했습니다.<br> 인증번호가 오지 않으면 입력하신 정보가 정확한지 확인하여 주세요.');
 		                		emailCode = data;
 		        			},

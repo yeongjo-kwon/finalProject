@@ -1,6 +1,9 @@
 package com.it.apt.common;
 
+import java.text.SimpleDateFormat;
+
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.DateUtil;
 import org.apache.poi.ss.util.CellReference;
 
 public class ExcelCellRef {	//데이터 구분
@@ -25,36 +28,37 @@ public class ExcelCellRef {	//데이터 구분
     }
 
     public static String getValue(Cell cell) {
-        String value = "";
-
-        if(cell == null) {
-            value = "";
-        }
+        String value = null;
+        if (cell == null) value = "";
         else {
-            if( cell.getCellType() == Cell.CELL_TYPE_FORMULA ) {
+            switch (cell.getCellType()) { //cell 타입에 따른 데이타 저장
+            case Cell.CELL_TYPE_FORMULA:
                 value = cell.getCellFormula();
-            }
-            else if( cell.getCellType() == Cell.CELL_TYPE_NUMERIC ) {
-                value = cell.getNumericCellValue() + "";
-            }
-            else if( cell.getCellType() == Cell.CELL_TYPE_STRING ) {
-                value = cell.getStringCellValue();
-            }
-            else if( cell.getCellType() == Cell.CELL_TYPE_BOOLEAN ) {
-                value = cell.getBooleanCellValue() + "";
-            }
-            else if( cell.getCellType() == Cell.CELL_TYPE_ERROR ) {
-                value = cell.getErrorCellValue() + "";
-            }
-            else if( cell.getCellType() == Cell.CELL_TYPE_BLANK ) {
+                break;
+            case Cell.CELL_TYPE_NUMERIC:
+                if (DateUtil.isCellDateFormatted(cell)) {
+                    //you should change this to your application date format
+                    SimpleDateFormat objSimpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+                    value = "" + objSimpleDateFormat.format(cell.getDateCellValue());
+                } else {
+                    value = "" + String.format("%.0f", new Double(cell.getNumericCellValue()));
+                }
+                break;
+            case Cell.CELL_TYPE_STRING:
+                value = "" + cell.getStringCellValue();
+                break;
+            case Cell.CELL_TYPE_BLANK:
+                //value=""+cell.getBooleanCellValue();
                 value = "";
-            }
-            else {
-                value = cell.getStringCellValue();
+                break;
+            case Cell.CELL_TYPE_ERROR:
+                value = "" + cell.getErrorCellValue();
+                break;
+            default:
             }
         }
 
-        return value;
+        return value.trim();
     }
 	
 

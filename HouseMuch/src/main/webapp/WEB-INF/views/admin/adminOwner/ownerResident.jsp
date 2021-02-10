@@ -1,15 +1,89 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ include file="../adminInc/adminTop.jsp"%>
-<script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/jquery-3.5.1.min.js"></script>
 
 <!-- 
 	입주민 등록 및 목록 조회
 	엑셀 업로드 및 다운로드
 	- 동에 따라 호가 달라짐 (ajax)
 -->
+
 <script type="text/javascript" src="${pageContext.request.contextPath }/resources/js/subinJs.js"></script>
+<script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/jquery-3.5.1.min.js"></script>
+<script type="text/javascript" src="https://editor.datatables.net/extensions/Editor/js/dataTables.editor.min.js"></script>
 <script type="text/javascript">
+	$(function(){
+		var table=$('#residentTable').DataTable({
+			ajax:{
+				url:"<c:url value='/admin/adminOwner/residentTable.do'/>",
+				type:"GET",
+				dataSrc:''
+			},
+			columns:[
+                {data:"hMemberNo"},
+                {data:"householdCode"},
+                {data:"dong", render:function(data){return data+"동"}},
+                {data:"ho", render:function(data){return data+"호"}},
+                {data:"hMembName"},
+                {data:"birth", render:function(data){
+                    return moment(data).format('YYYY-MM-DD')}},
+                {data:"relation"}
+			]
+		}); 
+		
+		$('select[name="dong"]').change(function(){
+			$.ajax({
+				url:"<c:url value='/admin/adminOwner/hoList.do'/>",
+				type:"get",
+				data:"dong="+$(this).val(),
+				dataType:"json",
+				success:function(res){
+					if(res.length>0){
+						var str="<option value='0'>호</option>";
+						$.each(res, function(idx, item){
+							str+="<option value='"+item+"'>"+item+"호</option>";
+						});
+						$('#ho').html(str);
+					}
+				},
+				error:function(xhr, status, error){
+					alert("error : "+error);
+				}
+			});
+		});
+		
+		$('#chkPwdFrm').submit(function(){
+			if($('#chkPwd').val().length<1){
+				alert('비밀번호를 입력하세요');
+				event.preventDefault();
+			}
+		});
+		
+/* 		삭제 할려다가 포기함 ㅎㅎ
+		//체크박스 전체선택_페이지가 바뀌어도 전체선택은 풀리지 않음
+	    $('#select-all').on('click', function(){
+	        var rows = table.rows({ 'search': 'applied' }).nodes();
+	        $('input[type="checkbox"]', rows).prop('checked', this.checked);
+	     });
+
+		$('#del').click( function () {
+			//체크박스의 - 부모 tr의 - 1번째 td의 값
+			var len=$('#residentTable').find('input[type="checkbox"]:checked').length;
+			alert(len);
+			
+			if(len==0){
+				alert('삭제 대상이 없습니다.');
+				return false;
+			}else{
+				if(confirm('정말 삭제하시겠습니까?')){	//hMemberNoArr[]
+			        table.row('.selected').remove().draw( false );
+				}
+			}
+			
+		}); */
+ 	   
+	});
+	
 	function checkFileType(filePath){
 		var fileFormat=filePath.split(".");
 		
@@ -34,7 +108,7 @@
 		
 		if(confirm("업로드하시겠습니까?")){
 			$('#excelUploadForm').submit();
-			$.ajax({
+			$.ajax({	//잘 들어가졌고 에러도 안나는데 왜 자꾸 error가 뜨는거지 ??? ?_? 이해불가 ... 
 				type:"POST",
 				url:"<c:url value='/admin/adminOwner/excelUploadAjax.do'/>",
 				data:{"excelFile":file},
@@ -98,38 +172,23 @@
 		                <div class="row d-flex align-items-end">
 		                  <div class="col-md-2 col-12">
 		                    <div class="form-group">
-		                      <label for="authCode">동</label>
-		                      
-		                      <select class="form-control" id="mngcostMCtgNo"
-		                      		aria-describedby="dong" name="dong">
-		                      	<option value="0">동</option>
-		                      	
-		                      	<!-- forEach . dong -->
-						    	<option value="A">A동</option>
-						    	<option value="B">B동</option>
-						    	<option value="C">C동</option>
-						    	<!-- /forEach -->
-						    	
-		                      </select>
+		                      <label for="dong">동</label>
+				              <select class="select form-control form-control-lg" name="dong" id="dong">
+				                <option value="0">동</option>
+				                <c:forEach var="dong" items="${dongList}">
+									<option value="${dong}">${dong}동</option>	                
+				                </c:forEach>
+				              </select>
 		                      
 		                    </div>
 		                  </div>
 
 		                  <div class="col-md-2 col-12">
-		                    <div class="form-group">
-		                      <label for="authCode">호</label>
-		                      
-		                      <select class="form-control" id="mngcostMCtgNo"
-		                      		aria-describedby="ho" name="ho">
-		                      	<option value="0">호수</option>
-		                      	
-		                      	<!-- forEach . ho -->
-						    	<option value="101">101호</option>
-						    	<option value="102">102호</option>
-						    	<option value="201">201호</option>
-						    	<!-- /forEach -->
-						    	
-		                      </select>
+		                    <div class="form-group">		                      
+				              <label for="ho">호</label>
+				              <select class="select form-control form-control-lg" id="ho" name="ho">
+				                <option value="0">호</option>
+				              </select>
 		                      
 		                    </div>
 		                  </div>
@@ -144,7 +203,7 @@
 		                  <div class="col-md-2 col-12">
 		                    <div class="form-group">
 		                      <label for="hMembName">생일</label>
-		                      <input type="text" class="form-control" id="birth" aria-describedby="birth" name="birth" placeholder="ex)20000101"/>
+		                      <input type="text" class="form-control" id="birth" aria-describedby="birth" name="birth" placeholder="ex)2000-01-01"/>
 		                    </div>
 		                  </div>
 		                  <div class="col-md-2 col-12">
@@ -206,26 +265,28 @@
 	
         <div class="content-body">
                <!-- Ajax Sourced Server-side -->
-        	<section id="residentTable">
+        	<section id="residentTable_section">
             	<div class="row">
                 	<div class="col-12">
                     	<div class="card">
                             <div class="card-header border-bottom">
                                 <h4 class="card-title">입주민 조회</h4>
-		                        <input type="button" class="btn btn-primary" value="업로드" data-toggle="modal" data-target="#uploadFrm">
+                                <div>
+		                        	<input type="button" class="btn btn-primary" value="전체 삭제" data-toggle="modal" data-target="#delPwd">
+		                        	<input type="button" class="btn btn-primary" value="업로드" data-toggle="modal" data-target="#uploadFrm">
+                            	</div>
                             </div>
-                            <div class="residentTable card">
-                            	<table class="residentTable datatables-ajax table">
+                            <div class="residentTable card p-2">
+                            	<table class="residentTable table" id="residentTable" style="text-align:center;">
 	                                <thead>
 	                                    <tr style="text-align: center;">
 	                                        <th style="width:5%;">NO</th>
-	                                        <th style="width:15%;">세대코드</th>
-	                                        <th style="width:5%;">동</th>
-	                                        <th style="width:5%;">호</th>
+	                                        <th style="width:20%;">세대코드</th>
+	                                        <th style="width:10%;">동</th>
+	                                        <th style="width:10%;">호</th>
 	                                        <th style="width:10%;">이름</th>
 	                                        <th style="width:15%;">생년월일</th>
-	                                        <th style="width:10%;">세대주 관계</th>
-	                                        <th>비고</th>
+	                                        <th style="width:15%;">세대주 관계</th>
 	                                    </tr>
 	                                </thead>
                                </table>
@@ -260,6 +321,29 @@
 	                                </div>
 	                                <div class="modal-footer">
 	                                    <input type="button" onclick="check()" class="btn btn-primary" data-dismiss="modal" value="업로드">
+	                                </div>
+	                            </form>
+	                        </div>
+	                    </div>
+	                </div>
+	                
+	                <!-- Modal #delPwd -->
+	                <div class="modal fade text-left" id="delPwd" tabindex="-1" role="dialog" aria-hidden="true">
+	                    <div class="modal-dialog modal-dialog-centered" role="document">
+	                        <div class="modal-content">
+	                            <div class="modal-header">
+	                                <h4 class="modal-title" id="myModalLabel24">삭제</h4>
+	                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+	                                    <span aria-hidden="true">&times;</span>
+	                                </button>
+	                            </div>
+	                            <form id="chkPwdFrm" name="chkPwdFrm" method="post" action="<c:url value='/admin/adminOwner/chkPwdforDel.do'/>">
+	                                <div class="modal-body">
+	                                    <p>데이터를 삭제하면 기존에 가입한 회원들의 정보도 사라집니다.<br>삭제를 원하신다면 비밀번호를 입력해주세요.</p>
+	                                    <input type="password" name="pwd" id="chkPwd" class="form-control" />
+	                                </div>
+	                                <div class="modal-footer">
+	                                    <input type="submit" class="btn btn-primary" value="삭제">
 	                                </div>
 	                            </form>
 	                        </div>

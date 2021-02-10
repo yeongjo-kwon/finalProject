@@ -21,36 +21,28 @@
 
 <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/resources/app-assets/css/components.css">
 
-<script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/member.js"></script>
 <script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/jquery-3.5.1.min.js"></script>
 <script>
 	$(function(){
 		var emailCode="zz";	//이메일 전송 인증번호 저장 위한 코드
 		
-		$("#code").attr("disabled", true); //비활성화
-
-		$('#login').css({
-			"background-color": "#7DB249",
-			"color":"#fff"           	
-		});
-	   
-		$('#sendCode').click(function(){	//인증번호 전송 누르면
-			var email=$('#email2').val();	//입력한 이메일
-    		
-			if($('#name').val().length<1){
-				alert('이름을 입력해주세요');
-				$('#name').focus();
-			}else if(!validate_email(email)){
-				alert('이메일 형식에 맞지 않습니다.');
-				$('#email2').focus();
-			}else{
+		$("#code").attr("disabled", true); 
+		
+		$('#sendCode').click(function(){
+			if($('#email').val()!=$('#realEmail').val()){
+				alert('등록된 이메일과 일치하지 않습니다.');
+				event.preventDefault();
+			}else if($('#name').val().length<1){
+				alert('이름을 입력하세요.');
+				event.preventDefault();
+			}else{	//이메일 올바르게 기입
 				$.ajax({
         			url:"<c:url value='/login/findIdMail.do'/>",
         			type:"GET",
         			data:{
         				memberName:$('#name').val(),
-        				email:email,
-        				or:1
+        				email:$('#email').val(),
+        				or:2
         				},
         			success:function(data){
         				$("#code").attr("disabled", false); //활성화
@@ -60,9 +52,9 @@
     				error:function(xhr, status, error){
     					alert('error! : ' + error)
     				}
-        		});	//ajax
+        		});	//ajax				
+				
 			}
-			
 		});
 		
 		$('#code').blur(function(){	//인증번호 입력란
@@ -82,43 +74,37 @@
 			}
 		});
 		
-		$('#idFrm').submit(function(){
+		$('#pwdChk').submit(function(){
 			if($('#chkCodeYn').val()!="Y"){
-				alert('이메일 인증을 받고 다시 시도해주세요.');
-				$('#sendCode').focus();
+				alert('이메일 인증을 받고 다시 시도해주세요')
+				$('#email').focus();
 				event.preventDefault();
+			}else{
+				alert('인증되었습니다. 비밀번호 재설정 화면으로 이동합니다.');
 			}
 		});
-	   
+		
+		
 	});
-</script>
 
-<!-- 
-	로그인 화면에서 아이디 찾기 누르면 이 페이지로 전송
-	인증번호 보내기 누르면 아래에 인증번호 입력하는 란 활성화
-	다음 으로 넘어감 (if문 처리 => 일치하지않으면 alert 일치하지않습니다)
-	
-	비밀번호 찾기 a링크 누르면 비밀번호 찾기 페이지로 이동 
-	
-	form 마저 작성
-	
-	유효성 검사 <인증번호 보내기> 버튼 클릭할때
-	등록한 이름 혹은 이메일이 없으면 => 일치하는 회원이 없습니다.
- -->
+</script>
 
 <!-- ======= Section ======= -->
 	<section class="contact">
 		<div class="container card" style="margin-top: 50px; margin-bottom: 50px; padding-top:80px; padding-bottom:50px;">
 			
-			<div align="center" style="margin-bottom:50px;"><img src="<c:url value='/resources/common_img/findId.png'/>" alt="findId"></div>
+			<div align="center" style="margin-bottom:50px;"><img src="<c:url value='/resources/common_img/findPwd.png'/>" alt="findId"></div>
 			
-			<div style="width:800px; float: left; margin-left: 300px; margin-bottom: 50px; ">
-				<h4>아이디가 기억이 나지 않으시나요?</h4>
+			<div style="width:800px; float: left; margin-left: 300px; " class="mb-4">
+				<h4 style="display: inline-block; margin-right:5px;">본인확인 이메일로 인증</h4><span style="color:green;">(${email })</span>
 				<p>본인확인 이메일 주소와 입력한 이메일 주소가 같아야, 인증번호를 받을 수 있습니다.</p>
 			</div>
 	         
-			<form action="<c:url value='/login/findIdAll.do'/>" method="post" id="idFrm">
+			<form action="<c:url value='/login/findResetPwd.do'/>" method="get" id="pwdChk">
+				
 				<div class="form col-lg-12 php-email-form " align="center">
+				<input type="hidden" id="realEmail" name="realEmail" value=${realEmail }>
+				<input type="hidden" id="chkCodeYn" name="chkCodeYn">
 				
 					<div class="form-group form-row row" align="left" style="display: inline-block;">
 		        		<label for="name">이름</label> 
@@ -126,35 +112,39 @@
 					</div>
 					<br>
 					<div class="form-group form-row row " align="left" style="display: inline-block; margin-left:123px;">
-						<label for="email2">이메일 주소</label> 
-						<input type="text" class="form-control" name="email" id="email2" style="width:400px;">
-	            		<span style="color: red;"></span>			 	
+	                	<label for="email44">이메일 주소</label> 
+	                	<input type="text" class="form-control" name="email" style="width:400px;" id="email">
+	                	<div class="validate"></div>             
 					</div>
+	               
 					<div class="form-group form-row row" style="display:inline">
 						<input type="button" class="btn get-started-btn row" value="인증번호 받기" id="sendCode">
 					</div>
+	               
 					<br>
 					<div class="form-group form-row row" align="left" style="display: inline-block;">
-	            		<input type="text" class="form-control" name="code" id="code" placeholder="인증번호 6자리 입력" style="width:400px;">
-	            		<span style="color: red;"></span>	
-	            		<input type="hidden" id="chkCodeYn">	
+						<input type="text" class="form-control" name="code" placeholder="인증번호 6자리 입력" style="width:400px;" id="code">
+						<span class="error" style="color:red;"></span>   
 					</div>
-					<br><br>
+	               
+					<br>
+					<br>
+					
 					<div class="text-center ">
 						<button type="submit">다음</button>
 					</div>
 	
 				</div>     
+				
 			</form>    
  			
- 			<div></div>
-  			<div class="divider my-2">
+ 			<div class="divider my-2">
             	<div class="divider-text">or</div>
             </div>
-            			
+            
  			<div class="form-group" align="center" style="margin-top:20px;">
- 				<label>비밀번호를 찾으시나요?</label>
- 				<a href="<c:url value='/login/findPwd.do'/>">비밀번호 찾기</a>
+ 				<label>아이디를 찾으시나요?</label>
+ 				<a href="<c:url value='/login/findId.do'/>">아이디 찾기</a>
  			</div>
  			
  		</div>

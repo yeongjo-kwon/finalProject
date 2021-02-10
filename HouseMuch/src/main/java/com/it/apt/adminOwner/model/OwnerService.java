@@ -7,5 +7,5 @@ public interface OwnerService {
 	List<AuthorityVO> selectAllAuth();
 	List<ResidentVO> showResidentByid(String id);
 	void excelUpload(File destFile, String id);
-
+	int delAllResInfo();
 }

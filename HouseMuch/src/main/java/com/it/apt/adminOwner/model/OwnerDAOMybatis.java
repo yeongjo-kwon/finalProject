@@ -31,5 +31,10 @@ public class OwnerDAOMybatis implements OwnerDAO{
 	public int insertExcelCodeMem(Map<String, Object> map) {
 		return sqlSession.insert(namespace+"insertExcelCodeMem", map);
 	}
+
+	@Override
+	public int delAllResInfo() {
+		return sqlSession.delete(namespace+"delAllResInfo");
+	}
 	
 }
