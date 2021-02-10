@@ -156,7 +156,7 @@ public class NoticeController {
 		logger.info("공지게시판 파일 저장경로 : customPath={}", customPath);
 				
 		// ModelAndView mav = new ModelAndView(viewName, Map<String,?> model);
-		ModelAndView mav = new ModelAndView("downloadView",map);
+		ModelAndView mav = new ModelAndView("livingDownloadView",map);
 
 		//4
 		return mav;

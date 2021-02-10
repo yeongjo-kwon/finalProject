@@ -44,15 +44,14 @@ $(function(){
 
 <main id="main">
 	<!-- ======= Breadcrumbs ======= -->
-	<section class="breadcrumbs">
-		<div class="container">
-			<div class="d-flex justify-content-between align-items-center">
-				<h2 class="mt-2" style="line-height: 2; vertical-align: middle;">부가시설 이용 신청</h2>
+	<section class="breadcrumbs" style="position: fixed; width:100%; z-index:99;">
+		<div class="container fixed">
+			<div class="d-flex justify-content-between align-items-center fixed">
+				<h2 class="mt-2" style="line-height: 2; vertical-align: middle;">우리집 이용중인 시설</h2>
 				<ol style="font-size:0.9em; line-height: 3;">
 					<li><a href="<c:url value='/main/main.do'/>">Home</a></li>
 					<li><a href="<c:url value='/living/add/addFacilityList.do'/>">부가시설 목록</a></li>
-					<li><a href="<c:url value='/living/add/addFacilityDetail.do'/>">부가시설 상세정보</a></li>
-					<li>부가시설 이용 신청</li>
+					<li>이용중인 시설</li>
 				</ol>
 			</div>
 		</div>
@@ -60,10 +59,9 @@ $(function(){
 	<!-- End Breadcrumbs -->
 
 </main>
-<div class="clearfix mt-10" style="height:100px"></div>
     <!-- ======= Contact Section ======= -->
     <section id="contact" class="contact" style="min-height:500px;vertical-align:center;">
-      <div class="container" >
+      <div class="container" style="margin-top:300px;">
 
       <div class="container-fluid">
                         <h1 class="mt-4">Tables</h1>

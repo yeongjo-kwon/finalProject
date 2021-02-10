@@ -16,54 +16,30 @@ function pageFunc(curPage){
 	$('form[name=frmPage]').submit();
 }
 
-function addCtgNum(i){
-	console.log(i);
+function addCtgNum(i){                    
+	//console.log(i);
 	index=i;
 }   
 //시설 분류 클릭하면 리스트 업데이트되게 처리
 $(function(){
-	
-	console.log('index= ' +index );
+	console.log("index= " +index );
 	$('#addCtg a').click(function(){
 		var CtgName = $(this).text();
-		console.log("선택한카테고리 분류명은 "+CtgName);
+		console.log("선택한카테고리 분류명은 "+CtgName);//특화시설
 		$(this).attr('class','list-group-item a-index');//bg컬러변경
 		
-		var CtgNo = index;
-		console.log("선택한카테고리 번호는"+CtgNo); 
+	 	var CtgNo = index;
+		console.log("선택한카테고리 번호는"+CtgNo);  //1
 		
-	/*	$.ajax({
-			url: "<c:url value='/living/add/addInfoCategoryList.do'/>",
-			type:'get',
-			dataType:'json',
-			data:
-				"addCtgName="+$(this).text()+"&addCtgNo="+CtgNo
-			,error:function(xhr, status,error){
-				alert("에러"+error);
-			},success:function(result){
-				//리스트 객체로 받아오기 serializeArray
-					if(result.length>0){
-						var str="";
-						//each돌려서 각각 
-						$.each(result,function(){
-							str += "번호 - "+result.addNo+"<br>";
-							str += "분류번호 - "+result.addCtgNo+"<br>";
-							str += "분류명 - "+result.addCtgName+"<br>";
-							str += "이름 - "+result.addName+"<br>";
-							str += "가격 - "+result.addPrice+"<br>";
-							str += "이용자 수 - "+result.orderCnt+"<br>";
-						});
-						
-					$('#divResult').html(str);
-					}
-					
-			}
-		}); 
-*/
-});
-	
+		//선택한 분류명에 해당되는 리스트 불러오게 파라미터 넘김
+		$('input[name=searchCondition]').val('ADD_CTG_NAME');
+		$('#submitKeyword').val(CtgName);
+		var Ctg = $('#addCtgNo').val(CtgNo);
+		console.log($('#addCtgNo').val());
 		
-	
+		//어차피 검색후에는 1페이지부터 시작할꺼니까
+		pageFunc(1);  
+	});
 });
 </script>
  <!-- 부가시설 목록 뷰 script : 끝 -->
@@ -134,40 +110,40 @@ $(function(){
     <div class="row">
       <div class="col-lg-9">
 <!-- 오른쪽섹션인 col-9안에서 검색바랑 파라미터 넘기는거 일단 넣음 -->
-<!-- searchKeyword , searchCondition 보내는 frmSearch 시작 -->     
+<!-- searchKeyword  searchCondition 보내는 frmSearch 시작 -->     
                 <!-- 검색어, 검색조건 넘기는 frmPage -->
                 <form name="frmPage" 
                 method="post" action='<c:url value="/living/add/addFacilityList.do"/>'>
-								<input type="hidden" name="currentPage"> 
-							<input type="hidden" name="searchCondition" value="${param.searchCondition }" >
-							<input type="hidden" name="searchKeyword"	value="${param.searchKeyword }" >
+							<input type="hidden" name="currentPage" id="thisPage"> 
+							<input type="hidden" name="searchCondition" value="${param.searchCondition}" >
+							<input type="hidden" name="searchKeyword"	value="${param.searchKeyword}" id="submitKeyword">
+							<input type="hidden" name="addCtgNo"	value="${param.addCtgNo}" id="addCtgNo">
 								
 								
                     <!-- E-commerce Search Bar Starts : 부가시설 목록에서 검색-->
-                    <section id="ecommerce-searchbar" class="ecommerce-searchbar pt-2 pb-5">
+                   <!--  <section id="ecommerce-searchbar" class="ecommerce-searchbar pt-2 pb-5">
                         <div class="row mt-1">
                             <div class="col-sm-6">
                                 <div class="input-group input-group-merge navbar-right">
                                     <input type="text" class="form-control search-product  p-1" id="shop-search" placeholder="부가시설을 검색하세요" 
-                                    aria-label="Search..." aria-describedby="shop-search" name="searchKeyword" title="검색어 입력" value="${param.searchKeyword}"/>
+                                    aria-label="Search..." aria-describedby="shop-search" title="검색어 입력" />
                                     <div class="input-group-append">
                                    <button class="btn btn-secondary" aria-hidden="true" style="padding-bottom:6px;"><i data-feather="search"></i></button> 
                                    </div>
                                 </div>
                             </div>
-                            <div class="col-sm-6"></div><!-- 검색창정렬용 -->
+                            <div class="col-sm-6"></div>검색창정렬용
                         </div>
-                    </section>
+                    </section> -->
                     <!-- E-commerce Search Bar Ends : 부가시설 목록에서 검색 끝-->
 			</form>
-<!-- searchKeyword , searchCondition 보내는 frmSearch 끝 -->
+<!-- searchKeyword searchCondition 보내는 frmSearch 끝 -->
 <!-- 오른쪽섹션인 col-9안에서 검색바랑 파라미터 넘기는거 일단 넣음//끝 -->
 
 
 
 <!-- 시설카드 div : 시작   class="row"  -->
         <div class="row mt-10" id="addInfoList">
-	<div id="divResult">아몰라</div>
 <!-- 시설카드 반복구간 : 시작 class="col-lg-4 col-md-6 mb-4"  -->
 			<c:if test="${empty list }">
 					<p>등록된 부가시설이 없습니다</p>
@@ -232,8 +208,8 @@ $(function(){
 								<!-- 블록 시작 : [1][2][3][4][5][6][7][8][9][10] -->
 								<c:forEach var="i" begin="${pager.firstPage}" end="${pager.lastPage}">
 									<c:if test="${i==pager.currentPage }">
-										<li class="page-item"><span
-											style="color: #5c9f24; font-weight: bold" class="btn-light:hover page-link">
+										<li class="page-item">
+										<span style="color: #5c9f24; font-weight: bold" class="btn-light:hover page-link">
 												${i}</span></li>
 									</c:if>
 									<c:if test="${i!=pager.currentPage }">
@@ -266,15 +242,16 @@ $(function(){
 
       <div class="col-lg-3 pt-0">
         <div class="list-group" name="addCtg" id="addCtg">
-          <a href="javascript:void(0);" class="list-group-item" onclick="javascript:addCtgNum(1)">특화시설</a>
-          <a href="javascript:void(0);" class="list-group-item" onclick="javascript:addCtgNum(2)">교육시설</a>
-          <a href="javascript:void(0);" class="list-group-item" onclick="javascript:addCtgNum(3)">문화시설</a>
-          <a href="javascript:void(0);" class="list-group-item" onclick="javascript:addCtgNum(4)">스포츠시설</a>
-          <a href="javascript:void(0);" class="list-group-item" onclick="javascript:addCtgNum(5)">편의시설</a>
+          <a href="javascript:void(0);" class="list-group-item" onclick="addCtgNum(1)" data-value="1">특화시설</a>
+          <a href="javascript:void(0);" class="list-group-item" onclick="addCtgNum(2)" data-value="2">교육시설</a>
+          <a href="javascript:void(0);" class="list-group-item" onclick="addCtgNum(3)" data-value="3">문화시설</a>
+          <a href="javascript:void(0);" class="list-group-item" onclick="addCtgNum(4)" data-value="4">스포츠시설</a>
+          <a href="javascript:void(0);" class="list-group-item" onclick="addCtgNum(5)" data-value="5">편의시설</a>
         </div>
 <br>
         <div class="list-group">
-          <a href="#" class="list-group-item">우리집 이용시설 보기</a>
+          <a href="#" class="list-group-item" onclick="pageFunc(1)">전체보기</a>
+          <a href="<c:url value='/living/add/addOrderList.do?householdCode=${sessionScope.memVo.householdCode}'/>" class="list-group-item">우리집 이용시설 보기</a>
           <%-- <a href="<c:url value='/living/add/applicationAdd.do'/>" class="list-group-item">신청화면(작업용)</a> --%>
         </div>
 

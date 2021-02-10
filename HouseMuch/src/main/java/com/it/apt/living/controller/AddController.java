@@ -27,7 +27,7 @@ import com.it.apt.member.model.MemberVO;
 @RequestMapping("/living/add")
 public class AddController {
 
-	private static final Logger logger = LoggerFactory.getLogger(AdminLivingController.class);
+	private static final Logger logger = LoggerFactory.getLogger(AddController.class);
 	@Autowired
 	private AddService addService;
 	
@@ -51,13 +51,6 @@ public class AddController {
 	}
 	
 	
-	@RequestMapping("/addOrderList.do")
-	public void addOrderList() {
-		logger.info("/addOrder 부가시설 신청내역조회뷰");
-	}
-	
-
-	
 	
 	
 	@RequestMapping("/addFacilityList.do")
@@ -65,18 +58,14 @@ public class AddController {
 			,@RequestParam(required = false) String searchKeyword
 			,Model model, HttpSession session) {
 		logger.info("[입주민]#### 부가시설 리스트 조회 ,들어온직후 vo={} ",vo);
-		
-		//카테고리 리스트 가져오기
-//		List<AddCategoryVO> addCtgList = addService.selectAddCategory();
-//		model.addAttribute("addCtgList",addCtgList);
-		
+		logger.info("[입주민]#### 부가시설 리스트 파라미터 searchKeyword={}",searchKeyword);
 		
 		//상속받은 searchVo에 검색어 파라미터 넣음
-		if( (searchKeyword!=null && !searchKeyword.isEmpty())
-				&& (searchKeyword!=null && !searchKeyword.isEmpty())) {
+		if( searchKeyword!= null && !searchKeyword.isEmpty()){
 			vo.setSearchKeyword(searchKeyword);//번호값(뷰에서 index)
+			String searchword =  vo.getSearchKeyword();
+			logger.info("[입주민]부가시설 검색어 파람, searchKeyword={}" ,searchword);
 		}
-		logger.info("[입주민]#### 부가시설 검색어 파람, searchKeyword={}",vo.getSearchKeyword());
 		
 		MemberVO memVo=(MemberVO)session.getAttribute("memVo");
 		vo.setHouseholdCode(memVo.getHouseholdCode()); //해당 아파트NO 부가시설만 조회 
@@ -86,6 +75,7 @@ public class AddController {
 		PaginationInfo pager = new PaginationInfo();
 		pager.setBlockSize(Utility.BLOCK_SIZE);
 		pager.setRecordCountPerPage(10);	   //한페이지에 글 10줄씩 세팅
+		
 		pager.setCurrentPage(vo.getCurrentPage());
 		logger.info("####지금 pager에들어간 현재페이지 ,vo.getCurrentPage()={} ",vo.getCurrentPage());
 		
@@ -94,7 +84,7 @@ public class AddController {
 		vo.setFirstRecordIndex(pager.getFirstRecordIndex());
 		
 		
-		
+		logger.info("[입주민]:::::::::::검색직전vo::::::::::vo={} ",vo);//--->여기서 addCtgNo가 없으면 에러 ,, 근데 왜 안오지 ,,? 
 		List<AddFacilityInfoVO> list = addService.selectAllAddFacility(vo);
 		logger.info("####[입주민] 부가시설 전체 목록 list.size={}",list.size());
 		
@@ -110,6 +100,19 @@ public class AddController {
 		//http://localhost:9090/apt/living/add/addFacilityList.do
 		return "living/add/addFacilityList";
 	}
+	
+	//우리집 이용중인 시설 목록 보기
+	@RequestMapping(value = "/addOrderList.do",method = RequestMethod.GET)
+	public String addOrderList(@RequestParam String householdCode
+			,Model model, HttpSession session) {
+		
+		logger.info("/addOrderList 부가시설 신청내역조회뷰");
+		
+		
+		return "living/add/addOrderList";
+	}
+	
+
 
 	
 }
