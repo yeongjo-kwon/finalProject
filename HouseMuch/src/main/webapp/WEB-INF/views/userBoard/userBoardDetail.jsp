@@ -72,7 +72,7 @@
 						<c:if test="${empty map['boardFilename'] }"></c:if>
 						<c:if test="${!empty map['boardFilename'] }">
 							<a href=
-	"<c:url value='/userBoard/fileDownload.do?bStorageNo=${map["bStorageNo"] }&boardFilename=${map["boardFilename"] }'/>">
+	"<c:url value='/userBoard/fileDownload.do?bStorageNo=${map["bStorageNo"]}&boardFilename=${map["boardFilename"] }'/>">
 								<img alt="파일이미지" src="<c:url value='/resources/aptUser_images/file.gif'/>">
 									${map['boardOriginalFilename'] }&nbsp;(${map['boardFilesize']/1000 }KB)
 							</a>

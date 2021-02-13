@@ -181,10 +181,10 @@ table.table {
 												href="<c:url value='/suggestBoard/suggestBoardDetail.do?suggBoardNo=${suggBoardNo }'/>"
 												style="color: black;"> 
 												<!-- 제목이 긴 경우 일부만 보여주기 -->
-												<c:if test="${fn:length(map['SUGG_TITLE'])>=30}">
-													${fn:substring(map['SUGG_TITLE'],0,30) } ...
+												<c:if test="${fn:length(map['SUGG_TITLE'])>=25}">
+													${fn:substring(map['SUGG_TITLE'],0,25) } ...
 												</c:if>
-												<c:if test="${fn:length(map['SUGG_TITLE'])<30}">
+												<c:if test="${fn:length(map['SUGG_TITLE'])<25}">
 													${map['SUGG_TITLE'] }
 												</c:if>
 												</a>

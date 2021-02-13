@@ -154,7 +154,9 @@ button#btSearchSubmit {
 							</thead>
 							<tbody class="ctgTbody">
 								<c:if test="${empty ctgList }">
-									<td colspan="4">등록된 카테고리가 없습니다.</td>
+									<tr>
+										<td colspan="4">등록된 카테고리가 없습니다.</td>
+									</tr>
 								</c:if>
 								<!-- 레코드반복시작 -->
 								<c:if test="${!empty ctgList }">

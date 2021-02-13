@@ -24,5 +24,6 @@ public interface SuggestBoardService {
 	int suggBoardNull(SearchVO vo);
 	List<Map<String, Object>> selectAllByUserdashSugg(SearchVO vo);
 	int selectTotalRecordUserdashSugg(SearchVO vo);
+	List<Map<String, Object>> selectSuggBoardOnlyFive(SuggestBoardVO vo);
 	
 }

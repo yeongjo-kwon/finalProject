@@ -173,33 +173,95 @@
 	href="${pageContext.request.contextPath}/resources/assets/css/style.css">
 <!-- END: Custom CSS-->
 
+
 <!-- 비교 -->
 <style type="text/css">
-.main-menu.menu-light .navigation > li.active > a {
-    background: #7DB249 !important;
-    background: #7DB249;
-    /* box-shadow: 0 0 10px 1px rgb(191 227 223); */
-    color: #FFFFFF;
-    font-weight: 400;
-    border-radius: 4px;
+.main-menu.menu-light .navigation>li.active>a {
+	background: #7DB249 !important;
+	background: #7DB249;
+	/* box-shadow: 0 0 10px 1px rgb(191 227 223); */
+	color: #FFFFFF;
+	font-weight: 400;
+	border-radius: 4px;
 }
+
 a {
-    color: #7DB249;
-    text-decoration: none;
-    background-color: transparent;
+	color: #7DB249;
+	text-decoration: none;
+	background-color: transparent;
 }
+
 .table .thead-dark th {
-    color: #FFFFFF;
-    background-color: #7DB249 !important;
+	color: #FFFFFF;
+	background-color: #7DB249 !important;
 }
-.main-menu.menu-light .navigation > li ul .active {
-    background: #7DB249;
-    background: linear-gradient(118deg, #2FA599);
-    border-radius: 4px;
-    z-index: 1;
+
+.main-menu.menu-light .navigation>li ul .active {
+	background: #7DB249;
+	background: linear-gradient(118deg, #2FA599);
+	border-radius: 4px;
+	z-index: 1;
+}
+
+.nav-menu a {
+	color: #666666;
+	font-size: 15px;
+}
+
+ul.dept01, ul.dept02 {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: inline-flex;
+}
+
+.dept01 li a {
+    font-size: 1.5em;
+    letter-spacing: 0.05em;
+    display: block;
+    padding: 0 20px 0 20px;
+}
+
+ul.dept02 {
+	display: none;
+}
+
+ul.nav.navbar-nav.align-items-center.ml-auto {
+    float: right;
+    padding-left: 240px;
+}
+
+ul.dept02 li#subMenu:first-child {
+    padding-top: 20px;
 }
 </style>
 
+<script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/jquery-3.5.1.min.js"></script>
+<script type="text/javascript">
+$(function(){
+	$('.dept01 li').mouseover(function(){
+		$('.dept02').css('display','inline')
+					.slideDown(200);
+	}).mouseout(function(){
+		$('.dept02').css('display','none')
+					.slideUp(200);
+	});
+	
+	$('.dept01 li a').mouseover(function(){
+		$(this).css('color','#7DB249');
+	}).mouseout(function(){
+		$(this).css('color','#666666');
+	});
+	
+	$('.dept02 li a').mouseover(function(){
+		$(this).css('color','#7DB249');
+	}).mouseout(function(){
+		$(this).css('color','#666666');
+	});
+	
+	
+});
+</script>
 
 
 </head>
@@ -216,32 +278,93 @@ a {
 	<nav
 		class="header-navbar navbar navbar-expand-lg align-items-center floating-nav navbar-light navbar-shadow">
 		<div class="navbar-container d-flex content">
-			<div class="bookmark-wrapper d-flex align-items-center">
-				<ul class="nav navbar-nav d-xl-none">
-					<li class="nav-item"><a class="nav-link menu-toggle"
-						href="javascript:void(0);"><i class="ficon"
-							data-feather="menu"></i></a></li>
+			<!-- 전체 드롭다운 메뉴 감싸기 -->
+			<div class="nav-menu d-none d-lg-block" class="topMenu">
+				<!-- 메뉴넣기 -->
+				<!-- 첫번째 -->
+				<!-- dept 1 -->
+				<ul class="dept01">
+					<li>
+						<a href="#">관리비 조회</a>
+						<!-- dept 2 -->
+						<ul class="dept02">
+							<li id="subMenu"><a href="<c:url value='/mngcost/mngcostInquiry.do'/>">
+								관리비 조회
+							</a></li>
+						</ul>
+					</li>
 				</ul>
-				<ul class="nav navbar-nav bookmark-icons">
-					<li class="nav-item d-none d-lg-block"><a class="nav-link"
-						href="<c:url value='/sample/email.do'/>" data-toggle="tooltip"
-						data-placement="top" title="Email"><i class="ficon"
-							data-feather="mail"></i></a></li>
-					<li class="nav-item d-none d-lg-block"><a class="nav-link"
-						href="<c:url value='/sample/chat.do'/>" data-toggle="tooltip"
-						data-placement="top" title="Chat"><i class="ficon"
-							data-feather="message-square"></i></a></li>
-					<li class="nav-item d-none d-lg-block"><a class="nav-link"
-						href="<c:url value='/sample/calendar.do'/>" data-toggle="tooltip"
-						data-placement="top" title="Calendar"><i class="ficon"
-							data-feather="calendar"></i></a></li>
+				<!-- 두번째 -->
+				<!-- dept 1 -->
+				<ul class="dept01">
+					<li>
+						<a href="#">에너지 조회</a>
+						<!-- dept 2 -->
+						<ul class="dept02">
+							<li id="subMenu"><a href="<c:url value='/energy/energyChart.do'/>">
+								공과금 조회
+							</a></li>
+						</ul>
+					</li>
 				</ul>
+				<!-- 세번째 -->
+				<ul class="dept01">
+					<li>
+						<a href="#">생활지원 센터</a>
+						<!-- dept 2 -->
+						<ul class="dept02">
+							<li id="subMenu"><a href="<c:url value='/living/noti/noticeList.do'/>">
+								공지사항
+							</a></li>
+							<li id="subMenu"><a href="<c:url value='/living/noti/aptScheduler.do'/>">
+								아파트 일정
+							</a></li>
+							<li id="subMenu"><a href="<c:url value='/living/add/addFacilityList.do'/>">
+								부가시설
+							</a></li>
+							<li id="subMenu"><a href="#">
+								차량관리
+							</a></li>
+							<li id="subMenu"><a href="<c:url value='/suggestBoard/suggestBoardList.do'/>">
+								건의 게시판
+							</a></li>
+						</ul>
+					</li>
+				</ul>
+				<!-- 네번째 -->
+				<!-- dept 1 -->
+				<ul class="dept01">
+					<li>
+						<a href="#">입주민 커뮤니티</a>
+						<!-- dept 2 -->
+						<ul class="dept02">
+							<li id="subMenu"><a href="<c:url value='/userBoard/userBoardList.do'/>">
+								입주민 게시판
+							</a></li>
+							<li id="subMenu"><a href="<c:url value='/voteBoard/voteComingSoon.do'/>">
+								입주민 투표
+							</a></li>
+						</ul>
+					</li>
+				</ul>
+				<!-- 다섯번째 -->
+				<!-- dept 1 -->
+				<ul class="dept01">
+					<li>
+						<a>관리비 납부</a>
+						<!-- dept 2 -->
+						<ul class="dept02">
+							<li id="subMenu"><a href="<c:url value='/mngcost/mngcostPayment.do'/>">
+								납부하기
+							</a></li>
+						</ul>
+					</li>
+				</ul>
+				<!--  -->
+				<ul class="nav navbar-nav align-items-center ml-auto ">
 
-			</div>
-			<ul class="nav navbar-nav align-items-center ml-auto">
 
-
-				<li class="nav-item nav-search"><a
+				<!-- <li class="nav-item nav-search"><a
 					class="nav-link nav-link-search"><i class="ficon"
 						data-feather="search"></i></a>
 					<div class="search-input">
@@ -254,9 +377,9 @@ a {
 							<i data-feather="x"></i>
 						</div>
 						<ul class="search-list search-list-main"></ul>
-					</div></li>
+					</div></li> -->
 
-				<li class="nav-item dropdown dropdown-notification mr-25"><a
+				<%-- <li class="nav-item dropdown dropdown-notification mr-25"><a
 					class="nav-link" href="javascript:void(0);" data-toggle="dropdown"><i
 						class="ficon" data-feather="bell"></i><span
 						class="badge badge-pill badge-danger badge-up">5</span></a>
@@ -326,8 +449,7 @@ a {
 										type="checkbox" checked=""> <label
 										class="custom-control-label" for="systemNotification"></label>
 								</div>
-							</div>
-							<a class="d-flex" href="javascript:void(0)">
+							</div> <a class="d-flex" href="javascript:void(0)">
 								<div class="media d-flex align-items-start">
 									<div class="media-left">
 										<div class="avatar bg-light-danger">
@@ -382,38 +504,34 @@ a {
 						<li class="dropdown-menu-footer"><a
 							class="btn btn-primary btn-block" href="javascript:void(0)">Read
 								all notifications</a></li>
-					</ul></li>
+					</ul></li> --%>
 				<li class="nav-item dropdown dropdown-user"><a
 					class="nav-link dropdown-toggle dropdown-user-link"
 					id="dropdown-user" href="javascript:void(0);"
 					data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 						<div class="user-nav d-sm-flex d-none">
-							<span class="user-name font-weight-bolder">유저네임</span><span
-								class="user-status">Admin</span>
-						</div>
-						<span class="avatar"><img class="round"
-							src="${pageContext.request.contextPath}//resources/app-assets/images/portrait/small/avatar-s-22.jpg"
+							<span class="user-name font-weight-bolder">${memVo.memberName }</span><span
+								class="user-status">${memVo.id }</span>
+						</div> <span class="avatar"><img class="round"
+							src="${pageContext.request.contextPath}/resources/user_images/${memVo.memberImgFilename }"
 							alt="avatar" height="40" width="40"><span
 							class="avatar-status-online"></span></span>
 				</a>
 					<div class="dropdown-menu dropdown-menu-right"
 						aria-labelledby="dropdown-user">
 						<a class="dropdown-item" href="#"><i class="mr-50"
-							data-feather="user"></i> Profile</a><a class="dropdown-item" href="#"><i
-							class="mr-50" data-feather="mail"></i> Inbox</a><a
+							data-feather="user"></i>내 계정 관리</a><a class="dropdown-item"
+							href="<c:url value='/userDash/userDashMain.do'/>"><i
+							class="mr-50" data-feather="check-square"></i>마이페이지</a><a
 							class="dropdown-item" href="#"><i class="mr-50"
-							data-feather="check-square"></i> Task</a><a class="dropdown-item"
-							href="#"><i class="mr-50" data-feather="message-square"></i>
-							Chats</a>
-						<div class="dropdown-divider"></div>
-						<a class="dropdown-item" href="#"><i class="mr-50"
-							data-feather="settings"></i> Settings</a><a class="dropdown-item"
-							href="#"><i class="mr-50" data-feather="credit-card"></i>
-							Pricing</a><a class="dropdown-item" href="#"><i class="mr-50"
-							data-feather="help-circle"></i> FAQ</a><a class="dropdown-item"
-							href="#"><i class="mr-50" data-feather="power"></i> Logout</a>
+							data-feather="message-square"></i> 1:1채팅</a> <a class="dropdown-item"
+							href="<c:url value='/login/logout.do'/>"><i class="mr-50"
+							data-feather="power"></i>로그아웃</a>
 					</div></li>
 			</ul>
+			</div>
+			<!-- 메뉴 여기까지 -->
+			
 		</div>
 	</nav>
 	<!-- END: Header-->
@@ -447,7 +565,8 @@ a {
 
 				<!-- 입주민 대시보드 메인 화면 -->
 				<li class="nav-item"><a class="align-items-center"
-					href="<c:url value='/userDash/userDashMain.do'/>"><span class="menu-title">마이페이지</span></a></li>
+					href="<c:url value='/userDash/userDashMain.do'/>"><span
+						class="menu-title">마이페이지</span></a></li>
 				<hr>
 				<!-- navi 시작 -->
 				<!----------------------------------------------- 여기부터 메뉴1  ------------------------------------------------------------->
@@ -457,8 +576,9 @@ a {
 
 				<!-- 관리비 조회 -->
 				<li class=" nav-item"><a class="d-flex align-items-center"
-					href="#"><i data-feather='menu'></i><span class="menu-title text-truncate"
-						data-i18n="eCommerce">관리비 조회</span></a>
+					href="#"><i data-feather='menu'></i><span
+						class="menu-title text-truncate" data-i18n="eCommerce">관리비
+							조회</span></a>
 					<ul class="menu-content">
 						<!-- 관리비 조회 -->
 						<li><a class="d-flex align-items-center"
@@ -467,19 +587,18 @@ a {
 								data-i18n="Shop">관리비 조회</span>
 						</a></li>
 
-					</ul>
-				</li>
+					</ul></li>
 
 				<!-- 공과금 조회 -->
 				<li class=" nav-item"><a class="d-flex align-items-center"
-					href="#"><i data-feather='menu'></i><span class="menu-title text-truncate"
-						data-i18n="eCommerce">공과금 조회</span></a>
+					href="#"><i data-feather='menu'></i><span
+						class="menu-title text-truncate" data-i18n="eCommerce">공과금
+							조회</span></a>
 					<ul class="menu-content">
 						<!-- 에너지 조회 -->
 						<li><a class="d-flex align-items-center"
-							href="<c:url value='#'/>">
-								<i data-feather="circle"></i><span class="menu-item"
-								data-i18n="Shop">공과금 조회</span>
+							href="<c:url value='#'/>"> <i data-feather="circle"></i><span
+								class="menu-item" data-i18n="Shop">공과금 조회</span>
 						</a></li>
 					</ul></li>
 				<hr>
@@ -490,76 +609,76 @@ a {
 					data-feather="more-horizontal"></i></li>
 				<!-- 내 글 목록 -->
 				<li class=" nav-item"><a class="d-flex align-items-center"
-					href="#"><i data-feather='menu'></i><span class="menu-title text-truncate"
-						data-i18n="eCommerce">내 글 목록</span></a>
+					href="#"><i data-feather='menu'></i><span
+						class="menu-title text-truncate" data-i18n="eCommerce">내 글
+							목록</span></a>
 					<ul class="menu-content">
 						<!-- 내 게시글 조회 -->
 						<li><a class="d-flex align-items-center"
-							href="<c:url value='/userDash/boardList.do'/>">
-								<i data-feather="circle"></i><span class="menu-item"
+							href="<c:url value='/userDash/boardList.do'/>"> <i
+								data-feather="circle"></i><span class="menu-item"
 								data-i18n="Shop">내 게시글 조회</span>
 						</a></li>
 					</ul>
 					<ul class="menu-content">
 						<!-- 건의게시글 조회 -->
 						<li><a class="d-flex align-items-center"
-							href="<c:url value='/userDash/suggList.do'/>">
-								<i data-feather="circle"></i><span class="menu-item"
+							href="<c:url value='/userDash/suggList.do'/>"> <i
+								data-feather="circle"></i><span class="menu-item"
 								data-i18n="Shop">내 건의글 조회</span>
 						</a></li>
-					</ul>
-					</li>
+					</ul></li>
 
 
 				<!-- 내 부가시설 -->
 				<li class=" nav-item"><a class="d-flex align-items-center"
-					href="#"><i data-feather='menu'></i><span class="menu-title text-truncate"
-						data-i18n="eCommerce">내 부가시설</span></a>
+					href="#"><i data-feather='menu'></i><span
+						class="menu-title text-truncate" data-i18n="eCommerce">내
+							부가시설</span></a>
 					<ul class="menu-content">
 						<!-- 내 부가시설 조회 -->
 						<li><a class="d-flex align-items-center"
-							href="<c:url value='#'/>">
-								<i data-feather="circle"></i><span class="menu-item"
-								data-i18n="Shop">내 부가시설 조회</span>
+							href="<c:url value='/living/add/addOrderList.do?memberNo=${sessionScope.memVo.memberNo}'/>"> <i data-feather="circle"></i><span
+								class="menu-item" data-i18n="Shop">내 부가시설 조회</span>
 						</a></li>
 					</ul></li>
 
 				<!-- 내 차량내역-->
 				<li class=" nav-item"><a class="d-flex align-items-center"
-					href="#"><i data-feather='menu'></i><span class="menu-title text-truncate"
-						data-i18n="eCommerce">내 차량내역</span></a>
+					href="#"><i data-feather='menu'></i><span
+						class="menu-title text-truncate" data-i18n="eCommerce">내
+							차량내역</span></a>
 					<ul class="menu-content">
 						<!-- 내 차량내역 조회 -->
 						<li><a class="d-flex align-items-center"
-							href="<c:url value='#'/>">
-								<i data-feather="circle"></i><span class="menu-item"
-								data-i18n="Shop">내 차량내역 조회</span>
+							href="<c:url value='#'/>"> <i data-feather="circle"></i><span
+								class="menu-item" data-i18n="Shop">내 차량내역 조회</span>
 						</a></li>
 					</ul></li>
 
 				<!-- 내 친구목록-->
 				<li class=" nav-item"><a class="d-flex align-items-center"
-					href="#"><i data-feather='menu'></i><span class="menu-title text-truncate"
-						data-i18n="eCommerce">내 친구목록</span></a>
+					href="#"><i data-feather='menu'></i><span
+						class="menu-title text-truncate" data-i18n="eCommerce">내
+							친구목록</span></a>
 					<ul class="menu-content">
 						<!-- 내 친구목록 조회 -->
 						<li><a class="d-flex align-items-center"
-							href="<c:url value='#'/>">
-								<i data-feather="circle"></i><span class="menu-item"
-								data-i18n="Shop">내 친구목록 조회</span>
+							href="<c:url value='#'/>"> <i data-feather="circle"></i><span
+								class="menu-item" data-i18n="Shop">내 친구목록 조회</span>
 						</a></li>
 					</ul></li>
 
 				<!-- 내 계정관리-->
 				<li class=" nav-item"><a class="d-flex align-items-center"
-					href="#"><i data-feather='menu'></i><span class="menu-title text-truncate"
-						data-i18n="eCommerce">내 계정관리</span></a>
+					href="#"><i data-feather='menu'></i><span
+						class="menu-title text-truncate" data-i18n="eCommerce">내
+							계정관리</span></a>
 					<ul class="menu-content">
 						<!-- 내 계정관리 -->
 						<li><a class="d-flex align-items-center"
-							href="<c:url value='#'/>">
-								<i data-feather="circle"></i><span class="menu-item"
-								data-i18n="Shop">내 계정관리</span>
+							href="<c:url value='#'/>"> <i data-feather="circle"></i><span
+								class="menu-item" data-i18n="Shop">내 계정관리</span>
 						</a></li>
 					</ul></li>
 

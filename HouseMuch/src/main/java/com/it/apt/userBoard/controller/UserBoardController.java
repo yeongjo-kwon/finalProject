@@ -225,8 +225,6 @@ public class UserBoardController {
 					}	//업로드 처리!! transferTo()
 
 					//결과를 VO 혹은 MAP 으로 담아올 수 있음. 둘 다 가능하지만, MAP 으로!!
-					//=> Map 은 VO와 비슷한 역할이다 !!!!!!!!!!!
-					//Map이 많이 쓰이므로 연습 하자! = VO들을 list로 묶듯이, Map도 list로 묶는다!
 					Map<String, Object> map = new HashMap<String, Object>();
 					//맵에서의 key가 vo의 멤버변수와 같은 역할
 					map.put("originalFileName", originName);
@@ -518,8 +516,8 @@ public class UserBoardController {
 	}
 
 	@RequestMapping("/fileDownload.do")
-	public ModelAndView fileDownload(@RequestParam int bStorageNo, String boardFilename,
-			HttpServletRequest request) {
+	public ModelAndView fileDownload(@RequestParam(defaultValue = "0") int bStorageNo, String boardFilename,
+			HttpServletRequest request, Model model) {
 		//1
 		logger.info("파일 다운로드하기, 파라미터 bStorageNo={}, boardFilename={}",
 				bStorageNo, boardFilename);
@@ -527,6 +525,7 @@ public class UserBoardController {
 		//2
 		//3
 		Map<String, Object> map = new HashMap<String, Object>();
+		
 		String uploadLastPath=fileuploadProperties.getProperty("file.upload.path");
 		String savePath1
 		=request.getSession().getServletContext().getRealPath(uploadLastPath);
@@ -537,6 +536,7 @@ public class UserBoardController {
 		File myfile=new File(savePath,boardFilename);
 		map.put("file", myfile);
 		ModelAndView mav = new ModelAndView("downloadView",map);
+		logger.info("파일 다운로드 결과, map.size={}",map.size());
 
 		//4
 		return mav;

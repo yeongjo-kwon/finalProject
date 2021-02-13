@@ -183,7 +183,16 @@ table.table {
 											<td>${map['BOARD_CTG_NAME'] }</td>
 											<td><a
 												href="<c:url value='/userBoard/userBoardDetail.do?boardNo=${boardNo }'/>"
-												style="color: black;"> ${map['BOARD_TITLE'] }</a></td>
+												style="color: black;"> 
+												<!-- 제목이 긴 경우 일부만 보여주기 -->
+												<c:if test="${fn:length(map['BOARD_TITLE'])>=25}">
+													${fn:substring(map['BOARD_TITLE'],0,25) } ...
+												</c:if>
+												<c:if test="${fn:length(map['BOARD_TITLE'])<25}">
+													${map['BOARD_TITLE'] }
+												</c:if>
+												</a>
+											</td>
 											<td>${map['MEMBER_NAME'] }</td>
 											<td><fmt:formatDate value="${map['BOARD_REGDATE'] }"
 													pattern="yyyy-MM-dd" /></td>

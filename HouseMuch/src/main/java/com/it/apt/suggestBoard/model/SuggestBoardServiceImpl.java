@@ -102,5 +102,10 @@ public class SuggestBoardServiceImpl implements SuggestBoardService{
 		return suggDao.selectTotalRecordUserdashSugg(vo);
 	}
 
+	@Override
+	public List<Map<String, Object>> selectSuggBoardOnlyFive(SuggestBoardVO vo) {
+		return suggDao.selectSuggBoardOnlyFive(vo);
+	}
+
 	
 }

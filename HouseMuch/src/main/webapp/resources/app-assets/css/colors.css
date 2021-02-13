@@ -660,7 +660,7 @@ input:focus ~ .bg-light {
 }
 
 .bg-light-primary {
-  background : rgba(115, 103, 240, 0.12) !important;
+  background : #d3fded !important;
   color : #2FA599 !important;
 }
 

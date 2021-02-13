@@ -104,6 +104,11 @@ public class SuggestBoardDAOMybatis implements SuggestBoardDAO{
 		return sqlSession.selectOne(namespace+"selectTotalRecordUserdashSugg",vo);
 	}
 
+	@Override
+	public List<Map<String, Object>> selectSuggBoardOnlyFive(SuggestBoardVO vo) {
+		return sqlSession.selectList(namespace+"selectSuggBoardOnlyFive",vo);
+	}
+
 
 	
 

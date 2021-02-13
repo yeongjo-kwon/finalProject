@@ -287,9 +287,21 @@
 		(
 			SELECT * 
 			FROM SUGGEST_VIEW
-			WHERE APT_NO=#{aptNo}
+			WHERE APT_NO=#{aptNo} AND MEMBER_NO=#{memberNo}
 		)
 		<include refid="searchWhere" />
+	</select>
+	
+	<!-- 입주민 대시보드 - 메인 건의사항 최신 5건만 보여주기 -->
+	<select id="selectSuggBoardOnlyFive" parameterType="suggestBoardVo" 
+		resultType="map">
+		SELECT SUGG_BOARD_NO, SUGG_CTG_NAME, SUGG_TITLE,SUGG_CONTENT, 
+			SUGG_REGDATE,MEMBER_NO, APT_NO, MEMBER_NAME,ANSW_NO, ANSW_REGDATE
+		FROM SUGGEST_VIEW
+		WHERE APT_NO=#{aptNo} AND MEMBER_NO=#{memberNo}
+		<![CDATA[
+		AND ROWNUM<=5
+		]]>
 	</select>
 </mapper>
 
