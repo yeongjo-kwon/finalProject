@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.it.apt.adminLiving.add.model.AddFacilityInfoVO;
+import com.it.apt.energy.UtilityCostInfoVO;
 import com.it.apt.household.model.HouseholdVO;
 
 
@@ -27,4 +28,6 @@ public interface MngcostService {
 	List<String> selectMyDongList(int aptNo);
 	List<String> selectMyHoList(int aptNo);
 	List<Map<String, Object>> selectMngcostPaymentList(HouseholdVO householdVo);
+	List<HouseholdVO> selectHouseholdList(int aptNo);
+	int insertUtilityCostInfoMulti(List<UtilityCostInfoVO> utilityCostList);
 }

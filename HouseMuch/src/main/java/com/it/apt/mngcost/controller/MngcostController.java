@@ -79,6 +79,7 @@ public class MngcostController {
 			 HttpSession session) {
 		MemberVO memVo=(MemberVO)session.getAttribute("memVo");
 		inqVo.setAptNo(memberService.selectAptNo(memVo.getId()));
+		inqVo.setHouseholdCode(memVo.getHouseholdCode());
 		logger.info("관리비 상세보기, inqVo={}", inqVo);
 		
 		List<MngcostInfoVO> mngcostInfoList

@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
 import com.it.apt.adminLiving.add.model.AddFacilityInfoVO;
+import com.it.apt.energy.UtilityCostInfoVO;
 import com.it.apt.household.model.HouseholdVO;
 
 @Service
@@ -121,5 +122,27 @@ public class MngcostServiceImpl implements MngcostService{
 	@Override
 	public List<Map<String, Object>> selectMngcostPaymentList(HouseholdVO householdVo) {
 		return mngcostDao.selectMngcostPaymentList(householdVo);
+	}
+
+	@Override
+	public List<HouseholdVO> selectHouseholdList(int aptNo) {
+		return mngcostDao.selectHouseholdList(aptNo);
+	}
+
+	@Override
+	@Transactional
+	public int insertUtilityCostInfoMulti(List<UtilityCostInfoVO> utilityCostList) {
+		int cnt=0;
+		try {
+			for(UtilityCostInfoVO utilityCostVo : utilityCostList) {
+				cnt=mngcostDao.insertUtilityCostInfo(utilityCostVo);
+			}
+		}catch(RuntimeException e) {
+			e.printStackTrace();
+			cnt=-1;
+			TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+		}
+		
+		return cnt;
 	}
 }

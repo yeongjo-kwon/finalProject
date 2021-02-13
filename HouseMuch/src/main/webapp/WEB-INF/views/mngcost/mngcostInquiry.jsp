@@ -47,11 +47,13 @@
 			data:"mngcostClaimdate="+$('#mngcostClaimdate').val(),
 			dataType:"json",
 			success:function(res){
-				var str="< 포함된 부가시설 이용 요금 >";
-				$.each(res, function(idx, item){
-					str+="<br>+ "+numFormat(item.addPrice)+"원 ["+item.addName+"]";
-				});
-				$(obj).find('#plusAddInfo').html(str);
+				if(res.length>0){
+					var str="< 포함된 부가시설 이용 요금 >";
+					$.each(res, function(idx, item){
+						str+="<br>+ "+numFormat(item.addPrice)+"원 ["+item.addName+"]";
+					});
+					$(obj).find('#plusAddInfo').html(str);
+				}
 			},
 			error:function(xhr, status, error){
 				alert("error : "+error);

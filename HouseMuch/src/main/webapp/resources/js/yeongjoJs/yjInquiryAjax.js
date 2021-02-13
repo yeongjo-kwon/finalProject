@@ -40,7 +40,12 @@
 				var str="";
 				if(res.length>0){
 					$.each(res, function(idx, item){
-						str+="<tr><th scope='row'>"+(idx+1)+"</th>";
+						str+="<tr><th scope='row'>";
+						if(item.mngcostNo<=0){
+							str+="개별</th>";
+						}else{
+							str+=item.mngcostNo+"</th>";
+						}
 						str+="<td>"+formatDate(item.mngcostUsedate)+"</td>";
 						str+="<td>"+item.mngcostContent+"</td>";
 						str+="<td>"+numFormat(item.mngcostPrice)+"원</td></tr>";

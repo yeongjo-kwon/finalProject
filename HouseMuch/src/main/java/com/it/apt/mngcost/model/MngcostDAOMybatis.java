@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.it.apt.adminLiving.add.model.AddFacilityInfoVO;
+import com.it.apt.energy.UtilityCostInfoVO;
 import com.it.apt.household.model.HouseholdVO;
 
 @Repository
@@ -97,5 +98,15 @@ public class MngcostDAOMybatis implements MngcostDAO{
 	@Override
 	public List<Map<String, Object>> selectMngcostPaymentList(HouseholdVO householdVo) {
 		return sqlSession.selectList(namespace+"selectMngcostPaymentList", householdVo);
+	}
+
+	@Override
+	public List<HouseholdVO> selectHouseholdList(int aptNo) {
+		return sqlSession.selectList(namespace+"selectHouseholdList", aptNo);
+	}
+
+	@Override
+	public int insertUtilityCostInfo(UtilityCostInfoVO utilityCostVo) {
+		return sqlSession.insert(namespace+"insertUtilityCostInfo", utilityCostVo);
 	}
 }

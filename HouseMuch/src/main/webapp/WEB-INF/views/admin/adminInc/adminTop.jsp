@@ -440,6 +440,11 @@ function subMenuScroll(){
                         <li><a class="d-flex align-items-center" href="<c:url value='/admin/adminMngcost/adminMngcostRegister.do'/>">
                         <i data-feather="circle"></i><span class="menu-item" data-i18n="Shop">지출내역 등록</span></a>
                         </li>
+                        
+                        <!-- 회계1-3 : 세대 전기료 등록 -->
+                        <li><a class="d-flex align-items-center" href="<c:url value='/admin/adminMngcost/adminElectricChargeRegister.do'/>">
+                        <i data-feather="circle"></i><span class="menu-item" data-i18n="Shop">세대 전기료 등록</span></a>
+                        </li>
                     </ul>
                 </li>
                 

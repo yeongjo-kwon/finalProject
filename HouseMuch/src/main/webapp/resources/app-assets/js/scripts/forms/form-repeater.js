@@ -60,6 +60,15 @@ $(function () {
 			$(this).find('#mngcostMCtgNo').val(0);
 			$(this).find('#mngcostSCtgNo').html("<option value='0'>관리비 소분류</option>");
 			
+			$(this).find('#mngcostSCtgNo').change(function(){
+				if($(this).val()==39){
+					if(confirm('세대전기료 등록은 별도의 폼에서 입력이 가능합니다.\r\n진행하던 지출내역 등록을 중지하고,\r\n세대전기료 등록화면으로 이동하시겠습니까?')){
+						location.href="";
+					}
+					$(this).val(0);
+				}
+			});
+			
 			$(this).find('#mngcostMCtgNo').change(function(){
 				if($(this).val()!=0){
 					var me=$(this);
