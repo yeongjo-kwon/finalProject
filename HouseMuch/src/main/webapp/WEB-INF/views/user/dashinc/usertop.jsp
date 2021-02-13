@@ -519,7 +519,7 @@ $(function(){
 				</a>
 					<div class="dropdown-menu dropdown-menu-right"
 						aria-labelledby="dropdown-user">
-						<a class="dropdown-item" href="#"><i class="mr-50"
+						<a class="dropdown-item" href="<c:url value='/userDash/myAccount/memberEdit.do'/>"><i class="mr-50"
 							data-feather="user"></i>내 계정 관리</a><a class="dropdown-item"
 							href="<c:url value='/userDash/userDashMain.do'/>"><i
 							class="mr-50" data-feather="check-square"></i>마이페이지</a><a
@@ -677,7 +677,7 @@ $(function(){
 					<ul class="menu-content">
 						<!-- 내 계정관리 -->
 						<li><a class="d-flex align-items-center"
-							href="<c:url value='#'/>"> <i data-feather="circle"></i><span
+							href="<c:url value='/userDash/myAccount/memberEdit.do'/>"> <i data-feather="circle"></i><span
 								class="menu-item" data-i18n="Shop">내 계정관리</span>
 						</a></li>
 					</ul></li>
