@@ -31,20 +31,36 @@
 	<select id="selectMngcostInfoByClaim" parameterType="inquiryInfoVo"
 			resultType="mngcostInfoVo">
 		SELECT *
-		FROM MNGCOST_INFO
-		WHERE APT_NO=#{aptNo}
-		AND TO_CHAR(MNGCOST_USEDATE, 'YYYY-MM')
-            =TO_CHAR(ADD_MONTHS(#{mngcostClaimdate}, -1), 'YYYY-MM')
-        <if test="mngcostSCtgNo!=0">
-        	AND MNGCOST_S_CTG_NO=#{mngcostSCtgNo}
+		FROM
+			(SELECT *
+			 FROM MNGCOST_INFO
+			 WHERE APT_NO=#{aptNo}
+			 AND TO_CHAR(MNGCOST_USEDATE, 'YYYY-MM')
+	             =TO_CHAR(ADD_MONTHS(#{mngcostClaimdate}, -1), 'YYYY-MM')
+			 UNION
+			 SELECT 0,
+				    39,
+				    #{aptNo},
+				    TO_CHAR(U_COST_USEDATE, 'YYYY-MM')||'월 세대 전기료',
+				    U_COST_PRICE,
+				    U_COST_USEDATE
+			 FROM UTILITY_COST_INFO
+			 WHERE HOUSEHOLD_CODE=#{householdCode}
+			 AND U_CTG_NO=3
+			 AND TO_CHAR(U_COST_USEDATE, 'YYYY-MM')
+				 =TO_CHAR(ADD_MONTHS(#{mngcostClaimdate}, -1), 'YYYY-MM')
+		)
+		<if test="mngcostSCtgNo!=0">
+        	WHERE MNGCOST_S_CTG_NO=#{mngcostSCtgNo}
 		</if>
 		<if test="mngcostMCtgNo!=0 and mngcostSCtgNo==0">
-			AND MNGCOST_S_CTG_NO IN
+			WHERE MNGCOST_S_CTG_NO IN
 				(SELECT MNGCOST_S_CTG_NO
 				 FROM MNGCOST_SUB_CTG
 				 WHERE MNGCOST_M_CTG_NO=#{mngcostMCtgNo})
 		</if>
-		ORDER BY MNGCOST_NO
+		ORDER BY MNGCOST_USEDATE DESC
+		<!-- ORDER BY MNGCOST_NO -->
 	</select>
 	
 	<select id="plusAddInfo" parameterType="inquiryInfoVo"
@@ -183,24 +199,34 @@
 		     MNGCOST_CLAIMDATE)
 		SELECT MNGCOST_PAYMENT_LIST_SEQ.NEXTVAL,
 			   M.HOUSEHOLD_CODE,
-			   CEIL(APRICE+(SELECT SUM(MNGCOST_PRICE)
-			       		    FROM MNGCOST_INFO WHERE APT_NO=#{aptNo}
-			                AND TO_CHAR(MNGCOST_USEDATE, 'YYYY-MM')=#{startdate})
-			               		/(SELECT TOTAL_HOUSEHOLD
-						          FROM APARTMENT_INFO
-						          WHERE APT_NO=#{aptNo})),
+			   CEIL(APRICE+UPRICE
+			   			+(SELECT SUM(MNGCOST_PRICE)
+			       	  	  FROM MNGCOST_INFO WHERE APT_NO=#{aptNo}
+			          	  AND TO_CHAR(MNGCOST_USEDATE, 'YYYY-MM')=#{startdate})
+			              	/(SELECT TOTAL_HOUSEHOLD
+						      FROM APARTMENT_INFO
+						      WHERE APT_NO=#{aptNo})),
 		       #{mngcostLimitdate},
 		       #{mngcostClaimdate}
 		FROM (
 		    SELECT H.HOUSEHOLD_CODE,
-		    	   APT_NO, NVL(TOTAL, 0) APRICE
+		    	   APT_NO,
+		    	   NVL(TOTAL, 0) APRICE,
+		    	   NVL(U_COST_PRICE, 0) UPRICE
 		    FROM HOUSEHOLD_INFO H
-		    	LEFT JOIN (SELECT HOUSEHOLD_CODE, SUM(ADD_PRICE) TOTAL
+		    	LEFT JOIN (SELECT HOUSEHOLD_CODE,
+		    				 	  SUM(ADD_PRICE) TOTAL
 		                   FROM ADD_ORDER_LIST L
 		                   		JOIN ADDITIONAL_FACILITY_INFO I
 		                   		ON L.ADD_NO = I.ADD_NO
 		                   GROUP BY HOUSEHOLD_CODE)A
 		        ON H.HOUSEHOLD_CODE=A.HOUSEHOLD_CODE
+		        LEFT JOIN (SELECT HOUSEHOLD_CODE,
+		        				  U_COST_PRICE
+                           FROM UTILITY_COST_INFO
+                           WHERE U_CTG_NO=3
+                           AND TO_CHAR(U_COST_USEDATE, 'YYYY-MM')=#{startdate})U
+		        ON H.HOUSEHOLD_CODE=U.HOUSEHOLD_CODE
 		    WHERE AUTH_CODE='RESIDENT'
 		)M
 	</insert>
@@ -249,4 +275,36 @@
 		</if>
 		ORDER BY MNGCOST_CLAIMDATE DESC
 	</select>
+	
+	<!-- 세대 전기료 등록 시, 세대 정보 리스트  -->
+	<select id="selectHouseholdList" parameterType="int"
+			resultType="householdVo">
+		SELECT HOUSEHOLD_CODE,
+		       DONG,
+		       HO
+		FROM HOUSEHOLD_INFO
+		WHERE AUTH_CODE='RESIDENT'
+		AND APT_NO=#{aptNo}
+		ORDER BY DONG, HO
+	</select>
+	
+	<!-- 세대 전기료 등록 -->
+	<insert id="insertUtilityCostInfo">
+		<selectKey keyProperty="uCostNo" resultType="int" order="BEFORE">
+			SELECT UTILITY_COST_INFO_SEQ.NEXTVAL FROM DUAL
+		</selectKey>
+		INSERT INTO UTILITY_COST_INFO(U_COST_NO,
+									  U_COST_AMOUNT,
+									  U_COST_PRICE,
+									  HOUSEHOLD_CODE,
+									  U_CTG_NO,
+									  U_COST_USEDATE)	
+		VALUES(#{uCostNo},
+			   #{uCostAmount},
+			   #{uCostPrice},
+			   #{householdCode},
+			   3,
+			   SYSDATE)
+
+	</insert>
 </mapper>

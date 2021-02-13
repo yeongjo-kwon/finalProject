@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.it.apt.energy.UtilityCostInfoVO;
 import com.it.apt.household.model.HouseholdVO;
 import com.it.apt.member.model.MemberService;
 import com.it.apt.member.model.MemberVO;
@@ -308,5 +309,88 @@ public class AdminMngcostController {
 		logger.info("관리자 관리비 청구 내역 조회 결과 payList={}", payList);
 		
 		return payList;
+	}
+	
+	@RequestMapping("/adminElectricChargeRegister.do")
+	public void adminElectricChargeRegister_get(HttpSession session, Model model) {
+		MemberVO memVo=(MemberVO)session.getAttribute("memVo");
+		int aptNo=memberService.selectAptNo(memVo.getId());
+		logger.info("{}번 아파트 세대 전기료 등록화면 보여주기", aptNo);
+		
+		List<HouseholdVO> householdInfoList=mngcostService.selectHouseholdList(aptNo);
+		
+		model.addAttribute("householdInfoList", householdInfoList);
+	}
+	
+	@PostMapping("/adminElectricChargeRegister.do")
+	public String adminElectricChargeRegister_post(@RequestParam(required = false) HashMap<String, Object> repeaterMap,
+			HttpSession session, Model model) {
+		logger.info("세대 전기료 등록하기, 파라미터 repeaterMap={}", repeaterMap);
+		
+		String msg="세대 전기료 등록에 실패하였습니다.", url="/admin/adminMngcost/adminElectricChargeRegister.do";
+		List<UtilityCostInfoVO> utilityCostList=new ArrayList<UtilityCostInfoVO>();
+		//map의 값 개수 / row당 값 개수 = row 개수
+		for(int i=0; i<repeaterMap.size()/3; i++) {
+			String householdCode=(String)repeaterMap.get("invoice["+i+"][householdCode]");
+			int uCostAmount=Integer.parseInt((String)repeaterMap.get("invoice["+i+"][UCostAmount]"));
+			int uCostPrice=Integer.parseInt((String)repeaterMap.get("invoice["+i+"][UCostPrice]"));
+			
+			UtilityCostInfoVO utilityCostVo=new UtilityCostInfoVO();
+			utilityCostVo.setHouseholdCode(householdCode);
+			utilityCostVo.setuCostAmount(uCostAmount);
+			utilityCostVo.setuCostPrice(uCostPrice);
+			
+			utilityCostList.add(utilityCostVo);
+		}
+		
+		
+		int cnt=mngcostService.insertUtilityCostInfoMulti(utilityCostList);
+		if(cnt>0){
+			msg="세대 전기료 다중 등록에 성공하였습니다.";
+		}
+		
+		model.addAttribute("msg", msg);
+		model.addAttribute("url", url);
+		
+		return "common/message";
+	}
+	
+	@ResponseBody
+	@RequestMapping("/adminElectricChargeRegDupCheck.do")
+	public Map<String, Object> adminElectricChargeRegDupCheck(@RequestParam(required = false) HashMap<String, Object> repeaterMap) {
+		logger.info("세대 전기료 등록 시 세대 중복확인, 파라미터 repeaterMap={}", repeaterMap);
+		
+		String[] sArr=new String[10];
+		int idx=0;
+		for(int i=0; i<repeaterMap.size()/3; i++) {
+			String householdCode1=(String)repeaterMap.get("invoice["+i+"][householdCode]");
+			int count=0;
+			for(String s:sArr) {
+				if(householdCode1.equals(s)) {
+					count++;
+					break;
+				}
+			}
+			if(count==0) {
+				for(int j=0; j<repeaterMap.size()/3; j++) {
+					String householdCode2=(String)repeaterMap.get("invoice["+j+"][householdCode]");
+					if(i!=j) {
+						if(householdCode1.equals(householdCode2)) {
+							sArr[idx++]=householdCode1;
+							break;
+						}
+					}
+				}
+			}
+		}
+		logger.info("등록 대상끼리 중복된 세대코드={}", sArr);
+		
+		String message="하나의 세대에 중복등록할 수 없습니다.";
+		
+		HashMap<String, Object> dupMessageMap=new HashMap<String, Object>();
+		dupMessageMap.put("message", message);
+		dupMessageMap.put("householdArr", sArr);
+		
+		return dupMessageMap;
 	}
 }

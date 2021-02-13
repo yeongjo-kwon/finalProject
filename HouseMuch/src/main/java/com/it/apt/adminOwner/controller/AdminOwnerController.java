@@ -149,7 +149,7 @@ public class AdminOwnerController {
 		model.addAttribute("dongList", dongList);
 	}
 	
-	@ResponseBody
+	/*@ResponseBody
 	@RequestMapping("/hoList.do")
 	public List<String> hoList(@ModelAttribute HouseholdVO householdVo, HttpSession session) {
 		logger.info("@@@@@@@@@@@@호@@@@@@@@@@@@");
@@ -162,6 +162,6 @@ public class AdminOwnerController {
 		logger.info("호 리스트 조회 결과 hoList={}", hoList);
 		
 		return hoList;
-	}
+	}*/
 	
 }

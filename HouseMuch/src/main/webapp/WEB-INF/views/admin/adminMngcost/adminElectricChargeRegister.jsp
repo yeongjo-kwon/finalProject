@@ -5,73 +5,60 @@
 <script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/yeongjoJs/yjInquiryAjax.js"></script>
 <script type="text/javascript">
 	$(function(){
-		$('#mngcostPrice').focus();
+		$('#UCostAmount').keyup(function(){
+			//전기요금 계산 (주택용 전력(저압))
+			var amount=$(this).val();
+			var price=0;
+			
+			//누진제 적용
+			if(amount<=200){
+				price=910+(amount*93.3);
+			}else if(amount<=400){
+				price=1600+(200*93.3)+((amount-200)*187.9);
+			}else{
+				price=7300+(200*93.3)+(200*187.9)+((amount-400)*280.6);
+			}
+			
+			//부가세 + 전력기금 추가 (+10원 절삭)
+			price+=price*0.137;
+			$('#UCostPrice').val(Math.round(price/10)*10);
+		});
 		
-		$('#mngcostMCtgNo').change(function(){
-			$(this).parent().parent().next().find('#mngcostSCtgNo').html("<option value='0'>관리비 소분류</option>");
-			if($(this).val()!=0){
-				//호출된 태그 변수처리
-				var me=this;
-				//관리비 카테고리 세팅 
-		 		$.ajax({
-					url:"<c:url value='/mngcost/showSubCtg.do'/>",
-					type:"get",
-					data:"mngcostMCtgNo="+$(this).val(),
+		$('#btElectricChargeReg').click(function(){
+			$('#beforeIsValid').val($('#isValid').val());
+			
+			if($('#householdCode').val()=="0"){
+				alert('세대가 선택되지 않았습니다.');
+				$('#isValid').val(Number($('#isValid').val())+1);
+				return false;
+			}else if($('#UCostAmount').val().length<=0){
+				alert('전기 사용량이 입력되지 않았습니다.');
+				$('#UCostAmount').focus();
+				$('#isValid').val(Number($('#isValid').val())+1);
+				return false;
+			}else{
+				$.ajax({
+					url:"<c:url value='/admin/adminMngcost/adminElectricChargeRegDupCheck.do'/>",
+					type:"post",
+					data:$('form[name=repeatFrm]').serialize(),
 					dataType:"json",
 					success:function(res){
-						if(res.length>0){
-							var str="<option value='0'>관리비 소분류</option>";
-							$.each(res, function(idx, item){
-								str+="<option value='"+item.mngcostSCtgNo
-									+"'>"+item.mngcostSCtgName+"</option>";
-							});
-							$(me).parent().parent().next().find('#mngcostSCtgNo').html(str);
+						var arr=res.householdArr;
+						var count=0;
+						for(var i=0; i<arr.length; i++){
+							if($('#householdCode').val()==arr[i]){
+								count++;
+								$('#householdCode').prev().find('span').html(" <i data-feather='x-circle' style='color: red'></i>");
+								break;
+							}
 						}
+						
+						if(count==0) $('form[name=repeatFrm]').submit();
 					},
 					error:function(xhr, status, error){
 						alert("error : "+error);
 					}
 				});
-			}
-		});
-		
-		var pr=0;
-		$('#mngcostPrice').focus(function(){
-			pr=Number($(this).val());
-		});
-		$('#mngcostPrice').blur(function(){
-			tot=Number($('#totalPay').html())-pr;
-			$('#totalPay').html(tot+Number($(this).val()));
-		});
-		
-		$('form[name=repeatFrm]').submit(function(){
-			$('#beforeIsValid').val($('#isValid').val());
-			
-			if($('#mngcostMCtgNo').val()=="0"){
-				alert('대분류가 선택되지 않았습니다.');
-				$('#isValid').val(Number($('#isValid').val())+1);
-				return false;
-			}else if($('#mngcostSCtgNo').val()=="0"){
-				alert('소분류가 선택되지 않았습니다.');
-				$('#isValid').val(Number($('#isValid').val())+1);
-				return false;
-			}else if($('#mngcostPrice').val().length<=0){
-				alert('지출 금액이 입력되지 않았습니다.');
-				$(this).find('#mngcostPrice').focus();
-				$('#isValid').val(Number($('#isValid').val())+1);
-				return false;
-			}else if($('#mngcostContent').val().length<=0){
-				$('#mngcostContent').val("내용 없음");
-			}
-		});
-		
-		$('select[name=mngcostSCtgNo]').change(function(){
-			if($(this).val()==39){
-				if(confirm('세대전기료 등록은 별도의 폼에서 입력이 가능합니다.\r\n진행하던 지출내역 등록을 중지하고,\r\n세대전기료 등록화면으로 이동하시겠습니까?')){
-					location.href="<c:url value='/admin/adminMngcost/adminElectricChargeRegister.do'/>";
-				}
-				
-				$(this).val(0);
 			}
 		});
 	});
@@ -85,14 +72,14 @@
          <div class="content-header-left col-md-9 col-12 mb-2">
            <div class="row breadcrumbs-top">
              <div class="col-12">
-               <h2 class="content-header-title float-left mb-0">지출내역 등록</h2>
+               <h2 class="content-header-title float-left mb-0">세대전기료 등록</h2>
                <div class="breadcrumb-wrapper">
                  <ol class="breadcrumb">
                    <li class="breadcrumb-item">
                    	<a href="<c:url value='/admin/adminAll/adminAllMain.do'/>">Home</a>
                    </li>
                    <li class="breadcrumb-item"><a href="#">관리비 관리</a></li>
-                   <li class="breadcrumb-item active">지출내역 등록</li>
+                   <li class="breadcrumb-item active">세대전기료 등록</li>
                  </ol>
                </div>
              </div>
@@ -114,49 +101,41 @@
 		    <div class="col-12">
 		      <div class="card">
 		        <div class="card-header">
-		          <h4 class="card-title">지출 정보</h4>
+		          <h4 class="card-title">전기료 정보</h4>
 		        </div>
 		        <div class="card-body">
-		          <form action="<c:url value='/admin/adminMngcost/adminMngcostRegisterOk.do'/>"
-		          		class="invoice-repeater" method="post" name="repeatFrm" id="repeatFrm">
+		          <form action="<c:url value='/admin/adminMngcost/adminElectricChargeRegister.do'/>"
+		          		class="invoice-repeater2" method="post" name="repeatFrm" id="repeatFrm">
 		            <div data-repeater-list="invoice">
 		              <div data-repeater-item>
 		                <div class="row d-flex align-items-end">
 		                  <div class="col-md-2 col-12">
 		                    <div class="form-group">
-		                      <label for="mngcostMCtgNo">대분류</label>
-		                      <select class="form-control" id="mngcostMCtgNo"
-		                      		aria-describedby="mngcostMCtgNo" name="mngcostMCtgNo">
-		                      	<option value="0">관리비 대분류</option>
-						    	<c:forEach var="mngcostMainCtgVo" items="${mngcostMainCtgList}">
-						    		<option value="${mngcostMainCtgVo.mngcostMCtgNo}">
-						    			${mngcostMainCtgVo.mngcostMCtgName}</option>
+		                      <label for="householdCode">세대<span id="cautionIcon"></span></label>
+		                      <select class="form-control" id="householdCode"
+		                      		aria-describedby="householdCode" name="householdCode">
+		                      	<option value="0">세대 상세주소</option>
+						    	<c:forEach var="householdInfoVo" items="${householdInfoList}">
+						    		<option value="${householdInfoVo.householdCode}">
+						    			${householdInfoVo.dong}동 ${householdInfoVo.ho}호</option>
 						    	</c:forEach>
-		                      </select>
-		                    </div>
-		                  </div>
-		                  <div class="col-md-2 col-12" id="testyong">
-		                    <div class="form-group">
-		                      <label for="mngcostContent">소분류</label>
-		                      <select class="form-control" id="mngcostSCtgNo"
-		                      		aria-describedby="mngcostContent" name="mngcostSCtgNo">
-						    	<option value="0">관리비 소분류</option>
 		                      </select>
 		                    </div>
 		                  </div>
 		                  <div class="col-md-4 col-12">
 		                    <div class="form-group">
-		                      <label for="mngcostContent">지출 내용</label>
-		                      <input type="text" class="form-control" id="mngcostContent"
-		                      	aria-describedby="mngcostContent" placeholder="내용" name="mngcostContent" />
+		                      <label for="UCostAmount">사용량 (kWh)</label>
+		                      <input type="text" class="form-control" id="UCostAmount"
+		                      	aria-describedby="UCostAmount" placeholder="사용량 입력" name="UCostAmount" />
 		                    </div>
 		                  </div>
 		
 		                  <div class="col-md-2 col-12">
 		                    <div class="form-group">
-		                      <label for="mngcostPrice">지출 금액</label>
-		                      <input type="number" class="form-control" id="mngcostPrice"
-		                        aria-describedby="mngcostPrice" placeholder="0" name="mngcostPrice"/>
+		                      <label for="UCostPrice">청구금액 (원)</label>
+		                      <input type="number" class="form-control" id="UCostPrice"
+		                        aria-describedby="UCostPrice" placeholder="0" name="UCostPrice"
+		                        style="border:0; background:white; box-shadow:none;" readonly/>
 		                    </div>
 		                  </div>
 		
@@ -173,20 +152,14 @@
 		              </div>
 		            </div>
 		            <div class="row">
-		              <div class="col-md-8 col-6">
+		              <div class="col-md-8 col-7">
 		                <button class="btn btn-icon btn-outline-primary" type="button" data-repeater-create>
 		                  <i data-feather="plus" class="mr-25"></i>
 		                  <span>추가하기</span>
 		                </button>
 		              </div>
-		              <div class="col-md-2 col-3">
-		                 <div class="form-group">
-		                   <label for="staticprice">총 지출액</label><br>￦
-		                   <span id="totalPay">0</span>
-		                 </div>
-		              </div>
-		              <div class="col-md-2 col-3">
-		              	<input type="submit" class="btn btn-primary" value="등록">
+		              <div class="col-md-4 col-5">
+		              	<a href="#" class="btn btn-primary" id="btElectricChargeReg"><i data-feather='triangle'></i> 등록&nbsp;</a>
 		              </div>
 		            </div>
 		          </form>
@@ -205,7 +178,5 @@
 
 <!-- ======= End About Section ======= -->
 <%@ include file="../adminInc/adminBottom.jsp"%>
+<script src="${pageContext.request.contextPath}/resources/js/yeongjoJs/yjFormRepeater.js"></script>
 <script src="${pageContext.request.contextPath}/resources/app-assets/vendors/js/forms/repeater/jquery.repeater.min.js"></script>
-    
-    
-

@@ -89,7 +89,7 @@
          	<img class="round" src="${pageContext.request.contextPath}/resources/user_images/${memVo.memberImgFilename }" alt="avatar" height="40" width="40" style="background-color: #fff; padding-top:0px; border-radius : 50%; overflow: hidden;">
           </a>
             <ul style="text-align: left; width:150px;">
-              <li><a href="#">내 계정 관리</a></li>
+              <li><a href="<c:url value='/userDash/myAccount/memberEdit.do'/>">내 계정 관리</a></li>
               <li><a href="<c:url value='/userDash/userDashMain.do'/>">마이 페이지</a></li>
               
               <!-- 관리자 대시보드로 들어가는 링크  -->
@@ -141,7 +141,7 @@
 		     	</li>
 			     <li>
 			     	<ul style="display: block">
-			     		<li><a href="/mngcost/mngcostPayment.do">납부하기</a>
+			     		<li><a href="<c:url value='/mngcost/mngcostPayment.do'/>">납부하기</a>
 			     	</ul>
 		     	</li>
 	     	</ul>
