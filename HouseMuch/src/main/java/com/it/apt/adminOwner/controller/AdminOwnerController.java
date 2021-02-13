@@ -170,7 +170,7 @@ public class AdminOwnerController {
 		model.addAttribute("dongList", dongList);
 	}
 	
-	/*@ResponseBody
+	@ResponseBody
 	@RequestMapping("/hoList.do")
 	public List<String> hoList(@RequestParam(defaultValue = "0")String dong , HttpSession session) {
 		logger.info("@@@@@@@@@@@@호@@@@@@@@@@@@ dong={}", dong);
@@ -185,7 +185,7 @@ public class AdminOwnerController {
 		logger.info("호 리스트 조회 결과 hoList={}", hoList);
 		
 		return hoList;
-	}*/
+	}
 	
 	@RequestMapping("/ownerResReg.do")
 	public String ownerResReg(@RequestParam(required = false) HashMap<String, Object> repeaterMap,
