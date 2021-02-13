@@ -11,8 +11,25 @@
 	   </where>
 	</sql>
 	
-	<select id="selectAllAuth" resultType="authorityVo">
-		select * from authority order by auth_level desc
+	<select id="selectAdminAuth" resultType="authorityVo">
+		select * from authority where auth_level=2
+	</select>
+	
+	<select id="selectAdminLv2" parameterType="int" resultType="AdminAllVo">
+		select 
+		m.member_no,
+		a.auth_code,
+		a.auth_name,
+		m.member_name,
+		m.id,
+		m.email,
+		hi.household_code 
+		from household_info hi
+		left join member_info m
+		on hi.household_code = m.household_code
+		join authority a
+		on hi.auth_code=a.auth_code
+		where hi.apt_no=#{aptNo} and a.auth_level=2	
 	</select>
 	
 	<select id="showResidentByid" resultType="residentVo" parameterType="String">
@@ -41,10 +58,10 @@
 		)
 		<foreach collection="excelContent" item="item" separator="union all">
 		select
-			#{item.B},
+			#{item.A},
 			#{aptNo},
+			#{item.B},
 			#{item.C},
-			#{item.D},
 			'RESIDENT'
 		from dual
 		</foreach>
@@ -60,18 +77,28 @@
 		)
 		<foreach collection="excelContent" item="item" separator="union all">
 		select
+			GET_hMemNo(),
 			#{item.A},
-			#{item.B},
+			#{item.D},
 			#{item.E},
-			#{item.F},
-			#{item.G}
+			#{item.F}
 		from dual
 		</foreach>
 	</insert>
 	
-	<delete id="delAllResInfo">
-		delete from household_info where auth_code='RESIDENT'
+	<delete id="delAllResInfo" parameterType="int">
+		delete from household_info where auth_code='RESIDENT' and apt_no=#{aptNo}
 	</delete>
+	
+	<select id="selectHo" parameterType="householdVo" resultType="string">
+		SELECT DISTINCT HO
+        FROM HOUSEHOLD_INFO
+        WHERE APT_NO=#{aptNo}
+        and dong=#{dong}
+        AND AUTH_CODE='RESIDENT'
+        ORDER BY HO DESC
+	</select>
+	
 	
 </mapper>
 

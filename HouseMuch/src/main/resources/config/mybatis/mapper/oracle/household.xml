@@ -22,7 +22,33 @@
 		insert into household_info(household_code,apt_no,dong,ho,auth_code)
 		values(#{householdCode},#{aptNo},#{dong},#{ho},#{authCode})		
 	</insert>
-
+	
+		<select id="findHouseholdCode" parameterType="householdVo" resultType="string">
+		select household_code from household_info where apt_no=#{aptNo} and dong=#{dong} and ho=#{ho}
+	</select>
+	
+	<insert id="insertHouseholdMember" parameterType="householdMemVo">
+		<selectKey keyProperty="hMemberNo" resultType="int" order="BEFORE">
+			select household_member_seq.nextval from dual
+		</selectKey>
+		insert into household_member(h_member_no, household_code, h_memb_name, birth, relation)
+		values(#{hMemberNo},#{householdCode},#{hMembName},#{birth},#{relation})
+	</insert>
+	
+	<update id="updateAdmin" parameterType="householdVo">
+		update household_info
+		set auth_code=#{authCode}
+		where household_code=#{householdCode}
+	</update>
+	
+	<delete id="deleteAdmin" parameterType="String">
+		delete household_info where household_code=#{householdCode}
+	</delete>
+	
+	<select id="selectByCode" parameterType="String" resultType="householdVo">
+		select * from household_info where household_code=#{householdCode}
+	</select>
+	
 </mapper>
 
 

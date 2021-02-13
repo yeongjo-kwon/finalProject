@@ -1,11 +1,14 @@
 package com.it.apt.adminOwner.controller;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import org.apache.commons.lang3.RandomStringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,12 +23,16 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.it.apt.adminOwner.model.AdminAllVO;
 import com.it.apt.adminOwner.model.AuthorityVO;
 import com.it.apt.adminOwner.model.OwnerService;
 import com.it.apt.adminOwner.model.ResidentVO;
+import com.it.apt.household.model.HouseholdMemVo;
+import com.it.apt.household.model.HouseholdService;
 import com.it.apt.household.model.HouseholdVO;
 import com.it.apt.member.model.MemberService;
 import com.it.apt.member.model.MemberVO;
+import com.it.apt.mngcost.model.MngcostInfoVO;
 import com.it.apt.mngcost.model.MngcostService;
 
 @Controller
@@ -36,17 +43,30 @@ public class AdminOwnerController {
 	@Autowired private OwnerService ownerService;
 	@Autowired private MemberService memberService;
 	@Autowired private MngcostService mngcostService;
+	@Autowired private HouseholdService householdService;
 	
 	@RequestMapping("/adminOwnerMain")
 	public void ownerMain() {
 		logger.info("Main 보여주기!");
 	}
 
-	@RequestMapping("/ownerManage")
-	public void ownerManage(Model model) {
+	@RequestMapping("/ownerManage.do")
+	public void ownerManage(HttpServletRequest req, Model model) {
 		logger.info("관리자 관리 화면 보여주기!");
 	
-		List<AuthorityVO> authList = ownerService.selectAllAuth();
+		List<AuthorityVO> authList = ownerService.selectAdminAuth();
+		logger.info("authList={}", authList);
+		
+		HttpSession session=req.getSession();
+		MemberVO memVo = (MemberVO) session.getAttribute("memVo");
+		int aptNo=memberService.selectAptNo(memVo.getId());
+		logger.info("aptNo={}", aptNo);
+		
+		List<AdminAllVO> adList=ownerService.selectAdminLv2(aptNo);
+		logger.info("adList.size()={}",adList.size());
+		
+		model.addAttribute("authList", authList);
+		model.addAttribute("adList", adList);
 	}
 	
 	@ResponseBody
@@ -127,7 +147,8 @@ public class AdminOwnerController {
 	   
 		String msg="비밀번호가 일치하지 않습니다!", url="/admin/adminOwner/ownerResident.do";
 		if(result==MemberService.LOGIN_OK) {	//비밀번호 일치
-			int delRes=ownerService.delAllResInfo();
+			int aptNo=memberService.selectAptNo(memVo.getId());
+			int delRes=ownerService.delAllResInfo(aptNo);
 			logger.info("삭제 완료@@@@@@@@@@@delRes={}", delRes);
 			msg="삭제가 완료되었습니다.";
 		}
@@ -151,17 +172,154 @@ public class AdminOwnerController {
 	
 	/*@ResponseBody
 	@RequestMapping("/hoList.do")
-	public List<String> hoList(@ModelAttribute HouseholdVO householdVo, HttpSession session) {
-		logger.info("@@@@@@@@@@@@호@@@@@@@@@@@@");
+	public List<String> hoList(@RequestParam(defaultValue = "0")String dong , HttpSession session) {
+		logger.info("@@@@@@@@@@@@호@@@@@@@@@@@@ dong={}", dong);
 		MemberVO memVo=(MemberVO)session.getAttribute("memVo");
 		
+		HouseholdVO householdVo=new HouseholdVO();
+		householdVo.setDong(dong);
 		householdVo.setAptNo(memberService.selectAptNo(memVo.getId()));
 		logger.info("호 리스트 조회, 아파트 번호 추가 후 파라미터 householdVo={}", householdVo);
 		
-		List<String> hoList=mngcostService.selectMyHoList(householdVo);
+		List<String> hoList=ownerService.selectHo(householdVo);
 		logger.info("호 리스트 조회 결과 hoList={}", hoList);
 		
 		return hoList;
 	}*/
 	
+	@RequestMapping("/ownerResReg.do")
+	public String ownerResReg(@RequestParam(required = false) HashMap<String, Object> repeaterMap,
+			HttpSession session, Model model) {
+		logger.info("@@@@@Household_member에 등록할거임@@@@@ repeaterMap={}", repeaterMap);
+		
+		MemberVO memVo=(MemberVO)session.getAttribute("memVo");
+		
+		int aptNo=memberService.selectAptNo(memVo.getId());
+		
+		String msg="입주민 등록에 실패하였습니다.", url="/admin/adminOwner/ownerResident.do";
+		List<HouseholdMemVo> houseMemberList=new ArrayList<HouseholdMemVo>();
+		//map의 값 개수 / row당 값 개수 = row 개수
+		for(int i=0; i<repeaterMap.size()/5; i++) {
+			String dong=(String)repeaterMap.get("invoice["+i+"][dong]");
+			String ho=(String)repeaterMap.get("invoice["+i+"][ho]");
+
+			HouseholdVO hVo=new HouseholdVO();
+			hVo.setDong(dong);
+			hVo.setHo(ho);
+			hVo.setAptNo(aptNo);
+			
+			String code=householdService.findHouseholdCode(hVo);
+			logger.info("@@@@@for문@@@@@@@@@@dong={}, ho={}",dong,ho);
+			logger.info("@@@@@@@@@@@@@@@@@@@@@일때 code={}", code);
+			
+			String hMembName=(String)repeaterMap.get("invoice["+i+"][hMembName]");
+			String birth=(String)repeaterMap.get("invoice["+i+"][birth]");
+			String relation=(String)repeaterMap.get("invoice["+i+"][relation]");
+			
+			HouseholdMemVo mVo = new HouseholdMemVo();
+			mVo.setBirth(birth);
+			mVo.sethMembName(hMembName);
+			mVo.setHouseholdCode(code);
+			mVo.setRelation(relation);
+			
+			houseMemberList.add(mVo);
+		}
+		
+		
+		int cnt=householdService.insertHouseholdMember(houseMemberList);
+		if(cnt>0){
+			msg="입주민 추가등록 완료하였습니다.";
+		}
+		
+		model.addAttribute("msg", msg);
+		model.addAttribute("url", url);
+		
+		return "common/message";
+	}
+
+	@RequestMapping("/ownerMngReg.do")
+	public String ownerAdminReg(@RequestParam(required = false) HashMap<String, Object> repeaterMap,
+			HttpSession session, Model model) {
+		logger.info("@@@@@ADMIN:::::Household_info에 등록할거임@@@@@ repeaterMap={}", repeaterMap);
+		
+		MemberVO memVo=(MemberVO)session.getAttribute("memVo");
+		
+		int aptNo=memberService.selectAptNo(memVo.getId());
+		
+		String msg="관리자 등록 실패.", url="/admin/adminOwner/ownerManage.do";
+		List<HouseholdVO> houseAdminList=new ArrayList<HouseholdVO>();
+		//map의 값 개수 / row당 값 개수 = row 개수
+		for(int i=0; i<repeaterMap.size()/2; i++) {
+			String authCode=(String)repeaterMap.get("invoice["+i+"][authCode]");
+			
+			String householdCode=(String)repeaterMap.get("invoice["+i+"][householdCode]");
+			if(householdCode==null || householdCode.isEmpty()) {
+				householdCode=RandomStringUtils.randomAlphanumeric(12);	//알파벳 + 숫자랜덤12자리 code
+			}else {
+				householdCode=(String)repeaterMap.get("invoice["+i+"][householdCode]");				
+			}
+						
+			logger.info("@@@@@@@AuthCode={}, householdCode={}", authCode, householdCode);
+			HouseholdVO hVo=new HouseholdVO();
+			hVo.setAptNo(aptNo);
+			hVo.setAuthCode(authCode);
+			hVo.setHouseholdCode(householdCode);
+			
+			houseAdminList.add(hVo);
+			logger.info("@@@@@@@@@@@@@@@@@setting:::::: hVo={}, houseAdminList={}", hVo, houseAdminList);
+		}
+		
+		
+		int cnt=householdService.insertCode(houseAdminList);
+		if(cnt>0){
+			msg="관리자 코드 등록 완료!";
+		}
+		
+		model.addAttribute("msg", msg);
+		model.addAttribute("url", url);
+		
+		return "common/message";
+	}
+	
+	@RequestMapping(value="/ownerManageEdit.do", method = RequestMethod.POST)
+	public String editManage(@ModelAttribute HouseholdVO vo, Model model) {
+		logger.info("관리자 권한 변경!!!!!!!! vo.authCode={}, vo.householdCode={}", vo.getAuthCode(), vo.getHouseholdCode());
+		
+		int cnt=householdService.updateAdmin(vo);
+		
+		String msg="권한 변경 실패", url="/admin/adminOwner/ownerManage.do";
+		if(cnt>0) {
+			msg="권한이 변경되었습니다.";
+		}
+		
+		model.addAttribute("msg",msg);
+		model.addAttribute("url",url);
+		
+		return "common/message";
+	}
+	
+	@RequestMapping("/ownerManageDel.do")
+	public String delManage(@RequestParam String householdCode, Model model) {
+		logger.info("관리자 삭제!!!!! householdCode={}", householdCode);
+		if(householdCode==null || householdCode.isEmpty()) {
+			String msg="잘못된 경로 입니다.";
+			String url="/admin/adminOwner/ownerManage.do";
+			
+			model.addAttribute("msg",msg);
+			model.addAttribute("url",url);
+			
+			return "common/message";	
+		}
+		
+		int cnt=householdService.deleteAdmin(householdCode);
+		String msg="삭제 실패", url="/admin/adminOwner/ownerManage.do";
+		if(cnt>0) {
+			msg="해당 관리자 코드가 삭제되었습니다.";
+		}
+		
+		model.addAttribute("msg",msg);
+		model.addAttribute("url",url);
+		
+		return "common/message";		
+	}
 }

@@ -1,5 +1,8 @@
 package com.it.apt.member.controller;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
 import org.apache.commons.lang3.RandomStringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,6 +20,8 @@ import com.it.apt.adminMaster.model.ApartmentToSuperVO;
 import com.it.apt.adminMaster.model.MasterService;
 import com.it.apt.email.controller.EmailService;
 import com.it.apt.email.model.EmailVO;
+import com.it.apt.household.model.HouseholdService;
+import com.it.apt.household.model.HouseholdVO;
 import com.it.apt.member.model.MemberService;
 import com.it.apt.member.model.MemberVO;
 
@@ -27,6 +32,7 @@ public class MemberController {
 	@Autowired private MasterService masterService;
 	@Autowired private MemberService memberService;
 	@Autowired private EmailService emailService;
+	@Autowired private HouseholdService householdService;
 	@Autowired private BCryptPasswordEncoder passwordEncoder;
 
 	@RequestMapping(value="/register/registerApt.do", method = RequestMethod.GET)
@@ -206,6 +212,18 @@ public class MemberController {
 		}
 		
 		return code;
+	}
+	
+	//회원수정
+	@RequestMapping("/userDash/myAccount/memberEdit.do")
+	public void memberEdit_get(HttpServletRequest req,Model model) {
+		logger.info("회원수정 화면");
+		
+		HttpSession session = req.getSession();
+	    MemberVO memVo = (MemberVO) session.getAttribute("memVo");
+		HouseholdVO hVo=householdService.selectByCode(memVo.getHouseholdCode());
+		
+		model.addAttribute("hVo", hVo);
 	}
 	
 	

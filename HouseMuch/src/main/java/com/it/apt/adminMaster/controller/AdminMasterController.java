@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -182,7 +183,9 @@ public class AdminMasterController {
 		hVo.setHouseholdCode(houseCode);
 		
 		logger.info("HouseholdVo={}", hVo);
-		int cnt = householdService.insertCode(hVo);
+		List<HouseholdVO> houseList=new ArrayList<HouseholdVO>();
+		houseList.add(hVo);
+		int cnt = householdService.insertCode(houseList);
 		logger.info("Household insert cnt={}", cnt);
 		
 		String msg="아파트 등록 실패..", url="/admin/adminMaster/adminMasterRegister.do";
