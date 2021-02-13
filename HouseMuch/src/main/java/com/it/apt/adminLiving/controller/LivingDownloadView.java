@@ -44,8 +44,7 @@ public class LivingDownloadView extends AbstractView{
 		//------------------------------------------------------------------------------ 여기부터
 		response.setContentType(getContentType());
 		response.setContentLength((int) file.length());
-        response.setHeader("Content-Disposition", "attachment; fileName=\""
-		    + java.net.URLEncoder.encode(file.getName(), "UTF-8") + "\";");
+        response.setHeader("Content-Disposition", "attachment; fileName=\"" + java.net.URLEncoder.encode(file.getName(), "UTF-8") + "\";");
 		response.setHeader("Content-Transfer-Encoding", "binary");
 		//------------------------------------------------------------------------------ 여기까지 써서 다운로드성공
 		
@@ -63,7 +62,6 @@ public class LivingDownloadView extends AbstractView{
 		
 	}
 
-	
 	
 	
 }

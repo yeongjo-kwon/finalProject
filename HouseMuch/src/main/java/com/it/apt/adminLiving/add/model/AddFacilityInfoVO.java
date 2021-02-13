@@ -32,7 +32,7 @@ public class AddFacilityInfoVO extends SearchVO{
 	private String householdCode;	//householdCode
 	
 	// 2. 이용자 수 관련필드
-	private int totalOrderCnt;	// 총 이용자 수 (아파트 번호로 조회한 신청 householdeCode 숫자)
+	private int totalOrderCnt;	// 총 이용자 수 (아파트 번호로 조회한 신청 householdCode 숫자)
 	private int orderCnt;	    // 각 시설별 이용자 수 (VO 한개당 이용자숫자 1개) 
 	
 
