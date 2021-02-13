@@ -102,6 +102,8 @@ ADD_ORDER_LIST
 	                    ,ADD_PRICE
 	                    ,ADD_REGDATE               
 	                    ,APT_NO
+	                    ,ADDINFO_IMG_FILENAME
+						,ADDINFO_IMG_ORIGINAL_FILENAME
 	                    ,(SELECT COUNT(*) FROM ADD_ORDER_LIST O WHERE A.ADD_NO = O.ADD_NO)
                        		AS ORDER_CNT
 	               FROM ADDITIONAL_FACILITY_INFO A
@@ -134,7 +136,196 @@ ADD_ORDER_LIST
 		   </if> 
 	</select>
 
+		<!-- 접속한 회원의 권한 조회 -->
+	<select id="searchAuthCode" parameterType="int" resultType="map">
+		SELECT * FROM SEARCH_AUTH_VIEW
+		WHERE MEMBER_NO=#{memberNo}
+	</select>
 	
+	<!-- 부가시설 상세정보 조회 addDetailMap-->
+	<resultMap type="HashMap" id="addDetailMap">
+		<result property="addNo" column="ADD_NO"/>
+		<result property="addName" column="ADD_NAME"/>
+		<result property="addCtgNo" column="ADD_CTG_NO"/>
+		<result property="addCtgName" column="ADD_CTG_NAME"/>
+		<result property="addLocationInfo" column="ADD_LOCATION_INFO"/>
+		<result property="addContent" column="ADD_CONTENT" jdbcType="CLOB" javaType="java.lang.String" />
+		<result property="addPrice" column="ADD_PRICE"/>
+		<result property="aptNo" column="APT_NO"/>
+		<result property="addRegdate" column="ADD_REGDATE"/>
+		<result property="addOutdate" column="ADD_OUTDATE"/>
+		<result property="addinfoImgFilename" column="ADDINFO_IMG_FILENAME"/>
+		<result property="addinfoImgOriginalFilename" column="ADDINFO_IMG_ORIGINAL_FILENAME "/>
+		<result property="orderCnt" column="ORDER_CNT"/>
+	</resultMap>
+	
+	<!-- 부가시설 상세정보 조회 -->
+	<select id="selectAddInfoByAddNo" parameterType="int" resultMap="addDetailMap">
+	 SELECT	
+	      A.ADD_CTG_NO
+	     ,(SELECT ADD_CTG_NAME FROM ADD_CATEGORY C WHERE C.ADD_CTG_NO = A.ADD_CTG_NO) 
+	        AS ADD_CTG_NAME 
+	     ,A.ADD_NO
+	     ,A.ADD_NAME
+	     ,A.ADD_LOCATION_INFO
+	     ,A.ADD_CONTENT
+	     ,A.ADD_PRICE
+	     ,A.APT_NO
+	     ,A.ADD_REGDATE
+	     ,A.ADDINFO_IMG_FILENAME 
+	     ,A.ADDINFO_IMG_ORIGINAL_FILENAME 
+	     ,(SELECT COUNT(*) FROM ADD_ORDER_LIST O WHERE A.ADD_NO = O.ADD_NO) 
+	            AS ORDER_CNT
+	 FROM ADDITIONAL_FACILITY_INFO A 
+	WHERE A.ADD_NO= #{addNo}
+	  AND A.ADD_OUTDATE IS NULL
+	</select>
+	
+<!--************************************* 부가시설 이용신청 (addOrderVo) 관련 *************************************-->
+	
+	<!-- 1.이용중인지 체크 -->
+	<select id="checkHouseholdCodeInUse" parameterType="addOrderVo" resultType="int">
+		SELECT COUNT(*) 
+		  FROM ADD_ORDER_LIST
+		 WHERE HOUSEHOLD_CODE=#{householdCode}
+		   AND ADD_NO=#{addNo} 
+		   AND ADD_OUTDATE IS NULL	
+	</select>
+	
+	
+	<!-- 2.부가시설 신청 -->
+	<insert id="insertAddOrder" parameterType="addFacilityInfoVO"
+	useGeneratedKeys="true" keyProperty="addOrderListNo" keyColumn="addOrderListNo">
+	<selectKey keyProperty="addOrderListNo" resultType="int" order="BEFORE" > 
+	 	SELECT ADD_ORDER_LIST_SEQ.NEXTVAL FROM DUAL
+	</selectKey>
+		INSERT INTO ADD_ORDER_LIST(
+		     ADD_ORDER_LIST_NO
+		    ,ADD_NO
+		    ,HOUSEHOLD_CODE
+		    ,MEMBER_NO
+		)
+		VALUES(
+			 #{addOrderListNo}    
+		    ,#{addNo}
+		    ,#{householdCode}
+		    ,#{memberNo}
+		)
+	</insert>
+	
+	
+	<!-- 3.세대코드로 세대원 조회  result-->
+<!-- 	<resultMap type="hashmap" id="householdMap">
+		<result property="memberNo" column="MEMBER_NO"/>
+		<result property="householdCode" column="HOUSEHOLD_CODE"/>
+		<result property="id" column="ID"/>
+		<result property="memberName" column="MEMBER_NAME"/>
+		<result property="email" column="EMAIL"/>
+		<result property="aptNo" column="APT_NO"/>
+		<result property="dong" column="DONG"/>
+		<result property="ho" column="HO"/>
+	</resultMap>
+	 -->
+	<!-- 3.세대코드로 세대원 조회  -->
+	<select id="selectMemberInfoListByHouseholdCode" parameterType="String" resultType="addOrderVo">
+	SELECT 
+		 MEMBER_NO
+		,HOUSEHOLD_CODE
+		,MEMBER_IMG_FILENAME
+		,MEMBER_IMG_ORIGINAL_FILENAME
+		,ID
+		,MEMBER_NAME
+		,EMAIL
+		,OUTDATE
+	 FROM MEMBER_INFO 
+	WHERE HOUSEHOLD_CODE=#{householdCode}
+	</select>
+	
+	
+	
+	<!-- 4.세대코드로 이용신청내역 조회 -->
+	<select id="selectAddOrderListByHouseholdCode" parameterType="string" resultType="addOrderVo">
+		SELECT 
+		     A.ADD_ORDER_LIST_NO
+		    ,A.ADD_NO
+		    ,(SELECT ADD_NAME FROM ADDITIONAL_FACILITY_INFO F WHERE F.ADD_NO=A.ADD_NO ) 
+		        AS ADD_NAME
+		    ,A.HOUSEHOLD_CODE
+		    ,(SELECT ADD_PRICE FROM ADDITIONAL_FACILITY_INFO F WHERE F.ADD_NO=A.ADD_NO ) 
+		        AS ADD_PRICE
+		    ,A.ADD_ORDERDATE
+		    ,A.ADD_OUTDATE
+		    ,A.MEMBER_NO
+		    ,M.MEMBER_NAME
+		    ,M.EMAIL
+		    ,M.ID            
+		  FROM ADD_ORDER_LIST A JOIN MEMBER_INFO M
+		    ON A.MEMBER_NO = M.MEMBER_NO
+		 WHERE A.HOUSEHOLD_CODE=#{householdCode}
+		  ORDER BY A.ADD_ORDER_LIST_NO DESC
+	</select>
+	
+	<!-- 5.회원번호로 신청/해지 내역 조회 -->
+	<select id="selectAddOrderListByMemberNo" parameterType="int" resultType="addOrderVo">
+		SELECT 
+		     A.ADD_ORDER_LIST_NO
+		    ,A.ADD_NO
+		    ,(SELECT ADD_NAME FROM ADDITIONAL_FACILITY_INFO F WHERE F.ADD_NO=A.ADD_NO ) 
+		        AS ADD_NAME
+		    ,A.HOUSEHOLD_CODE
+		    ,(SELECT ADD_PRICE FROM ADDITIONAL_FACILITY_INFO F WHERE F.ADD_NO=A.ADD_NO ) 
+		        AS ADD_PRICE
+		    ,A.ADD_ORDERDATE
+		    ,A.ADD_OUTDATE
+		    ,A.MEMBER_NO
+		    ,M.MEMBER_NAME
+		    ,M.EMAIL
+		    ,M.ID            
+		  FROM ADD_ORDER_LIST A JOIN MEMBER_INFO M
+		    ON A.MEMBER_NO = M.MEMBER_NO
+		 WHERE A.MEMBER_NO=#{memberNo}
+		 ORDER BY A.ADD_ORDER_LIST_NO DESC
+	</select>
+	
+	<!-- 6.신청번호로 이용개월수 (이용료 납부횟수) 구하기 -->
+	<select id="getChargedMonthsByAddOrderListNo" parameterType="int" resultType="int">
+		SELECT 
+			TRUNC(MONTHS_BETWEEN(ADD_MONTHS(SYSDATE,1),ADD_ORDERDATE)) 
+													  AS ADD_CHARGE_CNT
+		  FROM ADD_ORDER_LIST  
+		 WHERE ADD_ORDER_LIST_NO = #{addOrderListNo}
+	</select>
+	
+	<!-- 7.신청번호로 해지신청하기 -->
+	<update id="updateOutdateByAddOrderListNo" parameterType="int">
+		UPDATE ADD_ORDER_LIST 
+		   SET ADD_OUTDATE = SYSDATE
+		 WHERE ADD_ORDER_LIST_NO = #{addOrderListNo}
+	</update>
+	
+	<!-- 세대코드로 신청내역 엑셀에 담을 리스트 만드는 쿼리  -->
+	<select id="selectAddOrderExcel" parameterType="string" resultType="addOrderExcelVO">
+		SELECT 
+	     A.ADD_ORDER_LIST_NO
+	    ,A.ADD_NO
+	    ,(SELECT ADD_NAME FROM ADDITIONAL_FACILITY_INFO F WHERE F.ADD_NO=A.ADD_NO ) 
+	        AS ADD_NAME
+	    ,(SELECT ADD_PRICE FROM ADDITIONAL_FACILITY_INFO F WHERE F.ADD_NO=A.ADD_NO ) 
+			AS ADD_PRICE   
+		,(SELECT TRUNC(MONTHS_BETWEEN(ADD_MONTHS(SYSDATE,0),ADD_ORDERDATE)) FROM ADD_ORDER_LIST O WHERE O.ADD_ORDER_LIST_NO = A.ADD_ORDER_LIST_NO )
+	        AS ADD_CHARGE_CNT
+	    ,A.HOUSEHOLD_CODE
+	    ,A.ADD_ORDERDATE
+	    ,A.ADD_OUTDATE
+	    ,A.MEMBER_NO
+	    ,M.MEMBER_NAME
+	    ,M.EMAIL
+	    ,M.ID            
+	  FROM ADD_ORDER_LIST A JOIN MEMBER_INFO M
+	    ON A.MEMBER_NO = M.MEMBER_NO
+	 WHERE A.HOUSEHOLD_CODE=#{householdCode}
+	 ORDER BY A.ADD_ORDER_LIST_NO DESC
+	</select>
 	
 </mapper>
 

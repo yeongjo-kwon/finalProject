@@ -95,21 +95,64 @@ $(function(){
 	color: #ffffff;
 }
 
+
+.btn-out{
+	background-color: #ffffff;
+	border-color: #FF7063 !important; 
+	color: #FF7063;
+}
+.btn-out:hover{
+	background-color: #FF7063;
+	border-color: #FF7063 !important;
+	color: #ffffff;
+}
+
+.btn-point{
+	background-color: #f69532;
+	border-color: #f69532 !important; 
+	color: #ffffff !important;
+}
+.btn-point:hover{
+	background-color: rgba(246,149,50,0.2);
+	border-color: #f69532 !important;
+	color: #f69532 !important;
+	font-weight: bold;
+}
+.text-point{
+	color: #ffffff !important;
+}
+.text-point:hover{
+	color: #f69532 !important;
+	font-weight: bold;
+}
+
+#imgcard img{
+    height: 10rem;
+	object-fit: cover;
+}
 </style>
 <div class="clearfix" style="height:100px"></div>
 <div class="yiWrapper" style="width:100%; min-height:700px; margin: 0 auto;">
 
    <!-- Page Content -->
   <div class="container">
-  <div style="width:100%; min-height:100px;">
-<h3 class="mb-10 apt-text-dark" style="font-size: 1.8em;">생활의 자부심을 높여주는 더 특별한 부가시설</h3>
-<small style="color:#666">입주민의 활기찬 생활을 위한 건강시설부터 다양한 생활편의시설까지 일상이 특별해지는 특권을 누려보세요.</small>
+  <div style="width:100%; min-height:100px;" class="row">
+	
+	<div class="col col-lg-9">
+		<h3 class="mb-10 apt-text-dark" style="font-size: 1.8em;">생활의 자부심을 높여주는 더 특별한 부가시설</h3>
+		<small style="color:#666">입주민의 활기찬 생활을 위한 건강시설부터 다양한 생활편의시설까지 일상이 특별해지는 특권을 누려보세요.</small>
+	</div>
+	<div class="col col-lg-3 p-0 text-right">
+		<div class="btn btn-point text-point p-3">
+          <a href="<c:url value='/living/add/addOrderList.do?householdCode=${sessionScope.memVo.householdCode}'/>" 
+         class="text-point" style="vertical-align: center; line-height: 2;">우리집 신청내역 확인&nbsp;<i data-feather="chevron-right"></i></a>
+        </div>
+	</div>
   </div>
 <hr>
 
     <div class="row">
       <div class="col-lg-9">
-<!-- 오른쪽섹션인 col-9안에서 검색바랑 파라미터 넘기는거 일단 넣음 -->
 <!-- searchKeyword  searchCondition 보내는 frmSearch 시작 -->     
                 <!-- 검색어, 검색조건 넘기는 frmPage -->
                 <form name="frmPage" 
@@ -118,24 +161,6 @@ $(function(){
 							<input type="hidden" name="searchCondition" value="${param.searchCondition}" >
 							<input type="hidden" name="searchKeyword"	value="${param.searchKeyword}" id="submitKeyword">
 							<input type="hidden" name="addCtgNo"	value="${param.addCtgNo}" id="addCtgNo">
-								
-								
-                    <!-- E-commerce Search Bar Starts : 부가시설 목록에서 검색-->
-                   <!--  <section id="ecommerce-searchbar" class="ecommerce-searchbar pt-2 pb-5">
-                        <div class="row mt-1">
-                            <div class="col-sm-6">
-                                <div class="input-group input-group-merge navbar-right">
-                                    <input type="text" class="form-control search-product  p-1" id="shop-search" placeholder="부가시설을 검색하세요" 
-                                    aria-label="Search..." aria-describedby="shop-search" title="검색어 입력" />
-                                    <div class="input-group-append">
-                                   <button class="btn btn-secondary" aria-hidden="true" style="padding-bottom:6px;"><i data-feather="search"></i></button> 
-                                   </div>
-                                </div>
-                            </div>
-                            <div class="col-sm-6"></div>검색창정렬용
-                        </div>
-                    </section> -->
-                    <!-- E-commerce Search Bar Ends : 부가시설 목록에서 검색 끝-->
 			</form>
 <!-- searchKeyword searchCondition 보내는 frmSearch 끝 -->
 <!-- 오른쪽섹션인 col-9안에서 검색바랑 파라미터 넘기는거 일단 넣음//끝 -->
@@ -152,30 +177,64 @@ $(function(){
 					<c:forEach var="vo" items="${list}">
 
 						<div class="col-lg-4 col-md-6 mb-4">
-							<div class="card h-100">
+							<div class="card h-100" id="imgcard">
 								<a href="#">
-								 <img class="img-fluid card-img-top" 
-                                	src="${pageContext.request.contextPath}/resources/aptAdmin_images/thumbnail-default.svg" 
-                                	alt="시설썸네일" /></a>
+								<%--  <img class="img-fluid card-img-top" src="<c:url value='/living/add/attachImage.do'/>" 
+								 alt="시설썸네일" width="550"/> --%>
+								 <c:if test="${vo.addinfoImgOriginalFilename=='thumbnail-default.svg' }">
+								 	<img class="img-fluid card-img-top" src="${pageContext.request.contextPath}/resources/aptAdmin_images/thumbnail-default.svg" alt="시설썸네일"/>
+								 </c:if>
+								 <c:if test="${vo.addinfoImgOriginalFilename!='thumbnail-default.svg'}">
+								 	<img class="img-fluid card-img-top embed-responsive-item" src="${pageContext.request.contextPath}/resources/aptAdmin_images/add_thumbnail/${vo.addinfoImgOriginalFilename}" alt="시설썸네일" />
+								 </c:if>
+                                	</a>
 									<div class="card-body">
 									
-									<h4 class="card-title">
-									<a class="text-body" 
-									    href="<c:url value='/admin/adminLiving/adminAdd/adminAddEdit.do?addNo=${vo.addNo }'/>">${vo.addName }</a></h4>
+									<h4 class="apt-text-dark mb-3">
+									 <b>${vo.addName }</b></h4>
 									
-									
-									<h5>월  ${vo.addPrice}원</h5>
-									
-									<p class="card-text">현재 이용자 수 : ${vo.orderCnt }</p>
+									<div class="text-right mt-5">
+										<c:if test="${vo.addPrice!=0}">
+											<h5>월  <fmt:formatNumber pattern="###,###,###" value="${vo.addPrice}"/>원</h5>
+										</c:if>
+										<c:if test="${vo.addPrice==0}">
+											<h5>무료이용</h5>
+										</c:if>
+										
+										<c:if test="${vo.addPrice!=0}">
+											<p class="card-text">현재 이용자 수 : ${vo.orderCnt }</p>
+										</c:if>
+									</div>	
 								</div>
 
 								<div class="btn-group card-footer text-center p-0" role="group">
-									<a href="<c:url value='/living/add/addOrder.do?addNo=${vo.addNo }'/>" class="btn btn-light btn-wishlist">
-	                                    <span class="add-to-cart">이용 신청</span>
-	                                </a>
-	                                <a href="<c:url value='/living/add/addFacilityDetail.do?addNo=${vo.addNo }'/>" class="btn btn-primary btn-wishlist">
-	                                    <span class="add-to-cart">상세 정보</span>
-                                </a>
+									<c:choose>
+										<c:when test="${vo.addPrice==0}">
+											<a href="<c:url value='/living/add/addFacilityDetail.do?addNo=${vo.addNo }'/>" 
+												class="btn btn-primary btn-wishlist">
+		                                    <span class="add-to-cart">상세 정보</span></a>
+										</c:when>
+									<%-- 	<c:when test="${vo.addPrice>0}">
+												<a href="<c:url value='/living/add/addOut.do?addNo=${vo.addNo }&householdCode=${sessionScope.memVo.householdCode}'/>" 
+													class="btn btn-out btn-wishlist">
+				                                    <span class="add-to-cart">이용 해지</span>
+				                                </a> 
+			                                <a href="<c:url value='/living/add/addFacilityDetail.do?addNo=${vo.addNo }'/>" 
+			                                	class="btn btn-primary btn-wishlist">
+			                                    <span class="add-to-cart">상세 정보</span>
+		                                	</a>
+										</c:when> --%>
+										<c:otherwise>
+											<a href="<c:url value='/living/add/addOrder.do?addNo=${vo.addNo }&householdCode=${sessionScope.memVo.householdCode}'/>" 
+												class="btn btn-light btn-wishlist">
+			                                    <span class="add-to-cart">이용 신청</span>
+			                                </a>
+			                                <a href="<c:url value='/living/add/addFacilityDetail.do?addNo=${vo.addNo }'/>" 
+			                                	class="btn btn-primary btn-wishlist">
+			                                    <span class="add-to-cart">상세 정보</span>
+		                                	</a>
+										</c:otherwise>									
+									</c:choose>	
 								</div>
 							</div>
 						</div>
@@ -242,6 +301,7 @@ $(function(){
 
       <div class="col-lg-3 pt-0">
         <div class="list-group" name="addCtg" id="addCtg">
+         <a href="<c:url value='/living/add/addFacilityList.do'/>" class="list-group-item" onclick="pageFunc(1)">전체보기</a>
           <a href="javascript:void(0);" class="list-group-item" onclick="addCtgNum(1)" data-value="1">특화시설</a>
           <a href="javascript:void(0);" class="list-group-item" onclick="addCtgNum(2)" data-value="2">교육시설</a>
           <a href="javascript:void(0);" class="list-group-item" onclick="addCtgNum(3)" data-value="3">문화시설</a>
@@ -250,9 +310,19 @@ $(function(){
         </div>
 <br>
         <div class="list-group">
-          <a href="#" class="list-group-item" onclick="pageFunc(1)">전체보기</a>
-          <a href="<c:url value='/living/add/addOrderList.do?householdCode=${sessionScope.memVo.householdCode}'/>" class="list-group-item">우리집 이용시설 보기</a>
-          <%-- <a href="<c:url value='/living/add/applicationAdd.do'/>" class="list-group-item">신청화면(작업용)</a> --%>
+     
+          <a href="<c:url value='/living/add/addOrderList.do?householdCode=${sessionScope.memVo.householdCode}'/>" class="list-group-item" >
+       	   이용중인 시설</a>
+         <c:if test="${!empty orderList }">
+	    	      	<div class="card card-body">
+	          <c:forEach var="orderVo" items="${orderList}">
+	    	      	<p class="">${orderVo.addName }</p>
+	          </c:forEach>
+	    	      	</div>
+         </c:if>
+         <c:if test="${empty orderList }">
+         
+         </c:if>
         </div>
 
       </div>
@@ -272,8 +342,4 @@ $(function(){
   </script>
   <!-- Bootstrap core JavaScript -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-ygbV9kiqUc6oa4msXn9868pTtWMgiQaeYH7/t7LECLbyPA2x65Kgf80OJFdroafW" crossorigin="anonymous"></script>
-<%--   <script src="vendor/jquery/jquery.min.js"></script>
-  <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-      <script src="${pageContext.request.contextPath}/resources/ynResources/main.js"></script> --%>
-      
 <%@ include file="../../mainInc/mainBottom.jsp" %>
