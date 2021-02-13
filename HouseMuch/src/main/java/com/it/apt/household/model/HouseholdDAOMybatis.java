@@ -19,4 +19,29 @@ public class HouseholdDAOMybatis implements HouseholdDAO{
 		return sqlSession.insert(namespace+"insertCode", vo);
 	}
 
+	@Override
+	public String findHouseholdCode(HouseholdVO vo) {
+		return sqlSession.selectOne(namespace+"findHouseholdCode", vo);
+	}
+
+	@Override
+	public int insertHouseholdMember(HouseholdMemVo vo) {
+		return sqlSession.insert(namespace+"insertHouseholdMember", vo);
+	}
+
+	@Override
+	public int updateAdmin(HouseholdVO vo) {
+		return sqlSession.update(namespace+"updateAdmin", vo);
+	}
+
+	@Override
+	public int deleteAdmin(String householdCode) {
+		return sqlSession.delete(namespace+"deleteAdmin", householdCode);
+	}
+
+	@Override
+	public HouseholdVO selectByCode(String householdCode) {
+		return sqlSession.selectOne(namespace+"selectByCode", householdCode);
+	}
+
 }

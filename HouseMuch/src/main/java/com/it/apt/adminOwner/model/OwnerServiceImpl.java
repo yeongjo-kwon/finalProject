@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.it.apt.common.ExcelRead;
 import com.it.apt.common.ExcelReadOption;
+import com.it.apt.household.model.HouseholdVO;
 import com.it.apt.member.model.MemberService;
 
 @Service
@@ -23,8 +24,8 @@ public class OwnerServiceImpl implements OwnerService{
 	@Autowired private MemberService memberService;
 
 	@Override
-	public List<AuthorityVO> selectAllAuth() {
-		return ownerDao.selectAllAuth();
+	public List<AuthorityVO> selectAdminAuth() {
+		return ownerDao.selectAdminAuth();
 	}
 
 	@Override
@@ -41,7 +42,7 @@ public class OwnerServiceImpl implements OwnerService{
         excelReadOption.setFilePath(destFile.getAbsolutePath());
         
         //추출할 컬럼 명 추가
-        excelReadOption.setOutputColumns("A","B","C","D","E","F","G");
+        excelReadOption.setOutputColumns("A","B","C","D","E","F");
       
         // 시작 행
         excelReadOption.setStartRow(2);
@@ -76,8 +77,18 @@ public class OwnerServiceImpl implements OwnerService{
 	}
 
 	@Override
-	public int delAllResInfo() {
-		return ownerDao.delAllResInfo();
+	public int delAllResInfo(int aptNo) {
+		return ownerDao.delAllResInfo(aptNo);
+	}
+
+	@Override
+	public List<String> selectHo(HouseholdVO vo) {
+		return ownerDao.selectHo(vo);
+	}
+
+	@Override
+	public List<AdminAllVO> selectAdminLv2(int aptNo) {
+		return ownerDao.selectAdminLv2(aptNo);
 	}
 	
 	

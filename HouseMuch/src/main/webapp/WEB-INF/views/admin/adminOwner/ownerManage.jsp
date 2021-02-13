@@ -3,11 +3,29 @@
 <%@ include file="../adminInc/adminTop.jsp"%>
 <script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/jquery-3.5.1.min.js"></script>
 
-<!-- 소유주의 관리자 관리 화면 
-	관리자 등록버튼 누를시 바로 ajax 동기화 시켜서 아래에 현황에 보이게끔
-	아직 코드만 발급하고 멤버 등록 안할시 미등록 출력
-	관리자 목록 엑셀 출력
--->
+<script type="text/javascript" src="${pageContext.request.contextPath }/resources/js/subinJs.js"></script>
+<script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/jquery-3.5.1.min.js"></script>
+<script type="text/javascript">
+	$(function(){		
+		
+		$('#repeatFrm').submit(function(){
+			if($('#authCode').val()=="0"){
+				alert('관리자 권한을 선택해주세요!');
+				return false;
+			}
+		});
+		//editName editCode
+		$('button[name=editbtn]').on('click',(function(){
+			var editCode=$(this).next().val();
+			var authCode=$(this).next().next().val();
+			
+			$('#editCode').val(editCode);
+			$('#editAuth').val(authCode);
+		}));
+		
+	});
+
+</script>
 
 	<!-- BEGIN: Content-->
 	<div class="app-content content ">
@@ -49,30 +67,23 @@
 		            <div data-repeater-list="invoice">
 		              <div data-repeater-item>
 		                <div class="row d-flex align-items-end">
+		                  
 		                  <div class="col-md-2 col-12">
 		                    <div class="form-group">
 		                      <label for="authCode">권한</label>
-		                      
-		                      <select class="form-control" id="mngcostMCtgNo"
-		                      		aria-describedby="authCode" name="authCode">
-		                      	<option value="0">권한</option>
-		                      	
-		                      	<!-- forEach . value에는 auth_code, 보여지는건엔 authName-->
-						    	<option value="authCode1">회계 관리자</option>
-						    	<option value="authCode2">시설 관리자</option>
-						    	<option value="authCode3">행정 관리자</option>
-						    	<!-- /forEach -->
-						    	
-		                      </select>
-		                      
+				              <select class="select form-control form-control-lg" name="authCode" id="authCode" aria-describedby="authCode">
+				                <option value="0">권한</option>
+				                <c:forEach var="auth" items="${authList}">
+									<option value="${auth.authCode}">${auth.authName}</option>	                
+				                </c:forEach>
+				              </select>
 		                    </div>
 		                  </div>
-		                  
 		                  
 		                  <div class="col-md-6 col-12">
 		                    <div class="form-group">
 		                      <label for="householdCode">코드키 발급</label>
-		                      <input type="text" class="form-control" id="mngcostContent"
+		                      <input type="text" class="form-control" id="householdCode"
 		                      	aria-describedby="householdCode" placeholder="HOUSEMUCH001" name="householdCode" />
 		                    </div>
 		                  </div>
@@ -102,7 +113,7 @@
 		              
 		              <div class="col-md-4 col-6 d-flex" style="float:right; text-align: right; align-self: flex-end; justify-content: flex-end">
 		                 <div class="form-group mr-2 mb-0" style="align-self: flex-end;">
-		                   <label for="staticprice">해당 코드로 가입시 관리자 권한이 주어집니다</label>
+		                   <label for="staticguide">해당 코드로 가입시 관리자 권한이 주어집니다</label>
 		                 </div>
 		             
 		              	<input type="submit" class="btn btn-primary" style="float:right;" value="등록">
@@ -128,7 +139,7 @@
 			        </div>
 	                <div class="card-body p-0">
 	                    <div class="table-responsive">
-	                        <table class="table">
+	                        <table class="table" id="table">
 	                            <thead>
 	                                <tr>
 	                                    <th style="width:5%">No</th>
@@ -141,52 +152,90 @@
 	                                </tr>
 	                            </thead>
 	                            <tbody>
-	                                <tr>
-	                                    <td>
-	                                        <div class="d-flex align-items-center">
-	                                            <div>
-	                                                <div>3</div>
-	                                            </div>
-	                                        </div>
-	                                    </td>
-	                                    
-	                                    <td>
-	                                        <div class="d-flex align-items-center">
-	                                            <span>시설 관리자</span>
-	                                        </div>
-	                                    </td>
-	                                    
-	                                    <td class="text-nowrap">
-	                                        <div class="d-flex flex-column">
-	                                            <span class=" mb-25">이름이</span>
-	                                        </div>
-	                                    </td>
-	                                    <td>dkdlelwlfhd</td>
-	                                    <td>
-	                                        <div class="d-flex align-items-center">
-	                                            <span class="mr-1">email@email.com</span>
-	                                        </div>
-	                                    </td>
-	                                    <td>tpeozhemdlqslek12</td>
-										<td>
-											<div class="dropdown">
-												<button type="button" class="btn btn-sm dropdown-toggle hide-arrow" data-toggle="dropdown">
-													<i data-feather="more-vertical"></i>
-												</button>
-												<div class="dropdown-menu">
-													<a class="dropdown-item" data-toggle="modal" data-target="#editForm" >
-														<i data-feather="edit-2" class="mr-50"></i> 
-														<span>수정</span>
-													</a> <a class="dropdown-item" onclick="return confirm('해당 관리자 를 삭제하시겠습니까 ?');"
-														href="<c:url value='#'/>">
-														<i data-feather="trash" class="mr-50"></i> <span>삭제</span>
-													</a>
-												</div>
-											</div>
-										</td>
-	                                </tr>
-	                                
-	                                
+	                            	<c:if test="${empty adList }">
+	                            		<tr><td colspan="7">관리자를 추가해주세요</td></tr>
+	                            	</c:if>
+	                            	<c:if test="${!empty adList }">
+		                            	<c:forEach var="adVo" items="${adList }">
+		                            
+			                                <tr>
+			                                    <td>
+			                                        <div class="d-flex align-items-center" style="text-align: center;">
+			                                            <div>
+			                                                <div>
+				                                                <c:if test="${empty adVo.memberNo }">
+				                                                	<span>&nbsp;</span>
+				                                                </c:if>
+				                                                <c:if test="${!empty adVo.memberNo }">
+				                                                	${adVo.memberNo}
+				                                                </c:if>
+			                                                </div>
+			                                            </div>
+			                                        </div>
+			                                    </td>
+			                                    
+			                                    <td>
+			                                        <div class="d-flex align-items-center">
+			                                            <span>${adVo.authName }</span>
+			                                        </div>
+			                                    </td>
+			                                    
+			                                    <td class="text-nowrap">
+			                                        <div class="d-flex flex-column">
+		                                                <c:if test="${empty adVo.memberName }">
+		                                                	<span class=" mb-25">미등록</span>
+		                                                </c:if>
+		                                                <c:if test="${!empty adVo.memberName }">
+		                                                	<span class=" mb-25">${adVo.memberName }</span>
+		                                                </c:if>			                                        	
+			                                        </div>
+			                                    </td>
+			                                    
+			                                    <td>
+				                                    <c:if test="${empty adVo.id }">
+	                                                	미등록
+	                                                </c:if>
+	                                                <c:if test="${!empty adVo.id }">
+	                                                	<span>${adVo.id }</span>
+	                                                </c:if>	
+			                                    </td>
+			                                    
+			                                    <td>
+			                                        <div class="d-flex align-items-center">                    
+					                                    <c:if test="${empty adVo.email }">
+		                                                	<span class="mr-1">미등록</span>
+		                                                </c:if>
+		                                                <c:if test="${!empty adVo.email }">
+		                                                	<span class="mr-1">${adVo.email}</span>
+		                                                </c:if>		
+	                                                </div>		                                        
+			                                    </td>
+			                                    
+			                                    <td>
+			                                    	<span>${adVo.householdCode}</span>
+			                                    </td>
+			                                    
+												<td>
+													<div class="dropdown">
+														<button type="button" class="btn btn-sm dropdown-toggle hide-arrow" data-toggle="dropdown" id="edit" name="editbtn">
+															<i data-feather="more-vertical"></i>
+														</button>
+														<input type="hidden" value="${adVo.householdCode }" id="householdCode">
+														<input type="hidden" value="${adVo.authCode}" id="authCode">
+														<div class="dropdown-menu">
+															<a class="dropdown-item" data-toggle="modal" data-target="#editForm">
+																<i data-feather="edit-2" class="mr-50"></i> 
+																<span>수정</span>
+															</a> <a class="dropdown-item" onclick="return confirm('해당 관리자 를 삭제하시겠습니까 ? 관리자 정보가 전부 사라집니다.');"
+																href="<c:url value='/admin/adminOwner/ownerManageDel.do?householdCode=${adVo.householdCode }'/>">
+																<i data-feather="trash" class="mr-50"></i> <span>삭제</span>
+															</a>
+														</div>
+													</div>
+												</td>
+			                                </tr>
+		                            	</c:forEach>
+	                                </c:if>                              
 	                            </tbody>
 	                        </table>
 	                        
@@ -205,38 +254,31 @@
 	                    <div class="modal-dialog modal-dialog-centered" role="document">
 	                        <div class="modal-content">
 	                            <div class="modal-header">
-	                                <h4 class="modal-title" id="myModalLabel33">관리자 수정</h4>
+	                                <h4 class="modal-title" id="myModalLabel33">관리자 권한 수정</h4>
 	                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
 	                                    <span aria-hidden="true">&times;</span>
 	                                </button>
 	                            </div>
-	                            <form action="#">
+	                            
+	                            <form action="<c:url value='/admin/adminOwner/ownerManageEdit.do'/>" method="post">
 	                                <div class="modal-body">
-	                                    <label>이름 </label>
-	                                    <div class="form-group">
-	                                        <span id="memberName">관리자 이름</span>
-	                                        <input type="hidden" value="" name="memberName">
-	                                    </div>
 	
 	                                    <label>권한 </label>
 	                                    <div class="form-group">
-	                                        <select class="form-control col-6" aria-describedby="authCode" name="authCode">
+	                                        <select class="form-control col-6" aria-describedby="authCode" name="authCode" id="editAuth">
 					                      	<option value="0">권한</option>
-					                      	
-					                      	<!-- forEach . value에는 auth_code, 보여지는건엔 authName-->
-									    	<option value="authCode1">회계 관리자</option>
-									    	<option value="authCode2">시설 관리자</option>
-									    	<option value="authCode3">행정 관리자</option>
-									    	<!-- /forEach -->
-									    	
+							                <c:forEach var="auth" items="${authList}">
+												<option value="${auth.authCode}">${auth.authName}</option>	                
+							                </c:forEach>
 					                      </select>
-					                      
+					                      <input type="hidden" name="householdCode" id="editCode">
 	                                    </div>
 	                                </div>
 	                                <div class="modal-footer">
-	                                    <button type="button" class="btn btn-primary" data-dismiss="modal">수정</button>
+	                                    <input type="submit" class="btn btn-primary" value="수정">
 	                                </div>
 	                            </form>
+	                            
 	                        </div>
 	                    </div>
 	                </div>

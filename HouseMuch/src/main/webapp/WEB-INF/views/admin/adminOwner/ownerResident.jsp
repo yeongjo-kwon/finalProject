@@ -7,12 +7,39 @@
 	엑셀 업로드 및 다운로드
 	- 동에 따라 호가 달라짐 (ajax)
 -->
-
+<script type="text/javascript" src="${pageContext.request.contextPath }/resources/js/subinJs/form-repeater-bin.js"></script>
 <script type="text/javascript" src="${pageContext.request.contextPath }/resources/js/subinJs.js"></script>
 <script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/jquery-3.5.1.min.js"></script>
-<script type="text/javascript" src="https://editor.datatables.net/extensions/Editor/js/dataTables.editor.min.js"></script>
 <script type="text/javascript">
 	$(function(){
+		$('#hMembName').focus();
+		
+		$('#dong').change(function(){
+			$(this).parent().parent().next().find('#ho').html("<option value='0'>호</option>");
+			
+			if($(this).val()!=0){
+				var me=this;
+				$.ajax({
+					url:"<c:url value='/admin/adminOwner/hoList.do'/>",
+					type:"get",
+					data:"dong="+$(this).val(),
+					dataType:"json",
+					success:function(res){
+						if(res.length>0){
+							var str="<option value='0'>호</option>";
+							$.each(res, function(idx, item){
+								str+="<option value='"+item+"'>"+item+"호</option>";
+							});
+							$(me).parent().parent().next().find('#ho').html(str);
+						}
+					},
+					error:function(xhr, status, error){
+						alert("error : "+error);
+					}
+				});
+			}
+		});
+			
 		var table=$('#residentTable').DataTable({
 			ajax:{
 				url:"<c:url value='/admin/adminOwner/residentTable.do'/>",
@@ -31,31 +58,34 @@
 			]
 		}); 
 		
-		$('select[name="dong"]').change(function(){
-			$.ajax({
-				url:"<c:url value='/admin/adminOwner/hoList.do'/>",
-				type:"get",
-				data:"dong="+$(this).val(),
-				dataType:"json",
-				success:function(res){
-					if(res.length>0){
-						var str="<option value='0'>호</option>";
-						$.each(res, function(idx, item){
-							str+="<option value='"+item+"'>"+item+"호</option>";
-						});
-						$('#ho').html(str);
-					}
-				},
-				error:function(xhr, status, error){
-					alert("error : "+error);
-				}
-			});
-		});
-		
 		$('#chkPwdFrm').submit(function(){
 			if($('#chkPwd').val().length<1){
 				alert('비밀번호를 입력하세요');
 				event.preventDefault();
+			}
+		});
+		
+		$('form[name=repeatFrm]').submit(function(){	
+			$('#beforeIsValid').val($('#isValid').val());
+
+			if($('#dong').val()=="0"){
+				alert('동을 선택해주세요');
+				$('#isValid').val(Number($('#isValid').val())+1);
+				return false;
+			}else if($('#ho').val()=="0"){
+				alert('호를 선택해주세요');
+				$('#isValid').val(Number($('#isValid').val())+1);
+				return false;
+			}else if($('#hMembName').val().length<=0){
+				alert('이름을 입력해주세요');
+				$(this).find('#hMembName').focus();
+				$('#isValid').val(Number($('#isValid').val())+1);
+				return false;
+			}else if($('#birth').val().length<=0){
+				alert('생년월일을 입력해주세요');
+				$(this).find('#birth').focus();
+				$('#isValid').val(Number($('#isValid').val())+1);
+				return false;				
 			}
 		});
 		
@@ -165,15 +195,15 @@
 		          <br>세대원을 추가 등록 할 수 있습니다.
 		        </div>
 		        <div class="card-body">
-		          <form action="<c:url value='/admin/adminOwner/ownerMngReg.do'/>"
-		          		class="invoice-repeater" method="post" name="repeatFrm" id="repeatFrm">
+		          <form action="<c:url value='/admin/adminOwner/ownerResReg.do'/>" class="invoice-repeater-bin" method="post" name="repeatFrm" id="repeatFrm">
 		            <div data-repeater-list="invoice">
 		              <div data-repeater-item>
 		                <div class="row d-flex align-items-end">
+		                
 		                  <div class="col-md-2 col-12">
 		                    <div class="form-group">
 		                      <label for="dong">동</label>
-				              <select class="select form-control form-control-lg" name="dong" id="dong">
+				              <select class="select form-control form-control-lg" name="dong" id="dong" aria-describedby="dong">
 				                <option value="0">동</option>
 				                <c:forEach var="dong" items="${dongList}">
 									<option value="${dong}">${dong}동</option>	                
@@ -186,13 +216,11 @@
 		                  <div class="col-md-2 col-12">
 		                    <div class="form-group">		                      
 				              <label for="ho">호</label>
-				              <select class="select form-control form-control-lg" id="ho" name="ho">
+				              <select class="select form-control form-control-lg" id="ho" name="ho" aria-describedby="ho">
 				                <option value="0">호</option>
 				              </select>
-		                      
 		                    </div>
-		                  </div>
-		                  
+		                  </div>               
 		                  
 		                  <div class="col-md-2 col-12">
 		                    <div class="form-group">
@@ -202,23 +230,18 @@
 		                  </div>
 		                  <div class="col-md-2 col-12">
 		                    <div class="form-group">
-		                      <label for="hMembName">생일</label>
-		                      <input type="text" class="form-control" id="birth" aria-describedby="birth" name="birth" placeholder="ex)2000-01-01"/>
+		                      <label for="birth">생년월일</label>
+		                      <input type="text" class="form-control date-mask" id="birth" aria-describedby="birth" name="birth" placeholder="ex)2000-01-01"/>
 		                    </div>
 		                  </div>
 		                  <div class="col-md-2 col-12">
 		                    <div class="form-group">
 		                      <label for="relation">세대주 와의 관계</label><br>
-		                      
-		                      <select class="form-control" id="relation"
-		                      		aria-describedby="relation" name="relation">
-		                      	<option value="본인">본인</option>
-		                     
+		                      <select class="form-control" id="relation" aria-describedby="relation" name="relation">
+		                      	<option value="본인">본인</option> 
 						    	<option value="부모">부모</option>
 						    	<option value="배우자">배우자</option>
 						    	<option value="자녀">자녀</option>
-						    	
-						    	
 		                      </select>
 		                      
 		                    </div>
@@ -248,7 +271,7 @@
 		              </div>
 		              
 		              <div class="col-md-4 col-6 d-flex" style="float:right; text-align: right; align-self: flex-end; justify-content: flex-end">
-		              	<input type="submit" class="btn btn-primary" style="float:right;" value="등록">
+		              	<input type="submit" id="regSubmit" class="btn btn-primary" style="float:right;" value="등록">
 		              </div>
 		              
 		            </div>
@@ -309,6 +332,7 @@
 	                        <div class="modal-content">
 	                            <div class="modal-header">
 	                                <h4 class="modal-title" id="myModalLabel33">데이터 업로드</h4>
+	                                <i data-feather="help-circle" class="font-medium-3 text-muted cursor-pointer" data-toggle="modal" data-target="#howUpload" ></i>
 	                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
 	                                    <span aria-hidden="true">&times;</span>
 	                                </button>
@@ -327,6 +351,27 @@
 	                    </div>
 	                </div>
 	                
+	                <!-- Modal #howUpload -->
+	                <div class="modal fade text-left" id="howUpload" tabindex="-1" role="dialog" aria-hidden="true">
+	                    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+	                        <div class="modal-content">
+	                            <div class="modal-header">
+	                                <h4 class="modal-title" id="myModalLabel44"></h4>
+	                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+	                                    <span aria-hidden="true">&times;</span>
+	                                </button>
+	                            </div>
+	                            	<div class="modal-body">
+	                                	<p><img src="<c:url value='/resources/aptAdmin_images/helpUploadforRes.png'/>" alt="help"></p>
+	                                </div>
+	                                
+	                                <div class="modal-footer">
+	                                </div>
+	                            
+	                        </div>
+	                    </div>
+	                </div>
+
 	                <!-- Modal #delPwd -->
 	                <div class="modal fade text-left" id="delPwd" tabindex="-1" role="dialog" aria-hidden="true">
 	                    <div class="modal-dialog modal-dialog-centered" role="document">
@@ -346,6 +391,8 @@
 	                                    <input type="submit" class="btn btn-primary" value="삭제">
 	                                </div>
 	                            </form>
+	                            <input type="hidden" id="beforeIsValid" value="0">
+		         				<input type="hidden" id="isValid" value="0">
 	                        </div>
 	                    </div>
 	                </div>
