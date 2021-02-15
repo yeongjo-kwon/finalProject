@@ -7,6 +7,7 @@ import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import com.it.apt.adminLiving.notice.model.NoticeBoardVO;
 import com.it.apt.common.SearchVO;
 
 @Repository
@@ -53,6 +54,11 @@ public class ApartDAOMybatis implements ApartDAO{
 	@Override
 	public List<ApartExcelVO> excelApt() {
 		return sqlSession.selectList(namespace+"excelApt");
+	}
+
+	@Override
+	public List<Map<String, Object>> selectMainNotice(int aptNo){
+		return sqlSession.selectList(namespace+"selectMainNotice", aptNo);
 	}
 
 }

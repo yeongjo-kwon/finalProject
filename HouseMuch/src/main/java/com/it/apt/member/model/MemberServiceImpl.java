@@ -94,5 +94,15 @@ public class MemberServiceImpl implements MemberService{
 	public int updatePwd(MemberVO vo) {
 		return memberDao.updatePwd(vo);
 	}
+
+	@Override
+	public int updateMember(MemberVO vo) {
+		return memberDao.updateMember(vo);
+	}
+
+	@Override
+	public int withdrawMember(String id) {
+		return memberDao.withdrawMember(id);
+	}
 	
 }
