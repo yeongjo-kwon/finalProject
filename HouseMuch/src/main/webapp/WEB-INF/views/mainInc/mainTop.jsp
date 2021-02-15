@@ -89,11 +89,17 @@
          	<img class="round" src="${pageContext.request.contextPath}/resources/user_images/${memVo.memberImgFilename }" alt="avatar" height="40" width="40" style="background-color: #fff; padding-top:0px; border-radius : 50%; overflow: hidden;">
           </a>
             <ul style="text-align: left; width:150px;">
-              <li><a href="<c:url value='/userDash/myAccount/memberEdit.do'/>">내 계정 관리</a></li>
+              <li>
+              	<a href="<c:url value='/userDash/myAccount/memberEdit.do'/>">내 계정 관리</a>          	
+              	
+              	<!-- <a href="<c:url value='/admin/adminEdit.do'/>">내 계정 관리</a>    -->
+              </li>
+              
               <li><a href="<c:url value='/userDash/userDashMain.do'/>">마이 페이지</a></li>
               
               <!-- 관리자 대시보드로 들어가는 링크  -->
               <li><a href="<c:url value='/admin/adminAll/adminAllMain.do'/>">관리자 페이지</a></li>
+              
               
               <li><a href="javascript:void(window.open('<c:url value="/user/chat/chat.do"/>', 'chat','width=1000, height=800'))">1:1 채팅 </a></li>
               <li><a href="<c:url value='/login/logout.do'/>">로그아웃</a></li>

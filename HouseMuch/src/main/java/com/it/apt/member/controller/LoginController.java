@@ -53,7 +53,7 @@ public class LoginController {
 			  
 			int aptNo = memberService.selectAptNo(vo.getId());
 			logger.info("해당 유저의 아파트 번호 조회, aptNo={}", aptNo);
-			   
+			
 			// session
 			HttpSession session=request.getSession();
 			session.setAttribute("memVo", memVo);
@@ -85,8 +85,9 @@ public class LoginController {
 			}else if(authCode.equals("LIVING_MNG")) {
 				url="/admin/adminLiving/adminLiving.do";
 			}//
-			   
-			   
+			
+			logger.info("authCode={}", authCode);
+			session.setAttribute("authCodeMain", authCode);   
 		
 		//if
 		}else if(result==MemberService.PWD_DISAGREE) {	//비밀번호 불일치

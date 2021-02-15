@@ -319,7 +319,7 @@ function subMenuScroll(){
 						<div class="dropdown-menu dropdown-menu-right"
 							aria-labelledby="dropdown-user">
 							<a class="dropdown-item"
-								href="<c:url value='/userDash/myAccount/memberEdit.do'/>"><i
+								href="<c:url value='/admin/adminEdit.do'/>"><i
 								class="mr-50" data-feather="user"></i>내 계정 관리</a><a
 								class="dropdown-item"
 								href="<c:url value='/admin/adminAll/adminAllMain.do'/>"><i
