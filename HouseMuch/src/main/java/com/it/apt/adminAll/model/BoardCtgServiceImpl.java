@@ -22,8 +22,8 @@ public class BoardCtgServiceImpl implements BoardCtgService{
 	}
 
 	@Override
-	public int updateBoardCtg(int boardCtgNo) {
-		return boardCtgDao.updateBoardCtg(boardCtgNo);
+	public int updateBoardCtg(BoardCtgVO vo) {
+		return boardCtgDao.updateBoardCtg(vo);
 	}
 
 	@Override

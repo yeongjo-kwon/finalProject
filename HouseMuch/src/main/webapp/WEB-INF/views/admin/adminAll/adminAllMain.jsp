@@ -34,6 +34,10 @@
     color: #2FA599 !important;
 } */
 
+.img-fluid {
+    height: 100%;
+    width: 100%;
+}
 </style>
 
 <!-- BEGIN: Content-->

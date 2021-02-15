@@ -7,7 +7,7 @@ import com.it.apt.common.SearchVO;
 public interface BoardCtgService {
 	int insertBoardCtg(BoardCtgVO vo);
 	List<BoardCtgVO> selectAllBoardCtg(SearchVO vo);
-	int updateBoardCtg(int boardCtgNo);
+	int updateBoardCtg(BoardCtgVO vo);
 	int deleteBoardCtg(int boardCtgNo);
 	int selectTotalRecordFromBoardCategory(SearchVO vo);
 	List<BoardCtgVO> selectAllCtg();

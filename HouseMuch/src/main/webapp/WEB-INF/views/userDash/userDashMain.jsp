@@ -7,16 +7,12 @@ div#dash-title {
 	margin-bottom: 15px;
 }
 
-.section-title {
-	text-align: center;
-	padding-bottom: 20px;
-}
-
 .section-title h2 {
 	font-size: 32px;
 	font-weight: bold;
 	text-transform: uppercase;
-	margin-top: 30px;
+	margin-top: 20px;
+	margin-bottom: 20px;
 	padding-bottom: 0;
 	color: #00000078;
 }
@@ -29,7 +25,6 @@ div#dash-title {
 	border-bottom: 1px solid lightgray;
 }
 
-
 table.dashTb {
 	width: 100%;
 }
@@ -39,27 +34,28 @@ table.dashTb {
 }
 
 .btn-user {
-    border-color: #7DB249;
-    background-color: #7DB249;
-    color: #FFFFFF !important;
+	border-color: #7DB249;
+	background-color: #7DB249;
+	color: #FFFFFF !important;
 }
 
 p.todayIs {
-    font-size: 2.0em;
-    text-align: center;
-    margin-top: 17px;
+	font-size: 2.0em;
+	text-align: center;
+	margin-top: 15px;
 }
 
 span.payMonth {
-    font-size: 1.5em;
-    padding: 0 50px 0 50px;
+	font-size: 1.5em;
+	padding: 0 50px 0 50px;
 }
 
-button.btn.btn-flat-danger.waves-effect {padding: 0 0 10px 0;font-size: 1.5em;}
+button.btn.btn-flat-danger.waves-effect {
+	padding: 0 0 10px 0;
+	font-size: 1.5em;
+}
 </style>
 
-<!-- 구글차트 -->
-<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 <script type="text/javascript">
 	/* 내 건의게시글 보기로 이동 */
 	function moveToSugg() {
@@ -68,7 +64,7 @@ button.btn.btn-flat-danger.waves-effect {padding: 0 0 10px 0;font-size: 1.5em;}
 
 	/* 내 부가시설 보기로 이동 */
 	function moveToFacility() {
-		location.href = "<c:url value=''/>";
+		location.href = "<c:url value='/living/add/addOrderList.do?householdCode=${memVo.householdCode}'/>";
 	}
 
 	/* 내 차량 등록 내역으로 이동 */
@@ -81,20 +77,6 @@ button.btn.btn-flat-danger.waves-effect {padding: 0 0 10px 0;font-size: 1.5em;}
 		location.href = "<c:url value='/mngcost/mngcostPayment.do'/>";
 	}
 	
-	/* 구글차트 */
-	$(function(){
-		google.charts.load('current', {'packages':['corechart']});
-		google.charts.setOnLoadCallback(drawVisualization);
-		
-	});
-
-	function drawVisualization(){
-		var data = google.visualization.arrayToDataTable({
-			[],
-			[],
-			
-		});
-	}
 </script>
 
 <!-- START : Content -->
@@ -126,7 +108,8 @@ button.btn.btn-flat-danger.waves-effect {padding: 0 0 10px 0;font-size: 1.5em;}
 							<div class="card-body text-center">
 								<img
 									src="${pageContext.request.contextPath}/resources/app-assets/images/elements/decore-left.png"
-									class="congratulations-img-left" alt="card-img-left" /> <img
+									class="congratulations-img-left" alt="card-img-left" />
+								<img
 									src="${pageContext.request.contextPath}/resources/app-assets/images/elements/decore-right.png"
 									class="congratulations-img-right" alt="card-img-right" />
 								<div class="avatar avatar-xl bg-primary shadow">
@@ -137,7 +120,8 @@ button.btn.btn-flat-danger.waves-effect {padding: 0 0 10px 0;font-size: 1.5em;}
 								<div class="text-center">
 									<h1 class="mb-1 text-white">반갑습니다. ${memVo.memberName }님!</h1>
 									<p class="card-text m-auto w-75">당신의 행복한 주거라이프, 하우스머치가
-										함께합니다.</p>
+										함께합니다.
+									</p>
 								</div>
 							</div>
 						</div>
@@ -150,30 +134,34 @@ button.btn.btn-flat-danger.waves-effect {padding: 0 0 10px 0;font-size: 1.5em;}
 					<div class="col-12 col-md-6 col-lg-6">
 						<div class="card">
 							<div class="card-body">
-								<!-- 미납됐을 때 -->
+								<div style="padding-top: 5px;">
+									<!-- 미납됐을 때 -->
 									<button type="button" class="btn btn-danger">미납</button>
 									<!-- 구현해야함 -->
-									<span class="payMonth">1월 관리비 100,000원</span>
+									<span class="payMonth">${month }월 관리비 100,000원</span>
 									<!-- 구현해야함 -->
-									<button type="button" class="btn btn-flat-danger" onclick="moveToPay()">관리비
-										납부하기</button>
-
-								<!-- 완납했을 때 -->
-								<!-- <div class=" col-sm-4 paid1" style="width: 200px;">
-									<button type="button" class="btn btn-user">완납</button>
+									<button type="button" class="btn btn-flat-danger"
+										onclick="moveToPay()">관리비 납부하기</button>
+	
+									<!-- 완납했을 때 -->
+									<!-- <div class=" col-sm-4 paid1" style="width: 200px;">
+										<button type="button" class="btn btn-user">완납</button>
+									</div>
+									<div class=" col-sm-4 paid2">${month }월 관리비 100,000원</div>
+									<div class=" col-sm-4 paid3">
+										구현해야함
+										<button type="button" class="btn btn-flat">관리비
+											납부 완료</button>
+									</div> -->
 								</div>
-								<div class=" col-sm-4 paid2">구현해야함 1월 관리비 100,000원</div>
-								<div class=" col-sm-4 paid3">
-									구현해야함
-									<button type="button" class="btn btn-flat">관리비
-										납부 완료</button>
-								</div> -->
 							</div>
 						</div>
 					</div>
 					<div class="col-12 col-md-6 col-lg-6">
 						<div class="card">
-							<div class="card-body"><p class="todayIs">오늘은 ${today }입니다.</p></div>
+							<div class="card-body">
+								<p class="todayIs">오늘은 ${today }입니다.</p>
+							</div>
 						</div>
 					</div>
 				</div>
@@ -189,30 +177,10 @@ button.btn.btn-flat-danger.waves-effect {padding: 0 0 10px 0;font-size: 1.5em;}
 								</div>
 							</div>
 							<div class="card-body">
-								
-								<!-- <div id="donut-chart"></div>
-								<ul class="list-inline mb-0 mt-2 text-center">
-									<li class="list-inline-item"><span class="cursor-pointer">
-											<span class="bullet align-middle bullet-sm"
-											style="background-color: #ffe700">&nbsp;</span> <span
-											class="align-middle cursor-pointer">Operational</span>
-									</span></li>
-									<li class="list-inline-item"><span class="cursor-pointer">
-											<span class="bullet align-middle bullet-sm"
-											style="background-color: #ffa1a1">&nbsp;</span> <span
-											class="align-middle cursor-pointer">Networking</span>
-									</span></li>
-									<li class="list-inline-item"><span class="cursor-pointer">
-											<span class="bullet bullet-primary align-middle bullet-sm">&nbsp;</span>
-											<span class="align-middle cursor-pointer">Hiring</span>
-									</span></li>
-									<li class="list-inline-item"><span class="cursor-pointer">
-											<span class="bullet align-middle bullet-sm"
-											style="background-color: #00d4bd">&nbsp;</span> <span
-											class="align-middle cursor-pointer">R&D</span>
-									</span></li>
-								</ul>
-							</div> -->
+								<div>
+									<canvas id="myDoughnutChart" width="550" height="400"></canvas>
+								</div>
+							</div>
 						</div>
 					</div>
 					<!-- 3-2 -->
@@ -224,7 +192,9 @@ button.btn.btn-flat-danger.waves-effect {padding: 0 0 10px 0;font-size: 1.5em;}
 								</div>
 							</div>
 							<div class="card-body">
-								<div id="line-chart"></div>
+								<div>
+									<canvas id="myChart" width="550" height="400"></canvas>
+								</div>
 							</div>
 						</div>
 					</div>
@@ -238,7 +208,8 @@ button.btn.btn-flat-danger.waves-effect {padding: 0 0 10px 0;font-size: 1.5em;}
 							<div class="card-header">
 								<h6 class="section-label">내 건의사항</h6>
 								<button type="button" class="btn btn-flat"
-									onclick="moveToSugg()">더보기</button>
+									onclick="moveToSugg()">더보기
+								</button>
 							</div>
 							<div class="card-body">
 								<table summary="최근 건의게시글 5건을 보여주는 표입니다." class="dashTb">
@@ -253,14 +224,16 @@ button.btn.btn-flat-danger.waves-effect {padding: 0 0 10px 0;font-size: 1.5em;}
 										<!-- for문 시작 -->
 										<c:forEach var="fMap" items="${fList }">
 											<tr>
-												<td><img alt="도트 이미지"
-													src="<c:url value='/resources/aptUser_images/dot3.JPG'/>">
-													&nbsp; <!-- 제목이 긴 경우 일부만 보여주기 --> <c:if
-														test="${fn:length(fMap['SUGG_TITLE'])>=25}">
+												<td>
+													<img alt="도트 이미지"
+														src="<c:url value='/resources/aptUser_images/dot3.JPG'/>">
+														&nbsp; <!-- 제목이 긴 경우 일부만 보여주기 --> 
+													<c:if test="${fn:length(fMap['SUGG_TITLE'])>=25}">
 														${fn:substring(fMap['SUGG_TITLE'],0,25) } ...
 													</c:if> <c:if test="${fn:length(fMap['SUGG_TITLE'])<25}">
 														${fMap['SUGG_TITLE'] }
-													</c:if></td>
+													</c:if>
+												</td>
 											</tr>
 										</c:forEach>
 									</c:if>
@@ -275,7 +248,8 @@ button.btn.btn-flat-danger.waves-effect {padding: 0 0 10px 0;font-size: 1.5em;}
 							<div class="card-header">
 								<h6 class="section-label">내 부가시설</h6>
 								<button type="button" class="btn btn-flat"
-									onclick="moveToFacility()">더보기</button>
+									onclick="moveToFacility()">더보기
+								</button>
 							</div>
 							<div class="card-body">
 								<table summary="최근 부가시설 내역 5건을 보여주는 표입니다." class="dashTb">
@@ -342,5 +316,12 @@ button.btn.btn-flat-danger.waves-effect {padding: 0 0 10px 0;font-size: 1.5em;}
 	<!------------ 찐 DIV 끝 ------------>
 </div>
 <!-- END: Content-->
+
+<!-- chart.js 차트 라이브러리 -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.bundle.min.js"></script>
+<!-- 대시보드 내 차트 js -->
+<script src="${pageContext.request.contextPath}/resources/userBoard/js/dashBarChart.js"></script>
+<script src="${pageContext.request.contextPath}/resources/userBoard/js/dashDChart.js"></script>
 
 <%@ include file="../user/dashinc/userbottom.jsp"%>

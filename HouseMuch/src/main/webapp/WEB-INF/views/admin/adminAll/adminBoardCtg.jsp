@@ -3,10 +3,6 @@
 <%@ include file="../adminInc/adminTop.jsp"%>
 
 <style type="text/css">
-button.btn.btn-primary.waves-effect.waves-float.waves-light {
-	margin-top: 10px;
-}
-
 .table-responsive {
 	text-align: center;
 }
@@ -15,9 +11,6 @@ button.btn.btn-primary.waves-effect.waves-float.waves-light {
 	display: table;
 }
 
-button#btSearchSubmit {
-    margin-top: 10px;
-}
 </style>
 
 <script type="text/javascript">
@@ -47,6 +40,13 @@ button#btSearchSubmit {
 			}
 		});
 		
+		$('button[name=editBtn]').on('click',function(){
+			var editNo=$(this).next().val(); //boardCtgNo
+			var editName=$(this).next().next().val(); //boardCtgName
+			
+			$('#editNo').val(editNo);
+			$('#editName').val(editName);
+		});
 	});
 	
 	function pageFunc(curPage){
@@ -54,14 +54,23 @@ button#btSearchSubmit {
 		$('form[name=frmPage]').submit();
 	}
 	
+	//카테고리 삭제
+	function delFunc(boardCtgNo){
+		if(confirm('카테고리를 삭제하시겠습니까?')){
+			location.href
+				="<c:url value='/admin/adminAll/adminBoardCtgDelete.do'/>?boardCtgNo="+boardCtgNo;
+		}else{
+			event.preventDefault();
+		}
+	}
 	
 </script>
 
 <form action="<c:url value='/admin/adminAll/adminBoardCtg.do'/>"
 	name="frmPage" method="post">
-	<input type="hidden" name="currentPage"> <input type="hidden"
-		name="searchCondition" value="${param.searchCondition }"> <input
-		type="hidden" name="searchKeyword" value="${param.searchKeyword }">
+	<input type="hidden" name="currentPage"> 
+	<input type="hidden" name="searchCondition" value="${param.searchCondition }"> 
+	<input type="hidden" name="searchKeyword" value="${param.searchKeyword }">
 </form>
 <!-- 여기부터 -->
 <div class="app-content content ">
@@ -110,10 +119,14 @@ button#btSearchSubmit {
 								<div class="col-12">
 									<form class="needs-validation" novalidate method="post"
 										action="<c:url value='/admin/adminAll/adminBoardCtgInsert.do'/>">
-										<input type="text" class="form-control" name="boardCtgName"
-											id="validationTooltip01" placeholder="카테고리명을 입력하세요."
-											value="${param.boardCtgName }" required />
-										<button class="btn btn-primary" id="btSubmit" type="submit">등록</button>
+										<div class="input-group">
+											<input type="text" class="form-control" name="boardCtgName"
+												id="validationTooltip01" placeholder="카테고리명을 입력하세요."
+												value="${param.boardCtgName }" required />
+											<div class="input-group-prepend">
+												<button class="btn btn-primary" id="btSubmit" type="submit">등록</button>
+											</div>
+										</div>
 									</form>
 								</div>
 							</div>
@@ -125,14 +138,18 @@ button#btSearchSubmit {
 								<div class="col-12">
 									<form class="needs-validation" novalidate method="post"
 										action="<c:url value='/admin/adminAll/adminBoardCtg.do'/>">
-										<input type="text" class="form-control"
-											value="${param.searchKeyword }" id="searchKeyword"
-											name="searchKeyword" placeholder="검색어를 입력하세요"
-											aria-label="Amount" />
-										<button class="btn btn-outline-primary" id="btSearchSubmit"
-											type="submit">
-											<i data-feather="search" style="box-sizing: border-box;"></i>
-										</button>
+										<div class="input-group">
+											<input type="text" class="form-control"
+												value="${param.searchKeyword }" id="searchKeyword"
+												name="searchKeyword" placeholder="검색어를 입력하세요"
+												aria-label="Amount" />
+											<div class="input-group-prepend">
+												<button class="btn btn-outline-primary" id="btSearchSubmit"
+													type="submit">
+													<i data-feather="search" style="box-sizing: border-box;"></i>
+												</button>
+											</div>
+										</div>
 									</form>
 								</div>
 							</div>
@@ -172,16 +189,18 @@ button#btSearchSubmit {
 											<!-- 포인트다 여기서 수정/삭제 가능 -->
 											<td>
 												<div class="dropdown">
-													<button type="button"
+													<button type="button" name="editBtn"
 														class="btn btn-sm dropdown-toggle hide-arrow"
 														data-toggle="dropdown">
 														<i data-feather="more-vertical"></i>
 													</button>
+													<input type="hidden" value="${vo.boardCtgNo }" id="boardCtgNo">
+													<input type="hidden" value="${vo.boardCtgName }" id="boardCtgName">
 													<div class="dropdown-menu">
-														<a class="dropdown-item" href="javascript:void(0);"> <i
-															data-feather="edit-2" class="mr-50"></i> <span>Edit</span>
-														</a> <a class="dropdown-item" href="javascript:void(0);">
-															<i data-feather="trash" class="mr-50"></i> <span>Delete</span>
+														<a class="dropdown-item" data-toggle="modal" data-target="#editForm"> <i
+															data-feather="edit-2" class="mr-50"></i> <span>수정</span>
+														</a> <a class="dropdown-item" href="javascript:void(0);" onclick="delFunc(${vo.boardCtgNo})">
+															<i data-feather="trash" class="mr-50"></i> <span>삭제</span>
 														</a>
 													</div>
 												</div>
@@ -230,6 +249,40 @@ button#btSearchSubmit {
 					<!-- Table head options end -->
 				</div>
 				<!-- content-wrapper -->
+				
+				<!-- Modal - 수정  -->
+				<div class="demo-inline-spacing col-6">
+			    	<div class="form-modal-ex">
+			        	<!-- Modal Start -->
+		                <div class="modal fade text-left" id="editForm" tabindex="-1" role="modal" aria-hidden="true">
+		                    <div class="modal-dialog modal-dialog-centered" role="document">
+		                        <div class="modal-content">
+		                            <div class="modal-header">
+		                                <h4 class="modal-title" id="myModalLabel33">카테고리 수정</h4>
+		                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+		                                    <span aria-hidden="true">&times;</span>
+		                                </button>
+		                            </div>
+		                            
+		                            <form action="<c:url value='/admin/adminAll/adminBoardCtgEdit.do'/>" method="post">
+		                                <div class="modal-body">
+		                                    <div class="form-group">
+		                                    	<input type="hidden" name="boardCtgNo" id="editNo">
+		                                    	<input type="text" class="form-control" name="boardCtgName"
+													id="editName" placeholder="수정할 카테고리명을 입력하세요." required />   
+		                                    </div>
+		                                </div>
+		                                <div class="modal-footer">
+		                                    <input type="submit" class="btn btn-primary" value="수정">
+		                                </div>
+		                            </form>
+		                        </div>
+		                    </div>
+		                </div>
+		                <!-- Modal End -->
+			      	 </div>	
+			  	  </div>	
+			  	  <!-- 모달 수정 끝 -->
 			</div>
 			<!-- content-wrapper -->
 		</div>
