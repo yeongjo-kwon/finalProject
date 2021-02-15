@@ -88,6 +88,15 @@
 		)T
 	</select>
 	
+	<select id="selectMainNotice" parameterType="int" resultType="map">
+		select *
+		from(
+			select b.*, c.n_ctg_name from notice_board b join notice_category c on b.n_ctg_no= c.n_ctg_no where apt_no=#{aptNo}
+			)
+		<![CDATA[	
+		where rownum<=6	]]>
+	</select>	
+	
 </mapper>
 
 

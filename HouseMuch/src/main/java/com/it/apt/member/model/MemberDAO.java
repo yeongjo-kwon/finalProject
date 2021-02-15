@@ -11,4 +11,6 @@ public interface MemberDAO {
 	int insertMember(MemberVO vo);
 	String findId(MemberVO vo);
 	int updatePwd(MemberVO vo);
+	int updateMember(MemberVO vo);
+	int withdrawMember(String id);
 }

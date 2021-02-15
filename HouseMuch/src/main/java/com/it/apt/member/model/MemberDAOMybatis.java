@@ -60,5 +60,15 @@ public class MemberDAOMybatis implements MemberDAO{
 		return sqlSession.update(namespace+"updatePwd", vo);
 	}
 
+	@Override
+	public int updateMember(MemberVO vo) {
+		return sqlSession.update(namespace+"updateMember", vo);
+	}
+
+	@Override
+	public int withdrawMember(String id) {
+		return sqlSession.update(namespace+"withdrawMember",id);
+	}
+
 	
 }

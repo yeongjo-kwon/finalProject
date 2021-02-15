@@ -87,6 +87,7 @@
                                         <label for="email" class="form-label" style="font-size: 15px;">이메일</label><span style="color:red;">*</span><br>
 										<input type="email" class="form-control col-md-8 mr-2" name="email" id="email" tabindex="5" placeholder="이메일 입력" style="display: inline-block;">
 										<input type="button" class="btn btn-primary" name="chkBtn" id="chkBtn" value="인증번호 받기" >
+										<input type="hidden" id="chkEma" >
 									</div>
 									
 									<div class="form-gorup mt-0">
@@ -390,12 +391,15 @@
         		if(inputCode==emailCode && inputCode!=null){
 					$('#chkMail').next().css("color","#7DB249");
         			$('#chkMail').next().html("인증번호가 일치합니다.");
+        			$('#chkEma').val('Y');
         		}else if(inputCode==null){
 					$('#chkMail').next().css("color","red");
         			$('#chkMail').next().html("인증번호를 입력해주세요.");        			        			
+        			$('#chkEma').val('N');
         		}else{
 					$('#chkMail').next().css("color","red");
         			$('#chkMail').next().html("인증번호를 다시 확인해주세요.");        			
+        			$('#chkEma').val('N');
         		}
         	});
         	
@@ -423,6 +427,9 @@
     			}else if($('#emailChk').val()!='Y'){	//이메일 중복 인 경우
     				$('#email').focus();
     				event.preventDefault();    				
+    			}else if($('#chkEma').val()!='Y'){
+    				$('#email').focus();
+    				event.preventDefault(); 
     			}
     		});
         	

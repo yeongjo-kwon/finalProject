@@ -44,13 +44,26 @@
 	</insert>
 	
 	<select id="findId" parameterType="memberVo" resultType="String">
-		select id from member_info where member_name=#{memberName} and email=#{email}
+		select id from member_info where member_name=#{memberName} and email=#{email} and outdate is null
 	</select>
 	
 	<update id="updatePwd" parameterType="memberVo">
 		update member_info
 		set pwd=#{pwd}
 		where member_name=#{memberName} and email=#{email}
+	</update>
+	
+	<update id="updateMember" parameterType="memberVo">
+		update member_info
+		set member_img_filename=#{memberImgFilename}, member_img_original_filename=#{memberImgOriginalFilename}, 
+		email=#{email}, hp1=#{hp1}, hp2=#{hp2}, hp3=#{hp3}, member_name=#{memberName}
+		where id=#{id}
+	</update>
+	
+	<update id="withdrawMember" parameterType="String">
+		update member_info
+		set outdate=sysdate
+		where id=#{id}
 	</update>
 	
 </mapper>

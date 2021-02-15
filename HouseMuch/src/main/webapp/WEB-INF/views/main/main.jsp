@@ -1,6 +1,13 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ include file="../mainInc/mainTop.jsp"%>
+<style type="text/css">
+.box-bin{
+	padding: 50px 30px;
+    box-shadow: 0px 2px 15px rgb(0 0 0 / 10%);
+    transition: all ease-in-out 0.3s;
+}
+</style>
 
 <main id="main">
  <!-- ======= Hero Banner ======= -->
@@ -27,14 +34,18 @@
 		</div>
 	</section>
 	<!-- End Banner -->
-
 	
-	<section class="why-us" style="margin-top:60px; text-align:center">
+	<section class="mt-2 container mb-0 pb-0">
+		<div class="col-lg-12 mt-2 mt-lg-2 mb-0">
+			<div class="box-bin">코로나</div>
+		</div>
+	</section>
+	
+	<section class="why-us mt-0" style="text-align:center">
 		<div class="container">
-
 			<div class="row">
 
-				<div class="col-lg-3 mt-4 mt-lg-0">
+				<div class="col-lg-3 mt-2">
 					<a href="<c:url value='/mngcost/mngcostInquiry.do'/>" >
 					<div class="box">
 						<h4>관리비 조회</h4>
@@ -43,21 +54,27 @@
 				</div>
 
 				<div class="col-lg-3 mt-4 mt-lg-0">
+					<a href="<c:url value='/energy/energyChart.do'/>">
 					<div class="box">
 						<h4>에너지 조회</h4>
 					</div>
+					</a>
 				</div>
 
 				<div class="col-lg-3 mt-4 mt-lg-0">
+					<a href="<c:url value='/living/noti/noticeList.do'/>">
 					<div class="box">
 						<h4>생활지원 센터</h4>
 					</div>
+					</a>
 				</div>
 				
 				<div class="col-lg-3 mt-4 mt-lg-0">
+					<a href="<c:url value='/mngcost/mngcostPayment.do'/>">
 					<div class="box">
 						<h4>납부하기</h4>
 					</div>
+					</a>
 				</div>
 
 			</div>
@@ -69,53 +86,24 @@
 		<div class="container">
 
 			<div class="row no-gutters">
-				<div class="col-xl-6 pl-0 pl-lg-5 pr-lg-1 d-flex align-items-stretch" style="width:50%">
-					<div class="content d-flex flex-column justify-content-center">
-						<h3>우리아파트 공지사항</h3>
+				<div class="col-xl-6 d-flex align-items-stretch box-bin" style="width:50%">
+					<div class="p-5">
+						<h3 class="d-inline" style="font-weight:700; font-size:34px;"><a href="<c:url value='/living/noti/noticeList.do'/>"> 우리아파트 공지사항</a></h3>
+						
 						<br>
-						<table>
-							<tr>
-								<td>므에에</td>
-							</tr>
-							<tr><td>import할거삼</td></tr>
-							<tr><td>므에에에에엥</td></tr>
-						</table>
+						<div class="mt-2">
+							<c:import url="/main/mainNotice.do"></c:import>
+						</div>
 					</div>
 				</div>
 				
-				<div
-					class="col-xl-6 pl-0 pl-lg-5 pr-lg-1 d-flex align-items-stretch">
+				<div class="col-xl-6 pl-0 pl-lg-5 pr-lg-1 d-flex align-items-stretch">
 					<div class="content d-flex flex-column justify-content-center">
-						<h3>하우스머치</h3>
-						<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit,
-							sed do eiusmod tempor incididunt ut labore et dolore magna
-							aliqua. Duis aute irure dolor in reprehenderit</p>
-						<div class="row">
-							<div class="col-md-6 icon-box">
-								<i class="bx bx-receipt"></i>
-								<h4>Corporis voluptates sit</h4>
-								<p>Consequuntur sunt aut quasi enim aliquam quae harum
-									pariatur laboris nisi ut aliquip</p>
-							</div>
-							<div class="col-md-6 icon-box">
-								<i class="bx bx-cube-alt"></i>
-								<h4>Ullamco laboris nisi</h4>
-								<p>Excepteur sint occaecat cupidatat non proident, sunt in
-									culpa qui officia deserunt</p>
-							</div>
-							<div class="col-md-6 icon-box">
-								<i class="bx bx-images"></i>
-								<h4>Labore consequatur</h4>
-								<p>Aut suscipit aut cum nemo deleniti aut omnis. Doloribus
-									ut maiores omnis facere</p>
-							</div>
-							<div class="col-md-6 icon-box">
-								<i class="bx bx-shield"></i>
-								<h4>Beatae veritatis</h4>
-								<p>Expedita veritatis consequuntur nihil tempore laudantium
-									vitae denat pacta</p>
-							</div>
+						<h3>아파트 일정</h3>
+						<div style="width:500px;">
+							<c:import url="/main/mainScheduler.do"></c:import>
 						</div>
+						
 					</div>
 					<!-- End .content-->
 				</div>

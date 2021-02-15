@@ -85,7 +85,7 @@ public class AdminOwnerController {
 		return rList;
 	}
 	
-	@ResponseBody
+	//RESPONSEBODY
 	@RequestMapping(value="/excelUploadAjax.do", method = RequestMethod.POST)
 	public ModelAndView excelUploadAjax(MultipartFile testFile, MultipartHttpServletRequest request, HttpServletRequest req) {
 		HttpSession session=req.getSession();

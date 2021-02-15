@@ -6,6 +6,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.it.apt.adminLiving.notice.model.NoticeBoardVO;
 import com.it.apt.common.SearchVO;
 
 @Service
@@ -50,6 +51,11 @@ public class ApartServiceImpl implements ApartService{
 	@Override
 	public List<ApartExcelVO> excelApt() {
 		return apartDao.excelApt();
+	}
+
+	@Override
+	public List<Map<String, Object>> selectMainNotice(int aptNo) {
+		return apartDao.selectMainNotice(aptNo);
 	}
 
 }

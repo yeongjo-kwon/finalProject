@@ -23,7 +23,7 @@
 		values(#{householdCode},#{aptNo},#{dong},#{ho},#{authCode})		
 	</insert>
 	
-		<select id="findHouseholdCode" parameterType="householdVo" resultType="string">
+	<select id="findHouseholdCode" parameterType="householdVo" resultType="string">
 		select household_code from household_info where apt_no=#{aptNo} and dong=#{dong} and ho=#{ho}
 	</select>
 	
