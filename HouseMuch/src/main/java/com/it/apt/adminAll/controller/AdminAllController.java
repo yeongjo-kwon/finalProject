@@ -12,6 +12,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.it.apt.adminAll.model.BoardCtgService;
 import com.it.apt.adminAll.model.BoardCtgVO;
@@ -127,6 +128,55 @@ public class AdminAllController {
 		return "common/message";
 	}
 	
+	@RequestMapping("/adminBoardCtgDelete.do")
+	public String ctgDelete(@RequestParam(defaultValue = "0") int boardCtgNo
+			, Model model) {
+		logger.info("입주민게시판 카테고리 삭제하기, 파라미터 boardCtgNo={}", boardCtgNo);
+		
+		String msg="", url="";
+		if(boardCtgNo==0) {
+			msg="잘못된 url입니다.";
+			url="/admin/adminAll/adminBoardCtg.do";
+		}
+		
+		int cnt=ctgService.deleteBoardCtg(boardCtgNo);
+		logger.info("카테고리 삭제 결과, cnt={}", cnt);
+		
+		msg="카테고리 삭제 실패!";
+		url="/admin/adminAll/adminBoardCtg.do";
+		if(cnt>0) {
+			msg="카테고리가 삭제되었습니다.";
+		}
+		
+		model.addAttribute("msg", msg);
+		model.addAttribute("url", url);
+		
+		return "common/message";
+	}
+	
+	@RequestMapping("/adminBoardCtgEdit.do")
+	public String ctgEdit(@ModelAttribute BoardCtgVO ctgVo, Model model) {
+		//1
+		logger.info("입주민 게시판 카테고리 수정하기, 파라미터 ctgVo={}",ctgVo);
+		
+		//2
+		int cnt=ctgService.updateBoardCtg(ctgVo);
+		logger.info("카테고리 수정 결과 cnt={}",cnt);
+		
+		String msg="카테고리 수정 실패!", url="/admin/adminAll/adminBoardCtg.do";
+		if(cnt>0) {
+			msg="카테고리가 수정되었습니다.";
+		}
+		
+		//3
+		model.addAttribute("msg", msg);
+		model.addAttribute("url", url);
+		
+		//4
+		return "common/message";
+	}
+	
+	/* 건의게시판 관리 */
 	@RequestMapping("/adminSuggBoard.do")
 	public String adminSuggBoard(@ModelAttribute SearchVO searchVo
 			,@ModelAttribute SearchVO searchVoN

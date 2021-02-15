@@ -54,7 +54,7 @@
 		<include refid="searchWhere"/>
 	</select>
 	
-	<update id="updateBoardCtg" parameterType="int">
+	<update id="updateBoardCtg" parameterType="boardCtgVo">
 		UPDATE BOARD_CATEGORY
 		SET BOARD_CTG_NAME=#{boardCtgName}
 		WHERE BOARD_CTG_NO=#{boardCtgNo}

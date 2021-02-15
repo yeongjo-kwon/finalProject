@@ -216,10 +216,11 @@ ul.dept01, ul.dept02 {
 }
 
 .dept01 li a {
-    font-size: 1.5em;
+    font-size: 20px;
     letter-spacing: 0.05em;
     display: block;
     padding: 0 20px 0 20px;
+    position: relative;
 }
 
 ul.dept02 {
@@ -234,35 +235,17 @@ ul.nav.navbar-nav.align-items-center.ml-auto {
 ul.dept02 li#subMenu:first-child {
     padding-top: 20px;
 }
+
+.brand-text img {
+    object-fit: cover;
+    height: 3rem;
+}
+
 </style>
 
 <script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/jquery-3.5.1.min.js"></script>
-<script type="text/javascript">
-$(function(){
-	$('.dept01 li').mouseover(function(){
-		$('.dept02').css('display','inline')
-					.slideDown(200);
-	}).mouseout(function(){
-		$('.dept02').css('display','none')
-					.slideUp(200);
-	});
-	
-	$('.dept01 li a').mouseover(function(){
-		$(this).css('color','#7DB249');
-	}).mouseout(function(){
-		$(this).css('color','#666666');
-	});
-	
-	$('.dept02 li a').mouseover(function(){
-		$(this).css('color','#7DB249');
-	}).mouseout(function(){
-		$(this).css('color','#666666');
-	});
-	
-	
-});
-</script>
-
+<!-- 탑 메뉴 js -->
+<script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/hanhee.js/userNadminDashTop.js"></script>
 
 </head>
 <!-- END: Head-->
@@ -279,7 +262,7 @@ $(function(){
 		class="header-navbar navbar navbar-expand-lg align-items-center floating-nav navbar-light navbar-shadow">
 		<div class="navbar-container d-flex content">
 			<!-- 전체 드롭다운 메뉴 감싸기 -->
-			<div class="nav-menu d-none d-lg-block" class="topMenu">
+			<div class="nav-menu d-none d-lg-block" class="topMenu" style="width: 100%;">
 				<!-- 메뉴넣기 -->
 				<!-- 첫번째 -->
 				<!-- dept 1 -->
@@ -319,7 +302,7 @@ $(function(){
 							<li id="subMenu"><a href="<c:url value='/living/noti/aptScheduler.do'/>">
 								아파트 일정
 							</a></li>
-							<li id="subMenu"><a href="<c:url value='/living/add/addFacilityList.do'/>">
+							<li id="subMenu"><a href="<c:url value='/living/add/addOrderList.do?householdCode=${sessionScope.memVo.householdCode}'/>">
 								부가시설
 							</a></li>
 							<li id="subMenu"><a href="#">
@@ -340,9 +323,6 @@ $(function(){
 						<ul class="dept02">
 							<li id="subMenu"><a href="<c:url value='/userBoard/userBoardList.do'/>">
 								입주민 게시판
-							</a></li>
-							<li id="subMenu"><a href="<c:url value='/voteBoard/voteComingSoon.do'/>">
-								입주민 투표
 							</a></li>
 						</ul>
 					</li>
@@ -510,12 +490,15 @@ $(function(){
 					id="dropdown-user" href="javascript:void(0);"
 					data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 						<div class="user-nav d-sm-flex d-none">
-							<span class="user-name font-weight-bolder">${memVo.memberName }</span><span
-								class="user-status">${memVo.id }</span>
-						</div> <span class="avatar"><img class="round"
-							src="${pageContext.request.contextPath}/resources/user_images/${memVo.memberImgFilename }"
-							alt="avatar" height="40" width="40"><span
-							class="avatar-status-online"></span></span>
+							<span class="user-name font-weight-bolder">${memVo.memberName }</span>
+							<span class="user-status">${memVo.id }</span>
+						</div>
+						<span class="avatar">
+							<img class="round"
+								src="${pageContext.request.contextPath}/resources/user_images/${memVo.memberImgFilename }"
+								alt="avatar" height="40" width="40">
+							<span class="avatar-status-online"></span>
+						</span>
 				</a>
 					<div class="dropdown-menu dropdown-menu-right"
 						aria-labelledby="dropdown-user">
@@ -638,7 +621,7 @@ $(function(){
 					<ul class="menu-content">
 						<!-- 내 부가시설 조회 -->
 						<li><a class="d-flex align-items-center"
-							href="<c:url value='/living/add/addOrderList.do?memberNo=${sessionScope.memVo.memberNo}'/>"> <i data-feather="circle"></i><span
+							href="<c:url value='/living/add/addOrderList.do?householdCode=${sessionScope.memVo.householdCode}'/>"> <i data-feather="circle"></i><span
 								class="menu-item" data-i18n="Shop">내 부가시설 조회</span>
 						</a></li>
 					</ul></li>

@@ -24,13 +24,13 @@ public class BoardCtgDAOMybatis implements BoardCtgDAO{
 	}
 	
 	@Override
-	public int updateBoardCtg(int boardCtgNo) {
-		return sqlSession.update(namespace+"updateBoardCtg",boardCtgNo);
+	public int updateBoardCtg(BoardCtgVO vo) {
+		return sqlSession.update(namespace+"updateBoardCtg",vo);
 	}
 	
 	@Override
 	public int deleteBoardCtg(int boardCtgNo) {
-		return sqlSession.delete(namespace+"boardCtgNo");
+		return sqlSession.delete(namespace+"deleteBoardCtg",boardCtgNo);
 	}
 	
 	@Override

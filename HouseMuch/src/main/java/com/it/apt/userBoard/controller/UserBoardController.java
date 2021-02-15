@@ -310,12 +310,11 @@ public class UserBoardController {
 	}
 
 	@RequestMapping(value="/userBoardEdit.do",method = RequestMethod.GET)
-	public String boardEdit_get(@RequestParam int boardNo,
+	public String boardEdit_get(@RequestParam(defaultValue = "0") int boardNo,
 			Model model) {
 		//1
 		logger.info("입주민 게시판 글수정 화면 보여주기, 파라미터 boardNo={}",boardNo);
 
-		String msg="게시물이 수정되었습니다.", url="/userBoard/userBoardDetail.do?boardNo="+boardNo;
 		if(boardNo==0) {
 			model.addAttribute("msg", "잘못된 url입니다.");
 			model.addAttribute("url", "/userBoard/userBoardList.do");
