@@ -2,9 +2,7 @@
     pageEncoding="UTF-8"%>
 <%@ include file="../mainInc/mainTop.jsp"%>
 
-
-    <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/resources/user/assets/css/colors.css">
-    
+<link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/resources/user/assets/css/colors.css">
     
 <script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/jquery-3.5.1.min.js"></script>
 <script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/yeongjoJs/yjInquiryAjax.js"></script>
@@ -79,7 +77,7 @@
 <!-- ======= Start About Section ======= -->
 <main id="main">
 	<!-- ======= Breadcrumbs ======= -->
-	<section class="breadcrumbs">
+	<section class="breadcrumbs" style="margin-top:80px">
 		<div class="container">
 			<div class="d-flex justify-content-between align-items-center">
 				<h2>관리비 조회</h2>
@@ -90,14 +88,6 @@
 			</div>
 		</div>
 	</section>
-	<!-- End Breadcrumbs -->
-	<%--
-	<section class="inner-page">
-		<div class="container">
-			<p></p>
-		</div>
-	</section>
-	--%>
 </main><!-- End #main -->
 
 <section id="about">

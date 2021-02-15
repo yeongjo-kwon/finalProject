@@ -26,6 +26,7 @@
 		SELECT *
 		FROM MNGCOST_PAYMENT_LIST
 		WHERE HOUSEHOLD_CODE=#{householdCode}
+		ORDER BY MNGCOST_CLAIMDATE DESC
 	</select>
 	
 	<select id="selectMngcostInfoByClaim" parameterType="inquiryInfoVo"
@@ -71,11 +72,23 @@
 			IN (SELECT ADD_NO
 				FROM ADD_ORDER_LIST
 				WHERE HOUSEHOLD_CODE=#{householdCode}
-				AND ADD_OUTDATE IS NULL
-				OR TO_CHAR(ADD_OUTDATE, 'YYYY-MM')
-		        	> TO_CHAR(ADD_MONTHS(#{mngcostClaimdate}, -2), 'YYYY-MM'))
+				AND (ADD_OUTDATE IS NULL
+					 OR TO_CHAR(ADD_OUTDATE, 'YYYY-MM')
+			        	> TO_CHAR(ADD_MONTHS(#{mngcostClaimdate}, -2), 'YYYY-MM')))
 	</select>
 	
+	<!-- 미납 내역 조회 -->
+	<select id="selectUnpaidPaymentList" parameterType="string"
+			resultType="mngcostPaymentListVo">
+		SELECT MNGCOST_LIST_NO,
+			   MNGCOST_TOTAL_PRICE,
+			   MNGCOST_CLAIMDATE,
+			   MNGCOST_LIMITDATE
+		FROM MNGCOST_PAYMENT_LIST
+		WHERE HOUSEHOLD_CODE=#{householdCode}
+		AND MNGCOST_PAYDATE IS NULL
+		ORDER BY MNGCOST_CLAIMDATE DESC
+	</select>
 	
 <!-- 관리자 -->
 	<select id="adminSelectMngcostInfo" parameterType="inquiryInfoVo"
@@ -216,16 +229,23 @@
 		    FROM HOUSEHOLD_INFO H
 		    	LEFT JOIN (SELECT HOUSEHOLD_CODE,
 		    				 	  SUM(ADD_PRICE) TOTAL
-		                   FROM ADD_ORDER_LIST L
-		                   		JOIN ADDITIONAL_FACILITY_INFO I
-		                   		ON L.ADD_NO = I.ADD_NO
-		                   GROUP BY HOUSEHOLD_CODE)A
+		                   FROM (SELECT L.HOUSEHOLD_CODE,
+                                        (SELECT ADD_PRICE
+                                         FROM ADDITIONAL_FACILITY_INFO I
+                                         WHERE L.ADD_NO = I.ADD_NO) ADD_PRICE
+                                 FROM ADD_ORDER_LIST L
+                                 WHERE ADD_OUTDATE IS NULL
+                                    OR TO_CHAR(ADD_OUTDATE, 'YYYY-MM')
+                                        > TO_CHAR(ADD_MONTHS(#{mngcostClaimdate}, -2), 'YYYY-MM'))
+		                   GROUP BY HOUSEHOLD_CODE
+		                  )A
 		        ON H.HOUSEHOLD_CODE=A.HOUSEHOLD_CODE
 		        LEFT JOIN (SELECT HOUSEHOLD_CODE,
 		        				  U_COST_PRICE
                            FROM UTILITY_COST_INFO
                            WHERE U_CTG_NO=3
-                           AND TO_CHAR(U_COST_USEDATE, 'YYYY-MM')=#{startdate})U
+                           AND TO_CHAR(U_COST_USEDATE, 'YYYY-MM')=#{startdate}
+                          )U
 		        ON H.HOUSEHOLD_CODE=U.HOUSEHOLD_CODE
 		    WHERE AUTH_CODE='RESIDENT'
 		)M

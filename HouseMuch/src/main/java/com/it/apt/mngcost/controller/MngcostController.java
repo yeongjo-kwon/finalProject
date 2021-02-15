@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.it.apt.adminLiving.add.model.AddFacilityInfoVO;
+import com.it.apt.apart.model.ApartService;
+import com.it.apt.apart.model.ApartVO;
 import com.it.apt.member.model.MemberService;
 import com.it.apt.member.model.MemberVO;
 import com.it.apt.mngcost.model.InquiryInfoVO;
@@ -33,6 +35,7 @@ public class MngcostController {
 	
 	@Autowired private MngcostService mngcostService;
 	@Autowired private MemberService memberService;
+	@Autowired private ApartService apartService;
 	
 	@RequestMapping("/mngcostInquiry.do")
 	public String mngcostInquiry(HttpSession session, Model model) {
@@ -90,8 +93,20 @@ public class MngcostController {
 	}
 	
 	@RequestMapping("/mngcostPayment.do")
-	public void mngcostPayment(@RequestParam(defaultValue = "0")int mngcostListNo) {
-		logger.info("관리비 납부화면, 파라미터 mngcostListNo={}", mngcostListNo);
+	public void mngcostPayment(@RequestParam(defaultValue = "0")int mngcostListNo,
+			HttpSession session, Model model) {
+		logger.info("관리비 미납내역 화면, 파라미터 mngcostListNo={}", mngcostListNo);
+		
+		MemberVO memVo=(MemberVO)session.getAttribute("memVo");
+		ApartVO apartVo
+			=apartService.selectAptByAptNo(memberService.selectAptNo(memVo.getId()));
+		
+		List<MngcostPaymentListVO> mngcostPayList
+			=mngcostService.selectPayList(memVo.getHouseholdCode());
+		logger.info("관리비 납부내역 조회 결과 mngcostPayList={}", mngcostPayList);
+	
+		model.addAttribute("apartVo", apartVo);
+		model.addAttribute("mngcostPayList", mngcostPayList);
 	}
 	
 	@ResponseBody
@@ -106,5 +121,10 @@ public class MngcostController {
 			=mngcostService.plusAddInfo(inqVo);
 		
 		return addFacilityInfoList;
+	}
+	
+	@RequestMapping("/mngcostPaymentIMP.do")
+	public void mngcostPaymentIMP() {
+		logger.info("관리비 납부 결제페이지");
 	}
 }
