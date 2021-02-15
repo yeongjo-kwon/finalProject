@@ -1,6 +1,79 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ include file="../../adminInc/adminTop.jsp" %>
+<!-- 스마트 에디터 리소스  -->
+<link
+	href="${pageContext.request.contextPath}/resources/userBoard/css/boardStyle.css"
+	rel="stylesheet">
+<!-- js -->
+<script type="text/javascript" src="${pageContext.request.contextPath}/SmartEditor2/js/HuskyEZCreator.js"></script>
+<script type="text/javascript" src="//code.jquery.com/jquery-1.11.0.min.js"></script>
+<!-- 스마트 에디터 리소스 :끝  -->
+<!-- 스마트 에디터 js  -->
+<script type="text/javascript">
+$(function(){
+	/* 
+	-유효성 검사 Ajax사용
+	*/
+	$('#addName').focus();
+	
+	$('form[name=frmWrite]').find('#btOK').click(function(){
+	/*	if($('#addCtgNo').val()==0){
+			alert('시설 분류를 선택하세요.');
+			event.preventDefault();
+			$('#addCtgNo').focus();
+		}else if($('#addName').val()==0){
+			alert('시설명을 입력하세요.');
+			event.preventDefault();
+			$('#addName').focus();
+		}else if($('[name="addContent"]').val()==0){
+			alert('내용을 입력하세요.');
+			event.preventDefault();
+			$('[name="addContent"]').focus();
+		}
+	*/	
+		oEditors.getById["smartEditor"].exec("UPDATE_CONTENTS_FIELD", []);
+		$("#smartEditor").value = $("#smartEditor").value.replace(/<br>$/, "");
+		location.href='<c:url value="/admin/adminLiving/adminAdd/adminAddInfoList.do"/>';
+	});
+	
+	//파일첨부시 첨부파일명 가져오는이벤트
+	$('input[name="addinfoImgFile"]').change(function(e){
+		// 원래 여러번 첨부하면 맨 마지만꺼만 첨부되는건데 텍스트가 안없어지고 계속 보여짐 
+		// -> 그래서 그 전에 첨부해서 나왔던 텍스트 사라지고 다시 맨 마지막에 첨부되서 파일명 보이는것만 보이게 하는거임, 어차피 처리되는건 중복없이 한개씩 맨 마지막에 선택한 애들만 들어감
+		$('#fileText').text('');
+		
+		var files=$('input[name="addinfoImgFile"]')[0].files;
+        
+        for(var i= 0; i<files.length; i++){
+			//첨부파일명 텍스트 가져와서 <p>안에 넣기 : 안해도 첨부는 됨
+        	var fileText = $('#fileText').text();
+			$('#fileText').append("첨부된 파일&nbsp;:&nbsp;&nbsp;"+files[i].name+"<br>");
+        }
+    });
+
+	
+});
+
+/* function작업 */
+function exit(){
+	if(confirm('작성중인 작업을 종료하시겠습니까?')){
+		location.href="<c:url value='/admin/adminLiving/adminAdd/adminAddInfoList.do'/>";
+	}else{
+		event.preventDefault();
+	}
+}
+
+
+</script>
+<!-- 스마트 에디터 js : 끝 -->
+<style>
+#imgcard img{
+	object-fit: cover;
+}
+
+</style>
+
 	<!-- START : Content -->
 
 
@@ -44,95 +117,145 @@
                                 <div class="card-body">
                                     <div class="media">
                                         <div class="avatar mr-75">
-                                            <img src="${pageContext.request.contextPath}/resources/app-assets/images/portrait/small/avatar-s-9.jpg" width="38" height="38" alt="Avatar" />
+                                            <img src="${pageContext.request.contextPath}/resources/user_images/member-default.jpg" width="38" height="38" alt="Avatar" />
                                         </div>
                                         <div class="media-body">
-                                            <h6 class="mb-25">행정관리자</h6>
-                                            <p class="card-text">오늘 날짜 2021-01-20</p>
+                                             <h6 class="mb-25">작성자 : ${sessionScope.memVo.memberName}</h6><!-- 로그인된 사용자 이름 -->
+                                            <jsp:useBean id="now" class="java.util.Date" />
+											<fmt:formatDate value="${now}" pattern="yyyy-MM-dd" var="today" />
+                                            <p class="card-text">수정일 : <c:out value="${today}"/></p><!-- 글 등록 시점 현재 날짜  -->
                                         </div>
                                     </div>
                                     <!-- Form -->
-                                    <form action="javascript:;" class="mt-2">
+                                    <form action="<c:url value='/admin/adminLiving/adminAdd/adminAddEdit.do'/>" 
+                                    method="post" class="mt-2" name="frmWrite" enctype="multipart/form-data">
                                         <div class="row">
                                             <div class="col-md-6 col-12">
                                                 <div class="form-group mb-2">
-                                                    <label for="blog-edit-title">부가시설 명</label>
-                                                    <input type="text" id="blog-edit-title" class="form-control" value="" placeholder="부가시설 명을 입력하세요"/>
+                                                    <label for="addName">부가시설 명</label>
+                                                    <input type="text" id="addName"  name="addName" class="form-control" value="${map['addName'] }"
+                                                    		placeholder="부가시설 명을 입력하세요"/>
                                                 </div>
                                             </div>
+                                            <!-- 분류 -->
                                             <div class="col-md-6 col-12">
                                                 <div class="form-group mb-2">
-                                                    <label for="blog-edit-status">시설 분류</label>
-                                                    <select id="blog-edit-status" class="form-control">
-                                                        <option value="특화시설">특화시설</option>
-                                                        <option value="교육시설">교육시설</option>
-                                                        <option value="교육시설">문화시설</option>
-                                                        <option value="교육시설">스포트시설</option>
-                                                        <option value="교육시설">편의시설(무료)</option>
+                                                    <label for="addCtgNo">시설 분류</label>
+                                                    <select id="addCtgNo" name="addCtgNo" class="form-control">
+                                                        <c:set var="addCtgNo" value="${map['addCtgNo']}"/>
+                                                        
+                                                        
+                                                        <option value="1"
+                                                        <c:if test="addCtgNo==1">selected="selected"</c:if>
+                                                        >특화 시설</option>
+                                                        
+                                                        <option value="2" 
+                                                        <c:if test="addCtgNo==2">selected="selected"</c:if>
+                                                        >교육 시설</option>
+                                                        
+                                                        <option value="3"
+                                                        <c:if test="addCtgNo==3">selected="selected"</c:if>
+                                                        >문화 시설</option>
+                                                        
+                                                        <option value="4"
+                                                        <c:if test="addCtgNo==4">selected="selected"</c:if>
+                                                        >스포츠 시설</option>
+                                                        
+                                                        <option value="5"
+                                                        <c:if test="addCtgNo==5">selected="selected"</c:if>
+                                                        >편의시설(무료)</option>
+                                                    
                                                     </select>
                                                 </div>
                                             </div>
                                             
                                             
-                                            <!-- 여기다 -->
-                                            
-                                            
+                                           <!-- 위치정보 -->
                                             <div class="col-md-6 col-12">
                                                 <div class="form-group mb-2">
-                                                    <label for="blog-edit-slug">위치정보</label>
-                                                    <input type="text" id="blog-edit-slug" class="form-control" value="" placeholder="위치정보를 입력하세요" />
+                                                    <label for="addLocationInfo">위치 정보</label>
+                                                    <input type="text" id="addLocationInfo" name="addLocationInfo" class="form-control" value="${map['addLocationInfo']}" placeholder="위치정보를 입력하세요" />
                                                 </div>
                                             </div>
                                             
+                                             
+                                           <!-- 이용요금  -->
                                             <div class="col-md-6 col-12">
                                                 <div class="form-group mb-2">
-                                                    <label for="blog-edit-category">업체정보</label>
-                                                    <select class="form-control" id="blog-edit-category">
-                                                        <option value="업체1" selected>업체1</option>
-                                                        <option value="업체1" selected>업체1</option>
-                                                        <option value="업체1" selected>업체1</option>
-                                                    </select>
+                                                    <label for="blog-edit-slug">월 이용 요금</label>
+                                                    <input type="text" id="addPrice" name="addPrice" class="form-control" 
+                                                       placeholder="관리비에 부과될 월 이용 요금을 입력하세요" value="${map['addPrice']}"/>
                                                 </div>
                                             </div>
+                                            
+                                            
                                             <div class="col-12">
                                                 <div class="form-group mb-2">
                                                     <label>상세 설명</label>
                                                     <div id="blog-editor-wrapper">
-                                                        <div id="blog-editor-container">
-                                                            <div class="editor">
-                                                                <p>
-                                                                    Cupcake ipsum dolor sit. Amet dessert donut candy chocolate bar cotton dessert candy
-                                                                    chocolate. Candy muffin danish. Macaroon brownie jelly beans marzipan cheesecake oat cake.
-                                                                    Carrot cake macaroon chocolate cake. Jelly brownie jelly. Marzipan pie sweet roll.
-                                                                </p>
-                                                                <p><br /></p>
-                                                                <p>
-                                                                    Liquorice drag챕e cake chupa chups pie cotton candy jujubes bear claw sesame snaps. Fruitcake
-                                                                    chupa chups chocolate bonbon lemon drops croissant caramels lemon drops. Candy jelly cake
-                                                                    marshmallow jelly beans drag챕e macaroon. Gummies sugar plum fruitcake. Candy canes candy
-                                                                    cupcake caramels cotton candy jujubes fruitcake.
-                                                                </p>
-                                                            </div>
-                                                        </div>
+                                                    
+                                                              <div class="form-group">
+																<textarea class="form-control" name="addContent" rows="5"
+																	id="smartEditor" data-rule="required"
+																	placeholder="내용을 입력하세요.">${map['addContent']}</textarea>
+																<div class="validate"></div>
+																<script>
+																	var oEditors = [];
+																	nhn.husky.EZCreator.createInIFrame({ 
+																		oAppRef : oEditors, 
+																		elPlaceHolder : "smartEditor", 
+																		sSkinURI : "${pageContext.request.contextPath}/SmartEditor2/SmartEditor2Skin.html", 
+																		fCreator : "createSEditor2", 
+																		htParams : { 
+																		// 툴바 사용 여부 (true:사용/ false:사용하지 않음) 
+																		bUseToolbar : true, 
+																		// 입력창 크기 조절바 사용 여부 (true:사용/ false:사용하지 않음) 
+																		bUseVerticalResizer : true, 
+																		// 모드 탭(Editor | HTML | TEXT) 사용 여부 (true:사용/ false:사용하지 않음) 
+																		bUseModeChanger : false 
+																		}
+																	}); 
+																</script>
+															</div>
+                                                              <!-- 스마트에디터 시작 :끝 -->
+                                                              
+                                                        
+                                                        
+                                                        
+                                                        
                                                     </div>
                                                 </div>
                                             </div>
+                                          <!-- 썸넬첨부 -->
                                             <div class="col-12 mb-2">
                                                 <div class="border rounded p-2">
-                                                    <h4 class="mb-1">Featured Image</h4>
                                                     <div class="media flex-column flex-md-row">
-                                                        <img src="${pageContext.request.contextPath}/resources/app-assets/images/slider/03.jpg" id="blog-feature-image" class="rounded mr-2 mb-1 mb-md-0" width="170" height="110" alt="Blog Featured Image" />
+                                                    
+                                                    	 <c:if test="${vo.addinfoImgOriginalFilename=='thumbnail-default.svg' }">
+								                        <img src="${pageContext.request.contextPath}/resources/aptAdmin_images/thumbnail-default.svg" id="blog-feature-image" 
+                                                        class="rounded mr-2 mb-1 mb-md-0" width="260" height="150" alt="시설썸네일" id="imgcard"/>
+														 </c:if>
+														 <c:if test="${vo.addinfoImgOriginalFilename!='thumbnail-default.svg'}">
+														 	<img class="rounded mr-2 mb-1 mb-md-0"  id="imgcard"
+														 	src="${pageContext.request.contextPath}/resources/aptAdmin_images/add_thumbnail/${map['ADDINFO_IMG_ORIGINAL_FILENAME']}" 
+														 	width="260" height="150" alt="시설썸네일" />
+								 						</c:if>
+
+
+
+                
                                                         <div class="media-body">
-                                                            <h5 class="mb-0">Main image:</h5>
-                                                            <small class="text-muted">Required image resolution 800x400, image size 10mb.</small>
-                                                            <p class="my-50">
-                                                                <a href="javascript:void(0);" id="blog-image-text">C:\fakepath\banner.jpg</a>
-                                                            </p>
+                                                            <h5 class="mb-1 mt-1">썸네일 이미지 첨부</h5>
+                                                            <small class="text-muted">새로운 썸네일 이미지를 등록하면 기존의 썸네일 이미지는 삭제됩니다.</small>
+                                                            <p class="my-50" id="fileText" name="fileText">${map['ADDINFO_IMG_ORIGINAL_FILENAME'] }</p>
+                                                            <!--  -->
+                                                                <a href="javascript:void(0);" id="blog-image-text" ><span class="my-50 d-block" id="fileText"></span></a>
                                                             <div class="d-inline-block">
                                                                 <div class="form-group mb-0">
                                                                     <div class="custom-file">
-                                                                        <input type="file" class="custom-file-input" id="blogCustomFile" accept="image/*" />
-                                                                        <label class="custom-file-label" for="blogCustomFile">Choose file</label>
+                                                                      <label class="custom-file-label" for="addinfoImgFile"></label>
+ 															<input type="file" class="custom-file-input notiFileInput" id="addinfoImgFile"
+																name="addinfoImgFile" />
                                                                     </div>
                                                                 </div>
                                                             </div>
@@ -140,10 +263,23 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="col-6" style="text-align: center;">
+                                            <!-- 썸넬첨부 끝 -->
+                                            
+                                              <div class="col-6 mt-3" style="text-align: left;">						
+                                            <a href="<c:url value='/admin/adminLiving/adminAdd/adminAddDel.do?addNo=${map["addNo"] }&addinfoImgFilename=${map["addinfoImgFilename"]}'/>">
+                                                <button type="button" class="btn btn-outline-danger col-4">접수 중단</button>
+                                            </a>
+                                            </div>    
+                                            <div class="col-6 mt-3" style="text-align: right;">
+                                                <button type="reset" class="btn btn-outline-secondary col-3">다시 입력</button>
+                                                <button type="submit" class="btn btn-primary col-4" id="btOK">수정 완료</button>
+                                            </div>
+                                            
+                                            
+                                         <!--    <div class="col-6" style="text-align: center;">
                                                 <button type="submit" class="btn btn-primary mr-1 col-3" style="width:50%;">수정 완료</button>
                                                 <button type="reset" class="btn btn-outline-secondary col-3" style="width:50%;">취소</button>
-                                            </div>
+                                            </div> -->
                                         </div>
                                     </form>
                                     <!--/ Form -->

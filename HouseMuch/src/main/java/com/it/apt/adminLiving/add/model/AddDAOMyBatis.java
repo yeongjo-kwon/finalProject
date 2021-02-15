@@ -34,8 +34,17 @@ public class AddDAOMyBatis implements AddDAO{
 		return sqlSession.selectOne(namespace+"selectAddInfoByAddNo",addNo);
 	}
 	@Override
-	public Map<String, Object> searchAuthCode(int MemberNo) {
-		return sqlSession.selectOne(namespace+"searchAuthCode",MemberNo);
+	public Map<String, Object> searchAuthCode(int memberNo) {
+		return sqlSession.selectOne(namespace+"searchAuthCode",memberNo);
+	}
+	
+	@Override
+	public int updateAddinfo(AddFacilityInfoVO vo) {
+		return sqlSession.update(namespace+"updateAddinfo",vo);
+	}
+	@Override
+	public int updateAddinfoOut(int addNo) {
+		return sqlSession.update(namespace+"updateAddinfoOut",addNo);
 	}
 	
 //*************************** 입주민 신청 ***************************
@@ -70,10 +79,15 @@ public class AddDAOMyBatis implements AddDAO{
 		return sqlSession.update(namespace+"updateOutdateByAddOrderListNo",addOrderListNo);
 	}
 	@Override
+	public int getAddOrderListNo(AddOrderVO vo) {
+		return sqlSession.selectOne(namespace+"getAddOrderListNo",vo);
+	}
+	
+	@Override
 	public List<AddOrderExcelVO> selectAddOrderExcel(String householdCode) {
 		return sqlSession.selectList(namespace+"selectAddOrderExcel",householdCode);
 	}
-	
+
 	
 	
 	

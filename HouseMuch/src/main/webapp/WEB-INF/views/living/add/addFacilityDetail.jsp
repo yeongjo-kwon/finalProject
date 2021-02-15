@@ -15,9 +15,9 @@
 <script>
 
 
-var addOut = function(){
+var addOut = function(addNo,addOrderListNo){
 	if(confirm('해지할 경우 다음 달 부터 재 신청 가능합니다. 시설 이용을 해지하시겠습니까?')){
-		location.href="<c:url value='/living/add/addOut.do?addNo=${map["addNo"]}&householdCode=${sessionScope.memVo.householdCode}'/>";
+			location.href="<c:url value='/living/add/addOut.do?addNo="+addNo+"&addOrderListNo="+addOrderListNo+"'/>";
 	}else{
 		event.preventDefault();
 	}
@@ -148,29 +148,38 @@ body{
 			<div class="card" style="position:absolute;top:0px;" id="divOrder2"  style="width:18rem;" >
 				<div class="card-header" style="width:18rem;">${map['addName']}</div>	
 				<div class="card-body" style="width:18rem;">
-					<c:if test="${map['addPrice']!=0}">
+		
+				<c:choose>
+					<c:when test="${checkCode>0 && map['addPrice']!=0}">
 						<p>월 이용 요금 :&nbsp;&nbsp;<fmt:formatNumber pattern="###,###,###" value="${map['addPrice']}"/>&nbsp;원</p>
-						<small class="text-left apt-text-secandary">*월 이용 요금은「부가시설 이용료」 항목<br>으로 세대 관리비 청구됩니다.</small>
-					</c:if>
-					<c:if test="${map['addPrice']==0}">
+						<small class="text-left apt-text-secandary">*시설 이용 <b>해지 신청</b>은 <br>
+						<a href="<c:url value='/living/add/addOrderList.do?householdCode=${sessionScope.memVo.householdCode}'/>"><b>「우리집 신청내역」</b></a>
+						에서 가능합니다.</small>
+					</c:when>
+					<c:when test="${map['addPrice']==0}">
 						<p class="addFree" >월 이용 요금 :&nbsp;&nbsp;입주민 무료</p>
 						<small class="text-left apt-text-secandary">*무료 편의 시설은 입주민 누구나<br>신청 없이 무료이용 가능합니다.</small>
-					</c:if>
+					</c:when>
+					<c:otherwise>
+						<p>월 이용 요금 :&nbsp;&nbsp;<fmt:formatNumber pattern="###,###,###" value="${map['addPrice']}"/>&nbsp;원</p>
+						<small class="text-left apt-text-secandary">*월 이용 요금은「부가시설 이용료」 항목<br>으로 세대 관리비 청구됩니다.</small>
+					</c:otherwise>
+				</c:choose>
 				</div> 
 
 				<c:choose>
 					<c:when test="${map['addPrice']==0}">
-						<input type="button" class="mb-0 btn-secondary" id="btOrder"
+						<input type="button" class="mb-0 apt-bg-secondary text-secondary" id="btOrder"
 							value="무료 편의 시설" style="width:18rem;height:4rem;border-radius: 0 0 4px 4px;" disabled="disabled">	
 					</c:when>
 					
-					<c:when test="${checkCode>0}">
-						<input type="button" class="mb-0 btn-out" id="btOut" name="addOut" onclick="addOut()"
-							value="이용 해지" style="width:18rem;height:4rem;border-radius: 0 0 4px 4px;border-color:#FF7063">	
+					<c:when test="${checkCode>0 && map['addPrice']!=0}">
+						<input type="button" class="mb-0 apt-bg-secondary text-secondary" disabled="disabled"
+							value="이용중" style="width:18rem;height:4rem;border-radius: 0 0 4px 4px;">	
 					</c:when>
 					
 					<c:otherwise>
-						<input type="button" class="mb-0 btn-primary " id="btOrder" 
+						<input type="button" class="mb-0 btn btn-primary apt-bg-primary" id="btOrder" 
 						value="이용 신청" style="width:18rem;height:4rem;border-radius: 0 0 4px 4px;">	
 					</c:otherwise>						
 				</c:choose>
