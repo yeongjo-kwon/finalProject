@@ -40,6 +40,31 @@ $(function(){
 		//어차피 검색후에는 1페이지부터 시작할꺼니까
 		pageFunc(1);  
 	});
+	
+	
+/* 	$('.page-link').on('click',function(){
+		$('input[name=currentPage]').val(curPage);
+		var sbmCondition = $('input[name=searchCondition]').val();
+		var sbmKeyword = $('input[name=searchKeyword]').val();
+		var ctgNo = $('input[name=addCtgNo]').val();
+		
+		
+		//null일경우 넣어주기
+		if(sbmCondition==null){
+			console.log(sbmCondition+"없음");
+			$(this).val('');
+		}else if(sbmKeyword==null){
+			console.log(sbmKeyword+"없음");
+			$(this).val('');
+		}else if(ctgNo==null){
+			console.log(ctgNo+"없음");
+			$(this).val(0);
+		}
+		
+	});
+	 */
+	
+	
 });
 </script>
  <!-- 부가시설 목록 뷰 script : 끝 -->
@@ -182,10 +207,12 @@ $(function(){
 								<%--  <img class="img-fluid card-img-top" src="<c:url value='/living/add/attachImage.do'/>" 
 								 alt="시설썸네일" width="550"/> --%>
 								 <c:if test="${vo.addinfoImgOriginalFilename=='thumbnail-default.svg' }">
-								 	<img class="img-fluid card-img-top" src="${pageContext.request.contextPath}/resources/aptAdmin_images/thumbnail-default.svg" alt="시설썸네일"/>
+								 	<img class="img-fluid card-img-top" alt="등록된 이미지가 없습니다"
+								 	src="${pageContext.request.contextPath}/resources/aptAdmin_images/thumbnail-default.svg" />
 								 </c:if>
 								 <c:if test="${vo.addinfoImgOriginalFilename!='thumbnail-default.svg'}">
-								 	<img class="img-fluid card-img-top embed-responsive-item" src="${pageContext.request.contextPath}/resources/aptAdmin_images/add_thumbnail/${vo.addinfoImgOriginalFilename}" alt="시설썸네일" />
+								 	<img class="img-fluid card-img-top embed-responsive-item" alt="${vo.addName}" 
+								 	src="${pageContext.request.contextPath}/resources/aptAdmin_images/add_thumbnail/${vo.addinfoImgOriginalFilename}" />
 								 </c:if>
                                 	</a>
 									<div class="card-body">
@@ -214,16 +241,6 @@ $(function(){
 												class="btn btn-primary btn-wishlist">
 		                                    <span class="add-to-cart">상세 정보</span></a>
 										</c:when>
-									<%-- 	<c:when test="${vo.addPrice>0}">
-												<a href="<c:url value='/living/add/addOut.do?addNo=${vo.addNo }&householdCode=${sessionScope.memVo.householdCode}'/>" 
-													class="btn btn-out btn-wishlist">
-				                                    <span class="add-to-cart">이용 해지</span>
-				                                </a> 
-			                                <a href="<c:url value='/living/add/addFacilityDetail.do?addNo=${vo.addNo }'/>" 
-			                                	class="btn btn-primary btn-wishlist">
-			                                    <span class="add-to-cart">상세 정보</span>
-		                                	</a>
-										</c:when> --%>
 										<c:otherwise>
 											<a href="<c:url value='/living/add/addOrder.do?addNo=${vo.addNo }&householdCode=${sessionScope.memVo.householdCode}'/>" 
 												class="btn btn-light btn-wishlist">
@@ -311,18 +328,19 @@ $(function(){
 <br>
         <div class="list-group">
      
-          <a href="<c:url value='/living/add/addOrderList.do?householdCode=${sessionScope.memVo.householdCode}'/>" class="list-group-item" >
-       	   이용중인 시설</a>
-         <c:if test="${!empty orderList }">
-	    	      	<div class="card card-body">
-	          <c:forEach var="orderVo" items="${orderList}">
-	    	      	<p class="">${orderVo.addName }</p>
-	          </c:forEach>
-	    	      	</div>
-         </c:if>
-         <c:if test="${empty orderList }">
-         
-         </c:if>
+          <a href="<c:url value='/living/add/addOrderList.do?householdCode=${sessionScope.memVo.householdCode}'/>" 
+          class="list-group-item" >이용중인 시설</a>
+		        <!-- 이용중인 시설 목록 -->
+		        <c:if test="${!empty orderList }">
+		    	   <div class="card card-body">
+		         	<c:forEach var="orderVo" items="${orderList}">
+		    	      	<p id="orderList">${orderVo.addName }</p>
+		         	</c:forEach>
+		        </c:if>
+		        <c:if test="${empty orderList }">
+		    	      	<p id="emptyOrder">이용중인 시설이 없습니다.</p>
+		        </c:if>
+    	  </div>
         </div>
 
       </div>
@@ -337,7 +355,7 @@ $(function(){
 
 	</div><!-- yiWrapper -->
 <div class="clearfix"></div>
-  <script>
+  <script type="text/javascript">
   feather.replace();
   </script>
   <!-- Bootstrap core JavaScript -->

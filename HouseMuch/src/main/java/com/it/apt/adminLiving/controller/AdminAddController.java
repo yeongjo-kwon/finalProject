@@ -2,6 +2,7 @@ package com.it.apt.adminLiving.controller;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 
 import javax.annotation.Resource;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
+import com.it.apt.adminLiving.add.model.AddCategoryVO;
 import com.it.apt.adminLiving.add.model.AddFacilityInfoVO;
 import com.it.apt.adminLiving.add.model.AddService;
 import com.it.apt.common.LivingFileUtil;
@@ -116,10 +118,11 @@ public class AdminAddController {
 			,@RequestParam(required = false) String searchKeyword
 			,Model model, HttpSession session) {
 		logger.info("부가시설 리스트 조회 ,들어온직후 vo={} ",vo);
+		logger.info("검색어 있으면, searchKeyword={}",searchKeyword);
 
 		//카테고리 리스트 가져오기
-//		List<AddCategoryVO> addCtgList = addService.selectAddCategory();
-//		model.addAttribute("addCtgList",addCtgList);
+		List<AddCategoryVO> addCtgList = addService.selectAddCategory();
+		model.addAttribute("addCtgList",addCtgList);
 		
 		
 		//상속받은 searchVo에 검색어 파라미터 넣음
@@ -128,6 +131,13 @@ public class AdminAddController {
 		}
 		logger.info("검색어 파람, searchKeyword={}",vo.getSearchKeyword());
 
+//		if(addCtgNo!=0) {
+//			vo.setAddCtgNo(addCtgNo);
+//			addCtgNo = vo.getAddCtgNo();
+//			logger.info("카테고리로 검색, addCtgNo={}",addCtgNo);
+//		}
+//		
+		
 		MemberVO memVo=(MemberVO)session.getAttribute("memVo");
 		vo.setHouseholdCode(memVo.getHouseholdCode()); //해당 아파트NO 부가시설만 조회 
 				
@@ -162,7 +172,90 @@ public class AdminAddController {
 	}
 
 	
+	@RequestMapping(value = "/adminAddEdit.do",method = RequestMethod.GET)
+	public String adminAddEdit(@RequestParam(defaultValue = "0")int addNo, Model model) {
+		//http://localhost:9090/apt/admin/adminLiving/adminAdd/adminAddEdit.do?addNo=12
+		
+/*      
+		MemberVO memVo = (MemberVO)session.getAttribute("memVo");
+		int memberNo = memVo.getMemberNo();
+		
+어차피 권한안맞으면 못들어옴
+		Map<String, Object> authMap =  addService.searchAuthCode(memberNo);
+		logger.info("접속회원의 권한등급 조회결과 authMap={}",authMap);
 	
+		//aptNo로 조회한 AUTH_CODE='LIVING_MNG'
+		Object authCode = authMap.get("AUTH_CODE");
+		if( !(authCode.equals("LIVING_MNG"))) {
+			model.addAttribute("msg","수정권한이 없습니다");
+			model.addAttribute("url","수정권한이 없습니다");
+		}
+		model.addAttribute("authMap", authMap);
+*/		
+		
+		//시설정보 불러오기 
+		Map<String, Object> map = addService.selectAddInfoByAddNo(addNo);
+		logger.info("부가시설 상세 결과 map={}",map);
+		
+		//썸넬파일정보 
+		
+		//model에 담아서 보내기
+		model.addAttribute("map", map);
+		return "admin/adminLiving/adminAdd/adminAddEdit";
+	
+	}
+	
+	
+//	@RequestMapping(value = "/adminAddEdit.do",method = RequestMethod.POST)
+//	public String adminAddEdit_post(@ModelAttribute AddFacilityInfoVO vo, Model model) {
+//		//로그찍기
+//		
+//		//첨부파일있으면 
+//	}
+	
+	@RequestMapping("/adminAddDel.do")
+	public String addDel(@RequestParam(defaultValue = "0")int addNo,HttpSession session,Model model) {
+		//http://localhost:9090/apt/admin/adminLiving/adminAdd/adminAddDel.do?addNo=11
+		if(addNo==0) {
+			model.addAttribute("msg","잘못된 접근입니다.");
+			model.addAttribute("url","/admin/adminLiving/adminAdd/adminAddInfoList.do");
+			
+		}
+		
+		MemberVO memVo = (MemberVO)session.getAttribute("memVo");
+		int memberNo = memVo.getMemberNo();
+		
+		Map<String, Object> authMap =  addService.searchAuthCode(memberNo);
+		logger.info("접속회원의 권한등급 조회결과 authMap={}",authMap);
+	
+		//aptNo로 조회한 AUTH_CODE='LIVING_MNG'
+		Object authCode = authMap.get("AUTH_CODE");
+		if( !(authCode.equals("LIVING_MNG"))) {
+			model.addAttribute("msg","시설 운영 중단 권한이 없습니다");
+			model.addAttribute("url","/admin/adminLiving/adminAdd/adminAddInfoList.do");
+		}
+		model.addAttribute("authMap", authMap);
+		
+		int cnt = addService.updateAddinfoOut(addNo);
+		logger.info("부가시설 운영중단, 결과cnt={}",cnt);
+		
+		String msg="운영중단 처리 실패하였습니다.",url="/admin/adminLiving/adminAdd/adminAddInfoList.do";
+		if(cnt>0) {
+			msg="운영 중단 되었습니다. 현 시점부터 새로운 이용신청을 받을 수 없습니다.";
+			url="/admin/adminLiving/adminAdd/adminAddInfoList.do";
+		}
+		
+		model.addAttribute("msg",msg);
+		model.addAttribute("url",url);
+		
+		return "common/message";
+		
+	}
+	
+//	@RequestMapping("/adminAddDelList.do")
+//	public String addDelList(Model model, HttpSession session) {
+//		운영중단시설
+//	}
 	
 }
 

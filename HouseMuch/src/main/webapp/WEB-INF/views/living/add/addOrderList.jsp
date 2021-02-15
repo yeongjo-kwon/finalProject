@@ -5,92 +5,15 @@
 
 
 <script type="text/javascript">
-//var memberOrderList=[];
-var emptyList="";
-var memNo = 0;
-$(function(){
-	$('#memberOrder').hide();
-	
-	$('.famInfo').click(function(){
-		$('#familyOrder').hide();
-		memNo =  $(this).find('td[name=memberNo]').text();
-		console.log(memNo);
-		$('.famInfo').attr('class','famInfo');//클릭된 곳만 bg변경
-		$(this).attr('class','famInfo apt-bg-light');//클릭된 곳 bg변경
-		
-		 $.ajax({
-			url:"<c:url value='/living/add/memberOrder.do'/>",
-			data:{
-				memberNo:memNo
-			},
-			dataType:"json",
-			type:"get",
-			success:function(memberOrderList){
-				if(memberOrderList.length>0){
-					memberOrderList=[];
-					for (var i = 0; i < memOrderList.length; i++) {
-						memberOrderList.push({
-							 addOrderListNo: memOrderList[i].addOrderListNo
-						    ,householdCode:memOrderList[i].householdCode
-						    ,addOrderdate:memOrderList[i].addOrderdate
-						    ,addOutdate:memOrderList[i].addOutdate
-						    ,memberNo:memOrderList[i].memberNo 
-						    ,addChargeCnt:memOrderList[i].addChargeCnt
-						});
-					}
-					console.log(memOrderList);
-					printOrder(memOrderList);
-				}else{
-					emptyList = "선택한 회원정보로 신청된 신청정보가 없습니다.";
-					console.log(emptyList);
-					printOrder(memOrderList,emptyList);
-				}
-				$('#memberOrder').show();
-			},
-			error:function(xhr,status,error){
-				alert("ajaxOrder에러:"+error);
-			}
-		}); 
-	});
-	
-	
-/* 	//엑셀다운로드 버튼 누르면 
-	$('#btExcel').on('click',function(){
-		
-		var householdCode = $('#householdCode').text();
-		console.log("뷰에서 읽은 세대코드" + householdCode);
-		location.href="/living/add/addOrderList/orderListExcel.do";
-	
-	}); */
-});
 
-printOrder = function(memOrderList,emptyList){
-	if(emptyList.length>0){
-		$('#emptyList').text(emptyList);
+
+var addOut = function(addNo,addOrderListNo){
+	if(confirm('해지할 경우 다음 달 부터 재 신청 가능합니다. 시설 이용을 해지하시겠습니까?')){
+			location.href="<c:url value='/living/add/addOut.do?addNo="+addNo+"&addOrderListNo="+addOrderListNo+"'/>";
 	}else{
-		$(memOrderList.results.juso).each(function(){
-			$('.addOrderListNo').text(memOrderList.addOrderListNo);
-			$('.addName').text(memOrderList.addName);
-			$('.addOrderdate').text(memOrderList.addOrderdate);
-			$('.addPrice').text(memOrderList.addPrice);
-			$('.addChargeCnt').text(memOrderList.addChargeCnt);
-			$('.memberName').text(memOrderList.memberName);
-			$('.addOutdate').text(memOrderList.addOutdate);
-		
-		/*
-	<th class="font-medium-1 text-center">신청 번호</th>
-	<th class="font-medium-1 text-center">시설명</th>
-	<th class="font-medium-1 text-center">신청일</th>
-	<th class="font-medium-1 text-center">월 이용료</th>
-	<th class="font-medium-1 text-center">납부 횟수</th>
-	<th class="font-medium-1 text-center">신청자</th>
-	<th class="font-medium-1 text-center">해지일자</th>
-		*/
+		event.preventDefault();
 	}
-
 }
-	
-	
 	
 </script>
 <style>
@@ -157,6 +80,17 @@ printOrder = function(memOrderList,emptyList){
 	color: #ffffff;
 }
 
+.btn-out{
+	background-color: #ffffff;
+	border-color: #FF7063 !important; 
+	color: #FF7063;
+}
+.btn-out:hover{
+	background-color: #FF7063;
+	border-color: #FF7063 !important;
+	color: #ffffff;
+}
+
 
 </style>
 <!-- 박스 레이아웃 -->
@@ -174,40 +108,13 @@ printOrder = function(memOrderList,emptyList){
                 </div>
                 <!-- 이거없으면 헤더사라짐  -->
                 <div class="content-header-right text-md-right col-md-3 col-12 d-md-block d-none">
-                    <div class="form-group breadcrumb-right">
-                    <div  class="btn btn-round p-1" style="background-color: #fff;"  id="btExcel">
-                   			<a href="<c:url value='/living/add/orderListExcel.do'/>">
-                   			<img alt="" src="${pageContext.request.contextPath}/resources/aptUser_images/Excel_download_icon.svg">
-								<span class="align-middle" style="color: #999">엑셀다운로드</span>
+                     <div class="form-group breadcrumb-right">
+                    <div  class="btn btn-round p-1" style="background-color: #fff;">
+                   			<a href="<c:url value='/living/add/addFacilityList.do'/>">
+								<span class="align-middle" style="color: #999">부가시설 목록으로</span>
                    			</a>
-                    </div>
+                    </div> 
                     
-                        <!-- <div class="dropdown">
-                            <button class="apt-bg-primary btn-icon btn btn-primary btn-round btn-sm dropdown-toggle" 
-                            type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            <i data-feather="grid"></i></button>
-                            <div class="dropdown-menu dropdown-menu-right">
-	                            <a class="dropdown-item" href="app-todo.html">
-	                            	<i class="mr-1" data-feather="check-square"></i>
-	                            		<span class="align-middle">Todo</span>
-	                            </a>
-	                            
-	                            <a class="dropdown-item" href="app-chat.html">
-	                            	<i class="mr-1" data-feather="message-square"></i>
-	                            		<span class="align-middle">Chat</span>
-	                            </a>
-	                            
-	                            <a class="dropdown-item" href="app-email.html">
-	                            	<i class="mr-1" data-feather="mail"></i>
-	                            		<span class="align-middle">Email</span>
-	                            </a>
-	                            
-	                            <a class="dropdown-item" href="app-calendar.html">
-	                            	<i class="mr-1" data-feather="calendar"></i>
-	                            		<span class="align-middle">Calendar</span>
-	                            </a>
-                            </div>
-                        </div> -->
                     </div>
                 </div>
             </div>
@@ -273,7 +180,7 @@ printOrder = function(memOrderList,emptyList){
 											<!-- 상태 -->
 											<c:choose>
 												<c:when test="${fam.outdate==null}">
-													<td class="text-center"> </td>
+													<td class="text-center">이용중</td>
 												</c:when>
 												<c:otherwise>
 													<td class="text-center">탈퇴한 회원</td>
@@ -292,11 +199,26 @@ printOrder = function(memOrderList,emptyList){
 					</div>
 					<!-- 세대정보 테이블 끝 -->
       
-      				<div class="bg-white">
-      					
+      			<div class="bg-white form-group ">
       
+     			 <div class="form-group breadcrumb-right apt-bg-secondary pt-1 pb-1" style="min-height: 100px;">
+	     			
+	     			
+	     			 <div class="row">
+	     			 <div class="col text-left"></div>
+	     			 <div class="col text-right">
+	     			 	
+	                    <div  class="btn btn-round p-1 text-right" style="background-color: #fff;"  id="btExcel">
+	                   			<a href="<c:url value='/living/add/orderListExcel.do'/>">
+	                   			<img alt="" src="${pageContext.request.contextPath}/resources/aptUser_images/Excel_download_icon.svg">
+									<span class="align-middle" style="color: #999">엑셀다운로드</span>
+	                   			</a>
+	                    </div>
+	     			 </div>
+      
+	     			 </div>
 					<!-- 전체 신청내역 테이블시작 -->
-					<div class="table-responsive table-hover bg-white" id="familyOrder">
+					<div class="table-responsive table-hover bg-white mt-1" id="familyOrder">
 						<table class="table table-bordered ">
 							
 							<colgroup>
@@ -359,18 +281,24 @@ printOrder = function(memOrderList,emptyList){
 											<td class="text-center">${vo.memberName }</td>
 
 											<!-- 해지일자 -->
-											<c:if test="${vo.outdate!=null }">
-												<td class="text-center">${vo.addOutdate }</td>
-											</c:if>
-											<c:if test="${vo.outdate==null }">
-												<td class="text-center">이용중</td>
-											</c:if>				
+										<c:choose>
+											<c:when test="${vo.addOutdate==null }">
+												<td class="text-center">
+													<button class="btn btn-out" onclick="addOut(${vo.addNo},${vo.addOrderListNo})">이용 해지</button> 
+												</td>
+											</c:when>
+											<c:otherwise>
+												<td class="text-center">
+												<fmt:formatDate value="${vo.addOutdate }" pattern="yyyy-MM-dd"/>
+												</td>
+											</c:otherwise>				
+										</c:choose>
 										</tr>
 									</c:forEach>
 								</c:if>
 
 
-								<!-- 기본공지 리스트 반복 끝 -->
+								<!-- 반복 끝 -->
 								
 
 
@@ -380,87 +308,7 @@ printOrder = function(memOrderList,emptyList){
 					<!-- 테이블 끝 -->
 					</div><!-- 테이블bg -->
 					
-					<!-- 멤버 신청내역 테이블시작 -->
-					<div class="table-responsive table-hover bg-white" id="memberOrder">
-						<table class="table table-bordered ">
-							
-							<colgroup>
-								<col style="width: 10%;" />
-								<col style="width: 20%;" />
-								<col style="width: 15%;" />
-								<col style="width: 15%;" />
-								<col style="width: 10%;" />
-								<col style="width: 10%;" />
-								<col style="width: 10%;" />
-							</colgroup>
-							
-							<thead class="thead-dark"
-								style="background-color: #0E515F; color: #fff; font-size: 1.2em; font-weight: 200;border-radius:4px 4px 0 0;">
-								<tr class="table-hover">
-									<th class="font-medium-1 text-center">신청 번호</th>
-									<th class="font-medium-1 text-center">시설명</th>
-									<th class="font-medium-1 text-center">신청일</th>
-									<th class="font-medium-1 text-center">월 이용료</th>
-									<th class="font-medium-1 text-center">납부 횟수</th>
-									<th class="font-medium-1 text-center">신청자</th>
-									<th class="font-medium-1 text-center">해지일자</th>
-								</tr>
-							</thead>
-							<tbody class="table-hover">
-
-								<!-- 리스트 없으면 list.size()==0 -->
-								<c:if test="${empty orderList}">
-									<tr>
-										<td><span class="text-center" id="emptyList"></span></td>
-									</tr>
-								</c:if> 
-
-
-								<!-- 레코드반복시작 -->
-										<tr >
-											<!-- 신청 번호 -->
-											<td class="text-center addOrderListNo">
-												<span class="font-weight-bold"></span>
-											</td>
-
-											<!-- 시설명 -->
-											<td class="text-center addName" ></td>
-
-											<!-- 신청일-->
-											<td class="text-center addOrderdate">
-											<fmt:formatDate pattern="YYYY-MM-dd" value=""/>
-											</td>
-											
-											<!-- 이용요금 -->
-											<td class="text-center addPrice">
-											<fmt:formatNumber pattern="###,###,###" value=""/></td>
-
-											<!-- 총납부횟수 -->
-											<td cass="text-center pl-10 addChargeCnt"></td>
-											
-											<!-- 신청자-->
-											<td class="text-center memberName"></td>
-
-											<!-- 해지일자 -->
-											<c:if test="${vo.outdate!=null }">
-												<td class="text-center addOutdate"></td>
-											</c:if>
-											<c:if test="${vo.outdate==null }">
-												<td class="text-center addOutdate">이용중</td>
-											</c:if>				
-										</tr>
-
-
-								<!-- 기본공지 리스트 반복 끝 -->
-								
-
-
-							</tbody>
-						</table>
-					</div>
-					<!-- 테이블 끝 -->
-					</div><!-- 테이블bg -->
-					</div>
+					
 				<!-- content-wrapper -->
 			</div>
 			<!-- content-wrapper -->
@@ -470,6 +318,5 @@ printOrder = function(memOrderList,emptyList){
 	<!-- content-wrapper -->
 </div>
 <!-- app-content content -->
-
 <div class="clearfix" style="height:100px"></div>
 <%@ include file="../../user/dashinc/userbottom.jsp"%>

@@ -20,7 +20,13 @@ public interface AddService {
 	Map<String, Object> selectAddInfoByAddNo(int addNo);
 
 	//로그인한 회원의 권한 조회
-	Map<String,Object> searchAuthCode(int MemberNo);
+	Map<String,Object> searchAuthCode(int memberNo);
+	
+	// 부가시설정보 수정
+	int updateAddinfo(AddFacilityInfoVO vo);
+	
+	// 부가시설정보 삭제 (접수중단)
+	int updateAddinfoOut(int addNo);
 	
 //*************************** 입주민 신청 ***************************
 
@@ -47,6 +53,9 @@ public interface AddService {
 	
 	//7. 신청번호로 해지신청하기
 	int updateOutdateByAddOrderListNo(int addOrderListNo);
+	//7-1. 시설번호로 해지일자 null인 신청번호 구하기
+	int getAddOrderListNo(AddOrderVO vo);
+		
 	
 	// 8. 엑셀리스트 뽑아오기
 	List<AddOrderExcelVO> selectAddOrderExcel(String householdCode);

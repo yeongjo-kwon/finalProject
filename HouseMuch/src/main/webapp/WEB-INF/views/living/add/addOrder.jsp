@@ -17,11 +17,10 @@ $(function(){
 		}
 	}); 
 	
-/* 	$('#btSubmit').on('click',function(){
+	$('#btSubmit').on('click',function(){
 		console.log("btSubmit 클릭함");
-		$('form[name=frmOrder]').submit();	
 	});
-	 */
+	
 	
 });
 </script>
@@ -136,7 +135,7 @@ input[type=checkbox]:unchecked {
 </main>
 
     <!-- ======= Contact Section ======= -->
-    <section id="contact" class="contact" style="min-height:500px;vertical-align:center;">
+    <section style="min-height:500px;vertical-align:center;">
            <div class="container" style="margin-top:200px;">
 
         <div class="section-title">
@@ -145,10 +144,10 @@ input[type=checkbox]:unchecked {
           <br>이용 신청일 기준 익월 관리비 요금에 청구되며, 신청일 당일 해지한다 할지라도 신청일 기준 익월 관리비에 요금이 청구됩니다.</p>
         </div>
 
-		<div name="frmAgree" method="post" action="">
-		 	<div class="row contact-info">
+		<div name="Agree" method="post" action="">
+		 	<div class="row ">
 			<div class="form-check col-12 text-center">
-			  <input class="form-check-input" type="checkbox" name="checkAgree" value="" id="checkAgree">
+			  <input class="form-check-input" type="checkbox" name="checkAgree" id="checkAgree">
   			  <label class="form-check-label apt-text-primary ml-1" for="checkContion" style="font-size: 1.1em;">    
   			  &nbsp;이용약관을 확인하였으며, 동의합니다.</label>
 			</div>
@@ -159,9 +158,9 @@ input[type=checkbox]:unchecked {
 
         <div class="form" id="divInfo">
           <form id="frmOrder" name="frmOrder" action="<c:url value='/living/add/addOrder.do'/>" 
-          method="post" role="form" class="php-email-form p-10" style="padding: 20px;">
-			<input type="text" name="addNo" value="${param.addNo }" >
-<%-- 	<input type="text" name="memberNo" val="${sessionScope.memVo.memberNo}"> --%>
+          method="post" role="form" class="p-10" style="padding: 20px;" data-ajax="false">
+			<input type="hidden" name="addNo" value="${param.addNo }" >
+			<input type="hidden" name="memberNo" value="${sessionScope.memVo.memberNo }" >
 				
 				<div class="row contact-info rounded-lg " style="padding: 20px;background-color: #f6f6f6">
 					
@@ -181,7 +180,7 @@ input[type=checkbox]:unchecked {
 					<br>
 					<div class="form-group">
 						<!-- 이름, 이메일 입력  -->
-						<div class="col-12 form-group">
+					<!-- 	<div class="col-12 form-group">
 							<input type="text" name="name" class="form-control" id="name"
 								placeholder="이름을 입력하세요">
 							<div class="addvalidate"></div>
@@ -190,14 +189,13 @@ input[type=checkbox]:unchecked {
 							<input type="email" class="form-control" name="email" id="email"
 								placeholder="이메일을 입력하세요." >
 							<div class="addvalidate"></div>
-						</div>
+						</div> -->
 					</div>
 					<!-- 세대코드입력 -->
 					<div class="form-group">
 						<div class="col-12 form-group">
 							<input type="text" class="form-control" name="householdCode"
 								id="subject" placeholder="세대코드를 입력하세요" />
-							<div class="addvalidate"></div>
 						</div>
 					</div>
 					
@@ -208,7 +206,7 @@ input[type=checkbox]:unchecked {
 				</div>
 			
 				<div class="text-center">
-					<button type="submit" class="btn btn-primary col-md-4" id="btSubmit">신청 완료</button>
+					<input type="submit" class="btn btn-primary col-md-4" id="btSubmit" value="신청 완료">
 				</div>
           </form>
         </div>

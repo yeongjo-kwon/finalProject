@@ -37,8 +37,17 @@ public class AddServiceImpl implements AddService{
 	}
 
 	@Override
-	public Map<String, Object> searchAuthCode(int MemberNo) {
-		return addDao.searchAuthCode(MemberNo);
+	public Map<String, Object> searchAuthCode(int memberNo) {
+		return addDao.searchAuthCode(memberNo);
+	}
+	
+	@Override
+	public int updateAddinfo(AddFacilityInfoVO vo) {
+		return addDao.updateAddinfo(vo);
+	}
+	@Override
+	public int updateAddinfoOut(int addNo) {
+		return addDao.updateAddinfoOut(addNo);
 	}
 
 //*************************** 입주민 신청 ***************************	
@@ -77,12 +86,17 @@ public class AddServiceImpl implements AddService{
 	public int updateOutdateByAddOrderListNo(int addOrderListNo) {
 		return addDao.updateOutdateByAddOrderListNo(addOrderListNo);
 	}
+	@Override
+	public int getAddOrderListNo(AddOrderVO vo) {
+		return addDao.getAddOrderListNo(vo);
+	}
 
 	///엑셀리스트 만드는애
 	@Override
 	public List<AddOrderExcelVO> selectAddOrderExcel(String householdCode) {
 		return addDao.selectAddOrderExcel(householdCode);
 	}
+
 
 
 	
