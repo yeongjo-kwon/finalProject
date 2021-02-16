@@ -41,8 +41,18 @@ public class MngcostDAOMybatis implements MngcostDAO{
 	public List<AddFacilityInfoVO> plusAddInfo(InquiryInfoVO inqVo) {
 		return sqlSession.selectList(namespace+"plusAddInfo", inqVo);
 	}
+
+	@Override
+	public List<MngcostPaymentListVO> selectUnpaidPaymentList(String householdCode) {
+		return sqlSession.selectList(namespace+"selectUnpaidPaymentList", householdCode);
+	}
+
+	@Override
+	public int updatePaymentList(MngcostPaymentListVO mngcostPaymentListVo) {
+		return sqlSession.update(namespace+"updatePaymentList", mngcostPaymentListVo);
+	}
 	
-	
+		
 	//관리자
 	@Override
 	public List<MngcostInfoVO> adminSelectMngcostInfo(InquiryInfoVO inqVo) {

@@ -15,6 +15,8 @@ public interface MngcostService {
 	List<MngcostPaymentListVO> selectPayList(String householdCode);
 	List<MngcostInfoVO> selectMngcostInfoByClaim(InquiryInfoVO inqVo);
 	List<AddFacilityInfoVO> plusAddInfo(InquiryInfoVO inqVo);
+	List<MngcostPaymentListVO> selectUnpaidPaymentList(String householdCode);
+	int updatePaymentListMulti(List<MngcostPaymentListVO> mngcostPaymentListList);
 	
 	//관리자
 	List<MngcostInfoVO> adminSelectMngcostInfo(InquiryInfoVO inqVo);

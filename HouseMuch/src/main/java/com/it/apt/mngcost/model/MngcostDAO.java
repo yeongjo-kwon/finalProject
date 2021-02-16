@@ -13,6 +13,8 @@ public interface MngcostDAO {
 	List<MngcostPaymentListVO> selectPayList(String householdCode);
 	List<MngcostInfoVO> selectMngcostInfoByClaim(InquiryInfoVO inqVo);
 	List<AddFacilityInfoVO> plusAddInfo(InquiryInfoVO inqVo);
+	List<MngcostPaymentListVO> selectUnpaidPaymentList(String householdCode);
+	int updatePaymentList(MngcostPaymentListVO mngcostPaymentListVo);
 	
 	//관리자
 	List<MngcostInfoVO> adminSelectMngcostInfo(InquiryInfoVO inqVo);

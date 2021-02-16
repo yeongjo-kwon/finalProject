@@ -72,9 +72,13 @@
 			IN (SELECT ADD_NO
 				FROM ADD_ORDER_LIST
 				WHERE HOUSEHOLD_CODE=#{householdCode}
-				AND (ADD_OUTDATE IS NULL
-					 OR TO_CHAR(ADD_OUTDATE, 'YYYY-MM')
-			        	> TO_CHAR(ADD_MONTHS(#{mngcostClaimdate}, -2), 'YYYY-MM')))
+				AND TO_CHAR(ADD_ORDERDATE, 'YYYY-MM')
+                    	<![CDATA[
+	               		< TO_CHAR(#{mngcostClaimdate}, 'YYYY-MM')
+	               		]]>
+	            AND (ADD_OUTDATE IS NULL
+					 	OR TO_CHAR(ADD_OUTDATE, 'YYYY-MM')
+			        		> TO_CHAR(ADD_MONTHS(#{mngcostClaimdate}, -2), 'YYYY-MM')))
 	</select>
 	
 	<!-- 미납 내역 조회 -->
@@ -89,6 +93,13 @@
 		AND MNGCOST_PAYDATE IS NULL
 		ORDER BY MNGCOST_CLAIMDATE DESC
 	</select>
+	
+	<update id="updatePaymentList" parameterType="mngcostPaymentListVo">
+		UPDATE MNGCOST_PAYMENT_LIST
+		SET MNGCOST_TOTAL_PRICE=#{mngcostTotalPrice},
+		    MNGCOST_PAYDATE=SYSDATE
+		WHERE MNGCOST_LIST_NO=#{mngcostListNo}
+	</update>
 	
 <!-- 관리자 -->
 	<select id="adminSelectMngcostInfo" parameterType="inquiryInfoVo"
@@ -234,9 +245,13 @@
                                          FROM ADDITIONAL_FACILITY_INFO I
                                          WHERE L.ADD_NO = I.ADD_NO) ADD_PRICE
                                  FROM ADD_ORDER_LIST L
-                                 WHERE ADD_OUTDATE IS NULL
-                                    OR TO_CHAR(ADD_OUTDATE, 'YYYY-MM')
-                                        > TO_CHAR(ADD_MONTHS(#{mngcostClaimdate}, -2), 'YYYY-MM'))
+                                 WHERE TO_CHAR(ADD_ORDERDATE, 'YYYY-MM')
+	                                 		<![CDATA[
+	                                 		< TO_CHAR(#{mngcostClaimdate}, 'YYYY-MM')
+	                                 		]]>
+                                 AND (ADD_OUTDATE IS NULL
+                                    	OR TO_CHAR(ADD_OUTDATE, 'YYYY-MM')
+                                        	> TO_CHAR(ADD_MONTHS(#{mngcostClaimdate}, -2), 'YYYY-MM')))
 		                   GROUP BY HOUSEHOLD_CODE
 		                  )A
 		        ON H.HOUSEHOLD_CODE=A.HOUSEHOLD_CODE

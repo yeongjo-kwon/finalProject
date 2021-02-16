@@ -1,6 +1,7 @@
 package com.it.apt.mngcost.controller;
 
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpSession;
@@ -20,6 +21,7 @@ import com.it.apt.apart.model.ApartService;
 import com.it.apt.apart.model.ApartVO;
 import com.it.apt.member.model.MemberService;
 import com.it.apt.member.model.MemberVO;
+import com.it.apt.mngcost.model.IMPVO;
 import com.it.apt.mngcost.model.InquiryInfoVO;
 import com.it.apt.mngcost.model.MngcostInfoVO;
 import com.it.apt.mngcost.model.MngcostMainCtgVO;
@@ -102,7 +104,7 @@ public class MngcostController {
 			=apartService.selectAptByAptNo(memberService.selectAptNo(memVo.getId()));
 		
 		List<MngcostPaymentListVO> mngcostPayList
-			=mngcostService.selectPayList(memVo.getHouseholdCode());
+			=mngcostService.selectUnpaidPaymentList(memVo.getHouseholdCode());
 		logger.info("관리비 납부내역 조회 결과 mngcostPayList={}", mngcostPayList);
 	
 		model.addAttribute("apartVo", apartVo);
@@ -124,7 +126,26 @@ public class MngcostController {
 	}
 	
 	@RequestMapping("/mngcostPaymentIMP.do")
-	public void mngcostPaymentIMP() {
-		logger.info("관리비 납부 결제페이지");
+	public void mngcostPaymentIMP(@ModelAttribute IMPVO impVo, Model model) {
+		logger.info("관리비 납부 결제페이지, 파라미터 impVo={}", impVo);
+		
+		model.addAttribute("impVo", impVo);
+	}
+	
+	@ResponseBody
+	@RequestMapping("/updatePaymentListMulti.do")
+	public int updatePaymentListMulti(@ModelAttribute IMPVO impVo) {
+		List<MngcostPaymentListVO> mngcostPaymentListList=impVo.getMngcostPaymentListList();
+		logger.info("관리비 납부 업데이트 처리, 파라미터 mngcostPaymentListList={}", mngcostPaymentListList);
+		
+		int cnt=mngcostService.updatePaymentListMulti(mngcostPaymentListList);
+		logger.info("관리비 납부 업데이트 처리 결과 cnt={}", cnt);
+		
+		return cnt;
+	}
+	
+	@RequestMapping("/mngcostPaymentSuccess.do")
+	public void mngcostPaymentSuccess() {
+		logger.info("관리비 납부 성공 페이지");
 	}
 }

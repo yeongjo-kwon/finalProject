@@ -42,6 +42,29 @@ public class MngcostServiceImpl implements MngcostService{
 		return mngcostDao.plusAddInfo(inqVo);
 	}
 	
+	@Override
+	@Transactional
+	public int updatePaymentListMulti(List<MngcostPaymentListVO> mngcostPaymentListList) {
+		int cnt=0;
+		try {
+			for(MngcostPaymentListVO mngcostPaymentListVo:mngcostPaymentListList) {
+				cnt=mngcostDao.updatePaymentList(mngcostPaymentListVo);
+			}
+		}catch (RuntimeException e) {
+			e.printStackTrace();
+			cnt=-1;
+			TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+		}
+		
+		return cnt;
+	}
+
+	@Override
+	public List<MngcostPaymentListVO> selectUnpaidPaymentList(String householdCode) {
+		return mngcostDao.selectUnpaidPaymentList(householdCode);
+	}
+	
+	
 	
 	//관리자
 	@Override
