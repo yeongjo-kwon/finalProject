@@ -8,7 +8,49 @@
     transition: all ease-in-out 0.3s;
 }
 </style>
-
+<script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/jquery-3.5.1.min.js"></script>
+<script type="text/javascript">
+	$(function(){
+		$.ajax({
+			url:"<c:url value='/main/covid19.do'/>",
+			type:"get",
+			data:{"serviceKey":"cUzOoH2EICTDxM3SPynXBN4dZ6rtJimY1"},
+			dataType:"json",
+			success:function(res){
+				var resultCode=res.resultCode;	//응답코드
+				var resultMessage=res.resultMessage;	//API처리 결과
+				
+				if(resultCode!=0){ //0이 아니면 에러임
+					alert(resultCode + "=>" + resultMessage);
+				}else{ //정상일때
+					if(res!=null){
+						var totalCase = res.TotalCase;
+						var totalCaseBefore = res.TotalCaseBefore;
+						var totalRecovered = res.TotalRecovered;
+						var todayRecovered = res.TodayRecovered;
+						var totalDeath = res.TotalDeath;
+						var todayDeath = res.TodayDeath;
+						var nowCase = res.NowCase;
+						
+						$('#totalCase').html(totalCase);
+						$('#totalCaseBefore').html("+"+totalCaseBefore);
+						$('#totalRecovered').html(totalRecovered);
+						$('#todayRecovered').html("+"+todayRecovered);
+						$('#totalDeath').html(totalDeath);
+						$('#todayDeath').html("+"+todayDeath);
+						$('#gage').html(nowCase);
+						$('#updateTime').html(res.updateTime);
+						
+					}
+				}
+			},
+			error:function(xhr, status, error){
+				alert("error! : " + error);
+			}
+		});
+	});
+	
+</script>
 <main id="main">
  <!-- ======= Hero Banner ======= -->
  	<section id="hero" style="height: 80vh">
@@ -36,8 +78,53 @@
 	<!-- End Banner -->
 	
 	<section class="mt-2 container mb-0 pb-0">
-		<div class="col-lg-12 mt-2 mt-lg-2 mb-0">
-			<div class="box-bin">코로나</div>
+		<div class="col-lg-12 mt-2 mt-lg-2 mb-0 row" style="margin-right: 0px;padding-right: 0px;margin-left: 0px;padding-left: 0px;">
+			<div class="box-bin d-flex container">
+				<div>
+					<h2>국내 현황판</h2>
+					<span id="updateTime" style="font-weight: bold;"></span><br> 00시 데이터 기준으로 오전9시~10시 사이에 자동으로 업데이트 됩니다.
+				</div>
+				<div class="card-body">
+					<div class="d-flex d-lg-flex d-md-block align-items-center">
+						<h2>
+						<span style="color: #f89009;" id="totalCase"></span>
+						</h2>
+						<span class="badge bg-warning font-12 text-white font-weight-medium badge-pill ml-2 d-lg-block d-md-none" id="totalCaseBefore"></span>
+					</div>
+					<h6 class="text-muted font-weight-normal mb-0 w-100 text-truncate">국내 확진자</h6>
+				</div>
+				
+				<div class="card-body">
+					<div class="d-flex d-lg-flex d-md-block align-items-center">
+						<h2>
+						<span style="color: #009a87;" id="totalRecovered"></span>
+						</h2>
+						<span class="badge bg-success font-12 text-white font-weight-medium badge-pill ml-2 d-lg-block d-md-none" id="todayRecovered"></span>
+					</div>
+					<h6 class="text-muted font-weight-normal mb-0 w-100 text-truncate">국내 완치자</h6>
+				</div>
+				
+				<div class="card-body" >
+					<div class="d-flex d-lg-flex d-md-block align-items-center">
+						<h2>
+						<span style="color: #ee2323;" id="totalDeath"></span>
+						</h2>
+						<span class="badge bg-danger font-12 text-white font-weight-medium badge-pill ml-2 d-lg-block d-md-none" id="todayDeath"></span>
+					</div>
+					<h6 class="text-muted font-weight-normal mb-0 w-100 text-truncate">국내 사망자</h6>
+				</div>
+				
+				<div class="card-body" id="total">
+					<div class="d-flex d-lg-flex d-md-block align-items-center">
+						<h2>
+						<span style="color: #006dd7;" id="gage"></span>
+						</h2>
+					</div>
+					<h6 class="text-muted font-weight-normal mb-0 w-100 text-truncate">국내 격리자수</h6>
+				</div>
+				
+				
+			</div>
 		</div>
 	</section>
 	

@@ -20,7 +20,6 @@
 
     <!-- BEGIN: Page Vendor JS-->
     <script src="${pageContext.request.contextPath}/resources/app-assets/vendors/js/charts/apexcharts.min.js"></script>
-    <script src="${pageContext.request.contextPath}/resources/app-assets/vendors/js/extensions/toastr.min.js"></script>
 
     <script src="${pageContext.request.contextPath}/resources/app-assets/vendors/js/extensions/moment.min.js"></script>
     <script src="${pageContext.request.contextPath}/resources/app-assets/vendors/js/tables/datatable/datatables.min.js"></script>
