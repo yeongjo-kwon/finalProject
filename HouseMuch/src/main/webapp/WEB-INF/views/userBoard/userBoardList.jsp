@@ -146,10 +146,10 @@
 									style="color: black;">
 									<!-- 제목이 긴 경우 일부만 보여주기 -->
 									<c:if test="${fn:length(map['BOARD_TITLE'])>=25}">
-										${fn:substring(map['BOARD_TITLE'],0,25) } ...
+										${fn:substring(map['BOARD_TITLE'],0,25) } ... <span style="color: #7DB249;">[${map['COMM_COUNT'] }]</span>
 									</c:if>
 									<c:if test="${fn:length(map['BOARD_TITLE'])<25}">
-										${map['BOARD_TITLE'] }
+										${map['BOARD_TITLE'] } <span style="color: #7DB249;">[${map['COMM_COUNT'] }]</span>
 									</c:if></a>
 								</td>
 							<td>${map['MEMBER_NAME'] }</td>

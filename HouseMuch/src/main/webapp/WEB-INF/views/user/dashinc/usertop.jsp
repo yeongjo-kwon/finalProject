@@ -302,7 +302,7 @@ ul.dept02 li#subMenu:first-child {
 							<li id="subMenu"><a href="<c:url value='/living/noti/aptScheduler.do'/>">
 								아파트 일정
 							</a></li>
-							<li id="subMenu"><a href="<c:url value='/living/add/addOrderList.do?householdCode=${sessionScope.memVo.householdCode}'/>">
+							<li id="subMenu"><a href="<c:url value='/living/add/addFacilityList.do'/>">
 								부가시설
 							</a></li>
 							<li id="subMenu"><a href="#">
