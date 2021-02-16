@@ -7,6 +7,10 @@ userDash Doughnut Chart
 //var ctx = $("#myChart");
 //var ctx = document.getElementById("myChart");
 
+
+
+//차트
+
 var ctx = document.getElementById("myDoughnutChart").getContext('2d');
 var myDoughnutChart = new Chart(ctx, {
     type: 'doughnut',
@@ -25,7 +29,7 @@ var myDoughnutChart = new Chart(ctx, {
   		],
   		datasets:[{
   			data:[
-  				10,20,30,40,50,60,70,80,90,10
+  				
   			],
   			backgroundColor:[
   				'rgba(255, 99, 132, 0.2)'

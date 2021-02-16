@@ -50,7 +50,7 @@ span.payMonth {
 	padding: 0 50px 0 50px;
 }
 
-button.btn.btn-flat-danger.waves-effect {
+button.btn.btn-flat-danger.waves-effect, .btn-flat {
 	padding: 0 0 10px 0;
 	font-size: 1.5em;
 }
@@ -76,7 +76,38 @@ button.btn.btn-flat-danger.waves-effect {
 	function moveToPay(){
 		location.href = "<c:url value='/mngcost/mngcostPayment.do'/>";
 	}
+
+	//데이터 구하기
+	/* $.ajax({
+		url:"/userDash/selectMngcostUserdash.do",
+		data:{
+			mngcostClaimdate:$('#mngcostClaimdate').val()
+		},
+		type:"get",
+		dataType:"json",
+		success:function(res){
+			alert(res);
+		},
+		error:function(xhr,status,error){
+			alert("error : "+ error);
+		}
+	}); */
 	
+	function selectMonthlyMngcost(){
+		$.ajax({
+			url:"/apt/userDash/selectMonthlyMngCostUserdash.do",
+			type:"get",
+			dataType:"json",
+			success:function(res){
+				alert(res);
+			},
+			error:function(xhr,status,error){
+				alert("error : "+ error);
+			}
+		});
+
+	}
+
 </script>
 
 <!-- START : Content -->
@@ -84,6 +115,10 @@ button.btn.btn-flat-danger.waves-effect {
 	<div class="content-overlay"></div>
 	<div class="header-navbar-shadow"></div>
 
+	<!-- hidden용 폼 -->
+	<form name="hiddenFrm">
+		<input type="text" value="${mngcostClaimdate }" id="mngcostClaimdate">
+	</form>
 	<!-- 찐 START -->
 	<div class="content-wrapper container p-0">
 		<!------------ 첫번째div ------------>
@@ -135,24 +170,29 @@ button.btn.btn-flat-danger.waves-effect {
 						<div class="card">
 							<div class="card-body">
 								<div style="padding-top: 5px;">
-									<!-- 미납됐을 때 -->
+									<!-- 관리비 미납/완납 여부에 따라 다른 뷰페이지 보여주기 -->
+									<c:set var="total" value="0"/>
+									<!-- for문 시작 -->
+									<c:forEach var="pVo" items="${pList }">
+										<!-- 미납됐을 때 -->
+										<c:if test="${pVo.mngcostLimitdate>today and empty pVo.mngcostPaydate }">
+											<c:set var="total" value="${total + pVo.mngcostTotalPrice }"/>
+										</c:if>
+										<%-- <!-- 완납했을 때 -->
+										<c:if test="${pVo.mngcostLimitdate>today and !empty pVo.mngcostPaydate }">
+											<span>관리비가 모두 납입되었습니다.</span>
+										</c:if> --%>
+									</c:forEach>
+									<!-- for문 끝 -->
+									<!-- 미납됐을 때 결과 처리 -->
 									<button type="button" class="btn btn-danger">미납</button>
-									<!-- 구현해야함 -->
-									<span class="payMonth">${month }월 관리비 100,000원</span>
-									<!-- 구현해야함 -->
+									<span class="payMonth">미납 금액 총 
+										<span style="font-weight: bold;">
+											<fmt:formatNumber value="${total }" pattern="#,###"/>
+										</span>원
+									</span>
 									<button type="button" class="btn btn-flat-danger"
 										onclick="moveToPay()">관리비 납부하기</button>
-	
-									<!-- 완납했을 때 -->
-									<!-- <div class=" col-sm-4 paid1" style="width: 200px;">
-										<button type="button" class="btn btn-user">완납</button>
-									</div>
-									<div class=" col-sm-4 paid2">${month }월 관리비 100,000원</div>
-									<div class=" col-sm-4 paid3">
-										구현해야함
-										<button type="button" class="btn btn-flat">관리비
-											납부 완료</button>
-									</div> -->
 								</div>
 							</div>
 						</div>
@@ -167,6 +207,12 @@ button.btn.btn-flat-danger.waves-effect {
 				</div>
 
 				<!------------ 세번째div ------------>
+				<!-- 청구일자 구하기 시작 -->
+				<c:set var="mngcostClaimdate" value="0" />
+				<c:forEach var="pVo" items="${pList }">
+					<c:set var="mngcostClaimdate" value="${pVo.mngcostClaimdate }" />
+				</c:forEach>
+				<!-- 청구일자 구하기 끝 -->
 				<div class="row match-height">
 					<!-- 3-1 -->
 					<div class="col-12 col-md-6 col-lg-6">
@@ -321,7 +367,7 @@ button.btn.btn-flat-danger.waves-effect {
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.bundle.min.js"></script>
 <!-- 대시보드 내 차트 js -->
-<script src="${pageContext.request.contextPath}/resources/userBoard/js/dashBarChart.js"></script>
-<script src="${pageContext.request.contextPath}/resources/userBoard/js/dashDChart.js"></script>
+<%-- <script src="${pageContext.request.contextPath}/resources/userBoard/js/dashBarChart.js"></script>
+<script src="${pageContext.request.contextPath}/resources/userBoard/js/dashDChart.js"></script> --%>
 
 <%@ include file="../user/dashinc/userbottom.jsp"%>

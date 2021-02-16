@@ -126,7 +126,6 @@
 			     </li>
 			     <li>
 			     	<ul style="display: block">
-			     		<li><a href="#">공과금 기록</a>
 			     		<li><a href="<c:url value='/energy/energyChart.do'/>">공과금 조회</a>
 			     	</ul>
 		     	</li>
@@ -142,7 +141,6 @@
 			     <li class="mr-3">
 			     	<ul style="display: block">
 			     		<li><a href="<c:url value='/userBoard/userBoardList.do'/>">입주민 게시판</a>
-			     		<li><a href="#">입주민 투표</a>
 			     	</ul>
 		     	</li>
 			     <li>
