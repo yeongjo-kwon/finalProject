@@ -410,30 +410,26 @@ function subMenuScroll(){
 
 						<!-- 시설1-1 :  -->
 						<li><a class="d-flex align-items-center"
-							href="<c:url value='#'/>"> <i data-feather="circle"></i><span
-								class="menu-item" data-i18n="Wish List">보수 업체 목록</span></a></li>
+							href="<c:url value='/admin/adminFacility/facilityCompanyList.do'/>"> <i data-feather="circle"></i><span
+								class="menu-item" data-i18n="Wish List">업체 계약 내역</span></a></li>
 
 						<!-- 시설1-2 :  -->
 						<li><a class="d-flex align-items-center"
-							href="<c:url value='#'/>"> <i data-feather="circle"></i><span
-								class="menu-item" data-i18n="Shop">보수 비용 내역 조회</span></a></li>
+							href="<c:url value='/admin/adminFacility/facilityCompanyReg.do'/>"> <i data-feather="circle"></i><span
+								class="menu-item" data-i18n="Shop">업체 계약 등록</span></a></li>
 					</ul></li>
 
 				<!-- 시설2 :  -->
 				<li class=" nav-item"><a class="d-flex align-items-center"
 					href="#"><span class="menu-title text-truncate"
-						data-i18n="eCommerce">보수 비용 청구</span></a>
+						data-i18n="eCommerce">보수 비용 추가 청구</span></a>
 					<ul class="menu-content">
 
 						<!-- 시설1-1 :  -->
 						<li><a class="d-flex align-items-center"
-							href="<c:url value='#'/>"> <i data-feather="circle"></i><span
-								class="menu-item" data-i18n="Wish List">보수 비용 청구</span></a></li>
+							href="<c:url value='/admin/adminFacility/facilityAddCost.do'/>"> <i data-feather="circle"></i><span
+								class="menu-item" data-i18n="Wish List">추가 요금 청구</span></a></li>
 
-						<!-- 시설1-2 :  -->
-						<li><a class="d-flex align-items-center"
-							href="<c:url value='#'/>"> <i data-feather="circle"></i><span
-								class="menu-item" data-i18n="Shop">보수 비용 청구 내역</span></a></li>
 					</ul></li>
 				<hr>
 				<!----------------------------------------------- 여기까지 단독메뉴  ------------------------------------------------------------->

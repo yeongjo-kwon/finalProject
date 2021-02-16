@@ -78,6 +78,7 @@
 									<th class="font-medium-1 text-center" style="width:5%;">번호</th>
 									<th class="font-medium-1 text-center" style="width:10%;">분류</th>
 									<th class="font-medium-1 text-center" style="width:15%;">상호명</th>
+									<th class="font-medium-1 text-center" style="width:10%;">계약 금액</th>
 									<th class="font-medium-1 text-center" style="width:10%;">계약일</th>
 									<th class="font-medium-1 text-center" style="width:5%;">부가시설</th>
 									<th class="font-medium-1 text-center" style="width:7%;">&nbsp;</th>
@@ -89,6 +90,7 @@
 											<td><span class="font-weight-bold">1</span></td>
 											<td>분류명</td>
 											<td>업체상호명</td>
+											<td>454654원</td>
 											<td>ㄱㅖ약날짜</td>
 											<td>N</td>
 											<td>
