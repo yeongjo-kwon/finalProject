@@ -58,7 +58,13 @@
                 {data:"birth", render:function(data){
                     return moment(data).format('YYYY-MM-DD')}},
                 {data:"relation"}
-			]
+			],
+			language: {
+		        paginate: {
+		            previous: '&nbsp;',
+		            next: '&nbsp;'
+		        }
+		    }
 		}); 
 		
 		$('#chkPwdFrm').submit(function(){

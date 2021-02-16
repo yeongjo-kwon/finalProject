@@ -1,9 +1,13 @@
 package com.it.apt.controller;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.URL;
 import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.slf4j.Logger;
@@ -13,6 +17,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.it.apt.adminLiving.notice.model.NoticeBoardVO;
 import com.it.apt.apart.model.ApartService;
@@ -75,4 +80,36 @@ public class IndexController {
    public void mainScheduler() {
 	   logger.info("메인에 보여줄 스케쥴러");
    }
+   
+   @ResponseBody
+   @RequestMapping("/main/covid19.do")
+   public void ajaxZipcode(HttpServletRequest req, Model model, HttpServletResponse response) throws Exception {
+	   logger.info("COVID19 API 실행!");
+	   
+	   String serviceKey = req.getParameter("serviceKey");
+	   logger.info("serviceKey={}", serviceKey);
+	   
+	   // OPEN API 호출 URL 정보 설정
+	   String apiUrl = "https://api.corona-19.kr/korea/?serviceKey="+serviceKey;
+	   //URL 클래스 객체 생성 => 빨대 꽂았다고 생각
+	   URL url = new URL(apiUrl);
+
+	   BufferedReader br = new BufferedReader(new InputStreamReader(url.openStream(),"UTF-8"));
+	   	    	
+		//String 안쓰고 StringBuffer 사용하면 객체 매번 생성 X append만 하면 됨
+		StringBuffer sb = new StringBuffer(); 
+		String tempStr = null;
+		while(true){
+			tempStr = br.readLine();
+			if(tempStr == null) break;
+			sb.append(tempStr);
+		}
+	   	
+	   	br.close();
+	   	response.setCharacterEncoding("UTF-8");
+	    response.setContentType("application/json; charset=UTF-8");
+		response.getWriter().write(sb.toString());			// 응답결과 반환
+		logger.info("AJAX COVID 실행 완료??????????????? {}",sb.toString());
+	}   
+   
 }
