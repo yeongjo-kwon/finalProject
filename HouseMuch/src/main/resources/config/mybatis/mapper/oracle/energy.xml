@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="config.mybatis.mapper.oracle.energy">
+<!--  
+UTILITY_COST_CTG
+UTILITY_COST_INFO
+APARTMENT_INFO
+HOUSEHOLD_INFO
+-->
+
+	<!-- 공과금 분류목록 가져오기 -->
+	<select id="utilCtgList" resultType="map">
+	SELECT * FROM UTILITY_COST_CTG
+	</select>
+
+	<!-- 세대코드별 전기 : 최근 1년(12개월) 데이터 조회 (전기는 1달마다 집계)-->
+	<select id="electListByHouseholdeCode" parameterType="string" resultType="map">
+		SELECT 
+		     I.U_COST_NO      
+		    ,I.U_COST_AMOUNT  
+		    ,I.U_COST_PRICE   
+		    ,I.HOUSEHOLD_CODE 
+		    ,I.U_CTG_NO       
+		    ,(SELECT U_CTG_NAME FROM UTILITY_COST_CTG C WHERE C.U_CTG_NO=I.U_CTG_NO)
+		        AS U_CTG_NAME
+		    ,TO_CHAR(I.U_COST_USEDATE,'MM') AS USE_MONTH
+		    ,H.DONG
+		    ,H.HO
+		    ,H.APT_NO    
+		    ,(SELECT APT_NAME FROM APARTMENT_INFO A WHERE A.APT_NO = H.APT_NO)
+		        AS APT_NAME               
+		  FROM UTILITY_COST_INFO I JOIN HOUSEHOLD_INFO H
+		    ON H.HOUSEHOLD_CODE = I.HOUSEHOLD_CODE
+		 WHERE I.U_CTG_NO= 3
+		   AND I.HOUSEHOLD_CODE = #{householdInfo}
+		   	<![CDATA[
+		   AND I.U_COST_USEDATE > TO_DATE(TO_CHAR(ADD_MONTHS(SYSDATE,-12),'YYYY-MM'),'YYYY-MM')
+		   	]]>
+		ORDER BY U_COST_USEDATE
+	</select>
+	
+	<!-- 최근1년 평균 조회 -->
+	<select id="electAvgByHouseholdeCode" parameterType="string" resultType="map">
+		SELECT 
+		    ROUND(AVG(NVL(I.U_COST_PRICE, 0)),0)
+		       									 AS ELEC_PRICE_AVG
+		   ,ROUND(AVG(NVL(I.U_COST_AMOUNT, 0)),0) 
+		          								 AS ELEC_AMOUNT_AVG        
+		  FROM UTILITY_COST_INFO I JOIN HOUSEHOLD_INFO H
+		    ON H.HOUSEHOLD_CODE = I.HOUSEHOLD_CODE
+		 WHERE I.U_CTG_NO=3 
+		   AND I.HOUSEHOLD_CODE =  #{householdInfo}
+		   	<![CDATA[
+		   AND I.U_COST_USEDATE > TO_DATE(TO_CHAR(ADD_MONTHS(SYSDATE,-12),'YYYY-MM'),'YYYY-MM')
+		   ]]>
+	</select>
+	
+	<select id="utilityCostList" parameterType="utilityCostInfoVo" resultType="map">
+		SELECT 
+		     I.U_COST_NO      
+		    ,I.U_COST_AMOUNT  
+		    ,I.U_COST_PRICE   
+		    ,I.HOUSEHOLD_CODE 
+		    ,I.U_CTG_NO       
+		    ,(SELECT U_CTG_NAME FROM UTILITY_COST_CTG C WHERE C.U_CTG_NO=I.U_CTG_NO)
+		        AS U_CTG_NAME
+		    ,TO_CHAR(I.U_COST_USEDATE,'MM') AS USE_MONTH
+		    ,H.DONG
+		    ,H.HO
+		    ,H.APT_NO    
+		    ,(SELECT APT_NAME FROM APARTMENT_INFO A WHERE A.APT_NO = H.APT_NO)
+		        AS APT_NAME               
+		  FROM UTILITY_COST_INFO I JOIN HOUSEHOLD_INFO H
+		    ON H.HOUSEHOLD_CODE = I.HOUSEHOLD_CODE
+		 WHERE I.U_CTG_NO=#{uCtgNo}
+		   AND I.HOUSEHOLD_CODE = #{householdInfo}
+		   	<![CDATA[
+		   AND I.U_COST_USEDATE > TO_DATE(TO_CHAR(ADD_MONTHS(SYSDATE,-12),'YYYY-MM'),'YYYY-MM')
+		   	]]>
+		ORDER BY U_COST_USEDATE
+	</select>
+	
+	<!-- 최근1년 평균 조회 -->
+	<select id="utilityCostAvg" parameterType="utilityCostInfoVo" resultType="map">
+		SELECT 
+		    ROUND(AVG(NVL(I.U_COST_PRICE, 0)),0)
+		       									 AS ELEC_PRICE_AVG
+		   ,ROUND(AVG(NVL(I.U_COST_AMOUNT, 0)),0) 
+		          								 AS ELEC_AMOUNT_AVG        
+		  FROM UTILITY_COST_INFO I JOIN HOUSEHOLD_INFO H
+		    ON H.HOUSEHOLD_CODE = I.HOUSEHOLD_CODE
+		 WHERE I.U_CTG_NO=#{uCtgNo}
+		   AND I.HOUSEHOLD_CODE = #{householdInfo}
+		   	<![CDATA[
+		   AND I.U_COST_USEDATE > TO_DATE(TO_CHAR(ADD_MONTHS(SYSDATE,-12),'YYYY-MM'),'YYYY-MM')
+		   ]]>
+	</select>
+	
+	
+	
+</mapper>
+
+
+
