@@ -30,4 +30,6 @@ public interface MngcostDAO {
 	List<Map<String, Object>> selectMngcostPaymentList(HouseholdVO householdVo);
 	List<HouseholdVO> selectHouseholdList(int aptNo);
 	int insertUtilityCostInfo(UtilityCostInfoVO utilityCostVo);
+	int adminElectricChargeRegDupCheck(String householdCode);
+	int selectTotalRecordMngcostPaymentList(HouseholdVO householdVo);
 }

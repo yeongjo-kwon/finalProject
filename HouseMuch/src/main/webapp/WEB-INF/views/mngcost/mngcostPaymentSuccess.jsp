@@ -34,15 +34,25 @@
 <section id="about">
 <div class="container">
 	<!-- START : 대시보드 박스 -->
-	<div class="text-center">
-	<table style="background:silver">
-		<tr>
-			<td>
-				<h1>결제 완료 !</h1>
-
-			</td>
-		</tr>
-	</table>
+	<div class="col-12 float-left" style="background-color:#ffffff;padding:0; margin-right:20px;margin-bottom:50px; box-shadow : 0 3px 10px 0 rgba(34, 41, 47, 0.1);">
+      	<div class="card-body">
+      		<div class="text-center">
+     		</div>
+        	<p class="card-text">
+          		청구월 별로 관리비  미납내역을 확인하실 수 있습니다.<br><br>
+        	</p>
+          	<div class="text-right">조회시간 : <span id="currDate" style="font-size:0.9em"></span></div>
+      	</div>
+		<div class="card-body">
+			<hr>
+			<p class="card-text text-center" style="font-weight: bold">
+				${param.msg}
+			</p>
+			<hr>
+			<div class="text-center">
+				<a href="#" id="submitPayIMP" class="btn btn-primary">결제하기</a>
+			</div>
+		</div>
 	</div>
 	<!-- END: 대시보드 박스 -->
 </div>

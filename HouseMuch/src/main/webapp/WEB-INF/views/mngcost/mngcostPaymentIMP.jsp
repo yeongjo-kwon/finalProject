@@ -46,7 +46,7 @@
 	        	success:function(res){
         			if(Number(res)>0){
         				msg+="납부처리가 성공적으로 완료되었습니다.\r\n";
-        				url="/mngcost/mngcostPaymentSuccess.do";
+        				url="/mngcost/mngcostInquiry.do";
         			}else{
         				msg+="죄송합니다. 납부처리 과정에서 에러가 발생하였습니다!\r\n";
         				msg+="카드 승인번호를 이용하여 문의 부탁드립니다.";

@@ -32,4 +32,6 @@ public interface MngcostService {
 	List<Map<String, Object>> selectMngcostPaymentList(HouseholdVO householdVo);
 	List<HouseholdVO> selectHouseholdList(int aptNo);
 	int insertUtilityCostInfoMulti(List<UtilityCostInfoVO> utilityCostList);
+	List<String> adminElectricChargeRegDupCheckMulti(List<String> householdCodeList);
+	int selectTotalRecordMngcostPaymentList(HouseholdVO householdVo);
 }

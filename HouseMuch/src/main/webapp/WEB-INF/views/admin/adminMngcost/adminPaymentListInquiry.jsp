@@ -18,6 +18,7 @@
 		});
 		
 		$('#btPayListSearch').click(function(){
+			$('input[name=currentPage]').val(1);
 			payListInqAjax();
 		});
 	});
@@ -32,18 +33,54 @@
 				if(res.length>0){
 					var str="";
 					$.each(res, function(idx, item){
-						str+="<tr><td>"+item.MNGCOST_LIST_NO+"</td>";
-						str+="<td>"+formatDate(item.MNGCOST_CLAIMDATE)+"</td>";
-						str+="<td>"+item.DONG+"</td>";
-						str+="<td>"+item.HO+"</td>";
-						str+="<td class='text-right'>"+numFormat(item.MNGCOST_TOTAL_PRICE)+"원</td>";
-						str+="<td>"+formatDate(item.MNGCOST_LIMITDATE)+"</td> <td>";
-						if(item.MNGCOST_PAYDATE==null){
-							str+="<div class='avatar pull-up my-0'><a href='#' class='btn btn-warning'>미납</a></div>";
+						if(idx==(res.length-1)){
+							var firstPage=item.pagingInfo.firstPage;
+							var currentPage=item.pagingInfo.currentPage;
+							var totalPage=item.pagingInfo.totalPage;
+							var lastPage=item.pagingInfo.lastPage;
+							
+							var pageStr="";
+							if(firstPage>1){
+								pageStr+='<li class="page-item prev"><a class="page-link" href="#" onclick="pageFunc('+(firstPage-1)+')"></a></li>'
+							}
+							
+							for(var i=firstPage; i<=lastPage; i++){
+								if(i==currentPage){
+									if(firstPage==lastPage){
+										pageStr+='<li class="page-item active"><a class="page-link" href="javascript:void(0);" style="background-color:#2FA599;">'+i+'</a></li>';
+									}else if(currentPage==firstPage){
+										pageStr+='<li class="page-item"><a class="page-link" style="height:32px; position:absolute;"></a></li><li class="page-item active"><a class="page-link" href="javascript:void(0);" style="background-color:#2FA599;">'+i+'</a></li>';
+									}else{
+										pageStr+='<li class="page-item active"><a class="page-link" href="javascript:void(0);" style="background-color:#2FA599; position:absolute;">'+i+'</a></li><li class="page-item"><a class="page-link" style="height:32px;"></a></li>';
+									}
+								}else{
+									pageStr+='<li class="page-item"><a href="#" class="page-link" onclick="pageFunc('+i+')">'+i+'</a>';
+								}
+							}
+							
+							if(lastPage<totalPage){
+								pageStr+='<li class="page-item next"><a class="page-link" href="#" onclick="pageFunc('+(lastPage-1)+')"></a></li>';
+							}
+							
+							$('#ulPaging').html(pageStr);
 						}else{
-							str+=formatDate(item.MNGCOST_PAYDATE);
+							if(res.length==0){
+								str+="<tr><td colspan='6'>납부내역이 존재하지 않습니다.</td></tr>";
+							}else{
+								str+="<tr><td>"+item.MNGCOST_LIST_NO+"</td>";
+								str+="<td>"+formatDate(item.MNGCOST_CLAIMDATE)+"</td>";
+								str+="<td>"+item.DONG+"</td>";
+								str+="<td>"+item.HO+"</td>";
+								str+="<td class='text-right'>"+numFormat(item.MNGCOST_TOTAL_PRICE)+"원</td>";
+								str+="<td>"+formatDate(item.MNGCOST_LIMITDATE)+"</td> <td>";
+								if(item.MNGCOST_PAYDATE==null){
+									str+="<div class='avatar pull-up my-0'><a href='#' class='btn btn-warning'>미납</a></div>";
+								}else{
+									str+=formatDate(item.MNGCOST_PAYDATE);
+								}
+								str+="</td></tr>";
+							}
 						}
-						str+="</td></tr>";
 					});
 					
 					$('#tbPayList').html(str);
@@ -65,11 +102,17 @@
 		
 	    return [year, month, day].join('-');
 	};
+	
+	function pageFunc(curPage){
+		$('input[name=currentPage]').val(curPage);
+		payListInqAjax();
+	}
 </script>
 	<!-- BEGIN: Content-->
 	<div class="app-content content ">
      <div class="content-overlay"></div>
      <div class="header-navbar-shadow"></div>
+     <br>
      <div class="content-wrapper">
        <div class="content-header row">
          <div class="content-header-left col-md-9 col-12 mb-2">
@@ -81,8 +124,10 @@
                    <li class="breadcrumb-item">
                    	<a href="<c:url value='/admin/adminAll/adminAllMain.do'/>">Home</a>
                    </li>
-                   <li class="breadcrumb-item"><a href="#">납입내역 관리</a></li>
-                   <li class="breadcrumb-item active">납입내역 조회</li>
+                   <li class="breadcrumb-item">납입내역 관리</li>
+                   <li class="breadcrumb-item active">
+                   	<a href="<c:url value='/admin/adminMngcost/adminPaymentListInquiry.do'/>">납입내역 조회</a>
+                   </li>
                  </ol>
                </div>
              </div>
@@ -114,6 +159,7 @@
 	            </div>
 	            
 	            <form action="#" id="frmPayListInq" method="post">
+	            	<input type="hidden" name="currentPage" value="1">
 		            <div class="col-md-12 mb-1 row">
 			            <div class="col-5">
 		            	  <label>동</label>
@@ -170,33 +216,10 @@
 		          </tbody>
 		        </table>
 		        <!-- 페이저-->
-				<!-- 이전 블럭으로 이동 -->
-				<div class="center-block" style="clear: both; margin: 0 auto;">
+				<div class="divPage">
 					<nav aria-label="Page navigation">
-						<ul class="pagination justify-content-center mt-2">
-							<c:if test="${pagingInfo.firstPage>1}">
-								<li class="page-item prev"><a class="page-link" href="#"
-									onclick="pageFunc(${pagingInfo.firstPage-1})"></a></li>
-							</c:if>
-							<!-- [1][2][3][4][5][6][7][8][9][10] -->
-							<c:forEach var="i" begin="${pagingInfo.firstPage}"
-									end="${pagingInfo.lastPage}">
-								<c:if test="${i==pagingInfo.currentPage}">
-									<li class="page-item active"><a class="page-link"
-										href="javascript:void(0);" style="background-color: #2FA599;">
-											${i}</a></li>
-								</c:if>
-								<c:if test="${i!=pagingInfo.currentPage}">
-									<li class="page-item"><a href="#" class="page-link"
-										onclick="pageFunc(${i})">${i}</a>
-								</c:if>
-							</c:forEach>
-							<!-- 다음 블럭으로 이동 -->
-							<c:if test="${pagingInfo.lastPage<pagingInfo.totalPage}">
-								<li class="page-item next"><a class="page-link" href="#"
-									onclick="pageFunc(${pagingInfo.lastPage+1})"></a></li>
-							</c:if>
-						</ul>
+						<!-- 페이징 리스트가 올 자리 -->
+						<ul class="pagination justify-content-center mt-2" id="ulPaging"></ul>
 					</nav>
 				</div>
 				<!-- 페이저-->
