@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="config.mybatis.mapper.oracle.company">
+	<sql id="searchWhere">
+		<where>
+			<if test="MNG_COMP_CTG_NO != 0">AND MNG_COMP_CTG_NO = #{mngCompCtgNo} </if>
+			<if test="MNG_COMP_NAME != null">AND MNG_COMP_NAME '%' || #{mngCompName} || '%' </if>
+		</where>
+	</sql>
+	
+	<select id="allCompanyCtg" resultType="companyCtgVo">
+		select * from mng_company_category
+	</select>
+	
+	<insert id="insertCompanyInfo" parameterType="companyVo">
+		<selectKey keyProperty="mngCompNo" resultType="int" order="BEFORE">
+			select mng_company_info_seq.nextval from dual
+		</selectKey>
+		insert into mng_company_info(mng_comp_no, mng_comp_ctg_no, mng_comp_name, mng_comp_tel)
+		values(#{mngCompNo},#{mngCompCtgNo},#{mngCompName},#{mngCompTel})
+	</insert>
+	
+	<insert id="insertContract" parameterType="companyVo">
+		<selectKey keyProperty="contractNo" resultType="int" order="BEFORE">
+			select comp_contract_list_seq.nextval from dual
+		</selectKey>
+		insert into comp_contract_list(contract_no, mng_comp_no, contract_content, contract_price, contract_date, apt_no, is_add_facility)
+		values(#{contractNo}, #{mngCompNo},#{contractContent},#{contractPrice},#{contractDate},#{aptNo},#{isAddFacility})
+	</insert>
+	
+	<resultMap type="companyVo" id="contractMap">
+		<result property="contractNo" column="CONTRACT_NO" />
+		<result property="mngCompNo" column="MNG_COMP_NO" />
+		<result property="mngCompName" column="MNG_COMP_NAME" />
+		<result property="contractContent" column="CONTRACT_CONTENT" jdbcType="CLOB" javaType="java.lang.String" />
+		<result property="mngCompTel" column="MNG_COMP_TEL" />
+		<result property="contractPrice" column="CONTRACT_PRICE" />
+		<result property="contractDate" column="CONTRACT_DATE" />
+		<result property="isAddFacility" column="IS_ADD_FACILITY" />
+		<result property="mngCompCtgNo" column="MNG_COMP_CTG_NO" />
+		<result property="mngCompCtgName" column="MNG_COMP_CTG_NAME" />
+	</resultMap>
+	
+	<select id="contractByNo" parameterType="int" resultMap="contractMap">
+		select 
+		l.*, 
+		i.mng_comp_ctg_no,
+		i.mng_comp_name,
+		i.mng_comp_tel,
+		c.mng_comp_ctg_name 
+		from comp_contract_list l 
+		join mng_company_info i 
+		on l.mng_comp_no=i.mng_comp_no
+		join MNG_COMPANY_CATEGORY c 
+		on i.mng_comp_ctg_no=c.mng_comp_ctg_no
+		where contract_no=#{contractNo}       
+	</select>
+	
+	<select id="allContract" parameterType="int" resultType="companyVo">
+		select 
+		    l.contract_no,
+		    l.mng_comp_no,
+		    l.contract_price,
+		    l.contract_date,
+		    l.is_add_facility, 
+		    i.mng_comp_ctg_no,
+		    i.mng_comp_name,
+		    i.mng_comp_tel,
+		    c.mng_comp_ctg_name 
+		from comp_contract_list l 
+		join mng_company_info i 
+		on l.mng_comp_no=i.mng_comp_no
+		join MNG_COMPANY_CATEGORY c 
+		on i.mng_comp_ctg_no=c.mng_comp_ctg_no
+		where l.apt_no=#{aptNo}
+		order by contract_no desc
+	</select>
+	
+	<select id="totalRecord" parameterType="int" resultType="int">
+		select count(*)
+		from comp_contract_list l 
+		join mng_company_info i 
+		on l.mng_comp_no=i.mng_comp_no
+		 join MNG_COMPANY_CATEGORY c 
+		on i.mng_comp_ctg_no=c.mng_comp_ctg_no
+		where l.apt_no=#{aptNo}
+	</select>
+	
+</mapper>
+
+
+

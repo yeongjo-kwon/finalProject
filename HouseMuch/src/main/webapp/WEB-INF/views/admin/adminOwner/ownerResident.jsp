@@ -7,6 +7,18 @@
 	엑셀 업로드 및 다운로드
 	- 동에 따라 호가 달라짐 (ajax)
 -->
+<style>
+.page-item.active .page-link {
+    background-color: #2FA599 !important;
+    border-color: #2FA599 !important;
+}
+.page-item.active {
+    border-radius: 0;
+    background-color: #E5F9F0 !important;
+    border-color: #82E3C8 !important;
+}
+</style>
+
 <script type="text/javascript" src="${pageContext.request.contextPath }/resources/js/subinJs/form-repeater-bin.js"></script>
 <script type="text/javascript" src="${pageContext.request.contextPath }/resources/js/subinJs.js"></script>
 <script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/jquery-3.5.1.min.js"></script>

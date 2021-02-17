@@ -1,6 +1,25 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ include file="inc/adminMasterTop.jsp" %>
+<style>
+.page-link {
+    background-color: #d2faff5e !important;
+    position: relative !important;
+    padding: 0.5rem 0.85rem !important;
+    color: #6E6B7B !important;
+}
+.page-item.active {
+    border-radius: 0 !important;
+    background-color: #d2faff !important;
+    color: #6E6B7B !important;
+}
+.page-item.active .page-link {
+    z-index: 3 !important;
+    border-radius: 5rem !important;
+    font-weight: 600 !important;
+    color: #6E6B7B !important;
+}
+</style>
 
 <script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/jquery-3.5.1.min.js"></script>
 <script type="text/javascript">

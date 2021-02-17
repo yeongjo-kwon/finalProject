@@ -6,9 +6,7 @@
 
 <script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/jquery-3.5.1.min.js"></script>
 <script type="text/javascript">
-	$(function(){
 
-	}
 	
 </script>
 
@@ -22,7 +20,7 @@
        <div class="content-header row">
 			<div class="content-header-left col-md-9 col-12 mb-2">
 				<div class="col-12">
-					<h2 class="content-header-title float-left mb-0">보수 업체 추가 비용</h2>
+					<h2 class="content-header-title float-left mb-0">보수 업체 계약 내역</h2>
 					<div class="breadcrumb-wrapper">
 						<ol class="breadcrumb">
 							<li class="breadcrumb-item">추가 비용 관리</li>

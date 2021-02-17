@@ -8,11 +8,74 @@
     background-color: #0E515F !important;
     color: #FFFFFF !important;
 }
+.page-item.active .page-link {
+    background-color: #0E515F !important;
+    border-color: #0E515F !important;
+}
+.page-item.disabled .page-link {
+    pointer-events: none !important;
+    cursor: auto !important;
+    background-color: #0e515f1f !important;
+    border-color: #0e515f1f !important;
+}
+.page-item.active {
+    border-radius: 0;
+    background-color: #0e515f1f !important;
+    border-color: #0e515f1f !important;
+}
 </style>
 
 <script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/jquery-3.5.1.js"></script>
 <script type="text/javascript">
-	
+$(function(){
+
+	var table=$('#companyTable').DataTable({
+		ajax:{
+			url:"<c:url value='/admin/adminFacility/facilityTable.do'/>",
+			type:"GET",
+			dataSrc:''
+		},
+		columns:[ //번호 분류명 상호명 계약금액 계약일 부가시설 수정/삭제
+            {data:"contractNo"},
+            {data:"mngCompCtgName"},
+            {data:"mngCompName"},
+            {data:"contractPrice"},
+            {data:"contractDate", render:function(data){
+                return moment(data).format('YYYY-MM-DD');}},
+            {data:"isAddFacility" },
+            {data : "", render: function(data,type,row){ 
+            	var str="<div class='dropdown'>";
+            	str+="<button type='button' class='btn btn-sm dropdown-toggle hide-arrow' data-toggle='dropdown'><span>▼</span></button>";
+				str+="<div class='dropdown-menu'>";
+				str+="<a class='dropdown-item' href='<c:url value='/admin/adminFacility/facilityCompanyDetail.do?contractNo="+row.contractNo+"'/>'><span>상세보기</span></a>";
+				str+="<a class='dropdown-item' href='#'><span>수정</span></a>";
+				str+="<a class='dropdown-item'><span>삭제</span></a>";	
+				str+="</div></div>";
+            	return str; 
+            	//"<button id='btn_info' type='button' class='btn' onClick='openInfo("+row.user_id+")'>상세정보</button>"; 
+            }}
+		],
+		language: {
+	        emptyTable: "데이터가 존재하지 않습니다",
+	        lengthMenu: "페이지당 _MENU_ 개씩 보기",
+	        info: "현재 _START_ - _END_ / _TOTAL_건",
+	        infoEmpty: "데이터가 존재하지 않습니다",
+	        infoFiltered: "( _MAX_건의 데이터에서 필터링됨 )",
+	        search: "검색",
+	        zeroRecords: "일치하는 데이터가 없습니다.",
+	        loadingRecords: "로딩중...",
+	        processing:     "잠시만 기다려 주세요...",
+	        paginate: {
+	            previous: '&nbsp;',
+	            next: '&nbsp;'
+	        }
+	    }
+	});
+		
+});
+function openInfo(user_id) {
+	alert(user_id); 
+}
 	
 </script>
 
@@ -44,94 +107,47 @@
 		    
 			    <div class="col-12">
 			      <div class="card">
-			        <div class="card-header pb-0 pr-0">
-						<div class=" p-0 col-12 m-0">
-			        		<a href="<c:url value='/admin/adminFacility/facilityCompanyReg.do'/>"><button type="button" class="btn btn-primary">추가</button></a>
+			        <%-- <div class="card-header pb-0 pr-0">
+						<div class=" p-0 col-12 m-1">
 			        		
 			        		<div style="text-align: right; float:right;" class="col-md-9">
 				        		<div class="col-md-2 col-2" style="display: inline-block;">
 									<div class="form-group">
-										<select class="form-control">
-											<option value="">분류</option>
-											<option value="">관리</option>
-											<option value="">경비</option>
+										<select class="form-control" name="mngCompCtgNo" id="mngCompCtgNo">
+											<option value="0">분류</option>
+											<c:forEach var="ctgVo" items="${ctgList }">
+												<option value="${ctgVo.mngCompCtgNo }">${ctgVo.mngCompCtgName }</option>
+											</c:forEach>
 										</select>
 									</div>
-								</div>
+								</div> 
 								
 								<div class="col-md-3 col-3" style="display: inline-block;">
 									<div class="input-group">
-										<input type="text" class="form-control"/>
+										<input type="text" class="form-control" name="mngCompName"/>
 									</div>
 								</div>       	
 			        		</div>
 	
 						</div>
 						
-					</div>
+					</div> --%>
 					  
 					<!-- 테이블시작 -->
-					<div class="table-responsive">
-						<table class="table table-hover-animation ">
+					<div class="companyTable table-responsive p-1 table-hover">
+						<table class="companyTable table " id="companyTable" style="text-align:center;">
 							<thead class="thead-dark">
 								<tr>
 									<th class="font-medium-1 text-center" style="width:5%;">번호</th>
-									<th class="font-medium-1 text-center" style="width:10%;">분류</th>
+									<th class="font-medium-1 text-center" style="width:5%;">분류</th>
 									<th class="font-medium-1 text-center" style="width:15%;">상호명</th>
 									<th class="font-medium-1 text-center" style="width:10%;">계약 금액</th>
 									<th class="font-medium-1 text-center" style="width:10%;">계약일</th>
-									<th class="font-medium-1 text-center" style="width:5%;">부가시설</th>
+									<th class="font-medium-1 text-center" style="width:7%;">부가시설</th>
 									<th class="font-medium-1 text-center" style="width:7%;">&nbsp;</th>
-								</tr>
+								</tr>	
 							</thead>
-							<tbody class="text-center">
-								<!-- foreach -->
-										<tr class="text-center">
-											<td><span class="font-weight-bold">1</span></td>
-											<td>분류명</td>
-											<td>업체상호명</td>
-											<td>454654원</td>
-											<td>ㄱㅖ약날짜</td>
-											<td>N</td>
-											<td>
-												<div class="dropdown">
-													<button type="button"
-														class="btn btn-sm dropdown-toggle hide-arrow"
-														data-toggle="dropdown">
-														<i data-feather="more-vertical"></i>
-													</button>
-													<div class="dropdown-menu">
-														<a class="dropdown-item">
-															<i data-feather="edit-2" class="mr-50"></i><span>수정</span></a>
-														<a class="dropdown-item">
-															<i data-feather="trash" class="mr-50"></i><span>삭제</span></a>
-													</div>
-												</div>
-											</td>
-										</tr>
-										<tr>
-											<td><span class="font-weight-bold">1</span></td>
-											<td>분류명</td>
-											<td>업체상호명</td>
-											<td>ㄱㅖ약날짜</td>
-											<td> Y</td>
-											<td>
-												<div class="dropdown">
-													<button type="button"
-														class="btn btn-sm dropdown-toggle hide-arrow"
-														data-toggle="dropdown">
-														<i data-feather="more-vertical"></i>
-													</button>
-													<div class="dropdown-menu">
-														<a class="dropdown-item">
-															<i data-feather="edit-2" class="mr-50"></i><span>수정</span></a>
-														<a class="dropdown-item">
-															<i data-feather="trash" class="mr-50"></i><span>삭제</span></a>
-													</div>
-												</div>
-											</td>
-										</tr>
-							</tbody>
+							
 						</table>
 					</div>
 			            
@@ -147,5 +163,9 @@
 	</div>
 </div>
 
-
 <%@ include file="../adminInc/adminBottom.jsp"%>
+<script src="${pageContext.request.contextPath}/resources/app-assets/vendors/js/tables/datatable/jquery.dataTables.min.js"></script>
+<script src="${pageContext.request.contextPath}/resources/app-assets/vendors/js/tables/datatable/datatables.bootstrap4.min.js"></script>
+<script src="${pageContext.request.contextPath}/resources/app-assets/vendors/js/tables/datatable/dataTables.responsive.min.js"></script>
+<script src="${pageContext.request.contextPath}/resources/app-assets/vendors/js/tables/datatable/responsive.bootstrap4.js"></script>
+<script src="${pageContext.request.contextPath}/resources/app-assets/vendors/js/pickers/flatpickr/flatpickr.min.js"></script>
