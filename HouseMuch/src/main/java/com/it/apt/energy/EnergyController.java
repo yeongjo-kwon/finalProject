@@ -1,20 +1,21 @@
 package com.it.apt.energy;
 
-import java.awt.SplashScreen;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpSession;
 
+import org.apache.commons.collections4.map.HashedMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.it.apt.living.controller.NoticeController;
 import com.it.apt.member.model.MemberVO;
@@ -47,8 +48,10 @@ public class EnergyController {
 		List<String> dataList = new ArrayList<String>();
 		
 		for (int i = 0; i <electList.size() ; i++) {
-			String mm = (String)electList.get(i).get("USE_MONTH"); 
-			String labels = "\'"+mm + "월\'"; //labels
+			String yyyymm = (String)electList.get(i).get("USE_MONTH"); 
+			//2020-02월
+			String[] ym = yyyymm.split("-");
+			String labels = "\'"+ ym[0] +"-"+ ym[1] + "\'"; //labels
 			labelList.add(labels);
 
 			String data = String.valueOf(electList.get(i).get("U_COST_AMOUNT")); //data
@@ -76,10 +79,47 @@ public class EnergyController {
 		model.addAttribute("uCtgList",uCtgList);
 	}
 
-//	@RequestMapping("/waterChart.do")
-//	public List<Map<String, Object>> ElectList() {
+
+//	@ResponseBody
+//	@RequestMapping("/utilCostChart.do")
+//	public Map<String, Object> utilCostList(@ModelAttribute UtilityCostInfoVO vo) {
+//		logger.info("공과금ajax 받아온 vo.getHouseholdCode()={},vo.getuCtgNo()={}",vo.getHouseholdCode(),vo.getuCtgNo());
+//		logger.info("공과금ajax 받아온 vo={}",vo);
 //		
+//		List<Map<String, Object>> utilCostList = energyService.utilityCostList(vo);
+//
+//		List<String> labels=null; 
+//		ArrayList<Integer> data=null; 
+//		
+//		for (int j = 0; j < utilCostList.size() ; j++) {
+//			labels = (ArrayList<String>) utilCostList.get(j).get("USE_MONTH");
+//			data = (ArrayList<Integer>) utilCostList.get(j).get("U_COST_AMOUNT");
+//		}
+//		
+//		Map<String, Object> map = energyService.utilityCostAvg(vo); 
+//		map.put("data", data);
+//		map.put("labels", labels);
+//		
+//		
+//		return map;
 //	}
-//	
+	
+
+	
+	@ResponseBody
+	@RequestMapping("/utilCostChart.do")
+	public List<Map<String, Object>> utilCostList(@ModelAttribute UtilityCostInfoVO vo) {
+		logger.info("공과금ajax 받아온 vo.getHouseholdCode()={},vo.getuCtgNo()={}",vo.getHouseholdCode(),vo.getuCtgNo());
+		logger.info("공과금ajax 받아온 vo={}",vo);
+		
+		List<Map<String, Object>> utilCostList = energyService.utilityCostList(vo);
+
+		Map<String, Object> avgMap = energyService.utilityCostAvg(vo); 
+		
+		utilCostList.add(avgMap);
+		
+		return utilCostList;
+	}
+	
 	
 }

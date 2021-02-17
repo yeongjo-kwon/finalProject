@@ -2,8 +2,6 @@ package com.it.apt.member.controller;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.List;
-import java.util.Map;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -298,7 +296,7 @@ public class MemberController {
 		mVo.setHp2(hp2);
 		mVo.setHp3(hp3);
 		
-		int cnt=memberService.updateMember(mVo);
+		int cnt = memberService.updateMember(mVo);
 		logger.info("@@@@@@@@@3번째 디버깅 수정 결과 cnt={}", cnt);
 		String msg="회원 수정 실패", url="/userDash/myAccount/memberEdit.do";
 		

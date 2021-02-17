@@ -100,6 +100,14 @@ function pageFunc(curPage){
                 <div class="content-header-right text-md-right col-md-3 col-12 d-md-block d-none">
                     <div class="form-group breadcrumb-right">
                         <div class="dropdown">
+                            <button class="btn-icon btn btn-primary btn-round btn-sm dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i data-feather="grid"></i></button>
+                            <div class="dropdown-menu dropdown-menu-right"><a class="dropdown-item" href="app-todo.html"><i class="mr-1" data-feather="check-square"></i><span class="align-middle">Todo</span></a><a class="dropdown-item" href="app-chat.html"><i class="mr-1" data-feather="message-square"></i><span class="align-middle">Chat</span></a><a class="dropdown-item" href="app-email.html"><i class="mr-1" data-feather="mail"></i><span class="align-middle">Email</span></a><a class="dropdown-item" href="app-calendar.html"><i class="mr-1" data-feather="calendar"></i><span class="align-middle">Calendar</span></a></div>
+                        </div>
+                    </div>
+                </div>
+                <%-- <div class="content-header-right text-md-right col-md-3 col-12 d-md-block d-none">
+                    <div class="form-group breadcrumb-right">
+                        <div class="dropdown">
         		
     						<a href="<c:url value='/admin/adminLiving/adminAdd/adminAddDelList.do'/>">
 	                            <button class="btn-icon btn btn-outline-danger bg-white btn-round btn-sm dropdown-toggle" type="button" 
@@ -109,19 +117,23 @@ function pageFunc(curPage){
                              
                         </div>
                     </div>
-                </div>
+                </div> --%>
             </div>
             
             
             
             
-            <!-- content-body지우고 전체너비로 들어감 -->
-            
-            <div class="content-detached">
-                <div class="content-body">
-                
+<!-- content-body지우고 전체너비로 들어감 -->
+<!-- 여기부터 -->
+<div class="container p-0">
+	<div class="content-overlay"></div>
+	<div class="header-navbar-shadow"></div>
+	<div class="content-wrapper container p-0">
+
+		<!-- 여기까지 box로 감싸는 기본틀 : 밑에 div맡출 것-->
                 
 
+  <!--   <div class="content-body"> -->
 								
                     <!-- E-commerce Content Section Starts : 부가시설 분류선택 -->
                     <section id="ecommerce-header">
@@ -195,7 +207,7 @@ function pageFunc(curPage){
 
 
                     <!-- E-commerce Products Starts -->
-                    <section id="ecommerce-products" class="grid-view">
+                    <section id="" class="grid-view">
 		                  <c:if test="${empty list }">
 		                  	<p>등록된 부가시설이 없습니다</p>
 		                  </c:if>
@@ -309,7 +321,9 @@ function pageFunc(curPage){
                         </div>
                     </section>
                     <!-- E-commerce Pagination Ends -->
-
+<!-- </div> --><!-- content-body -->
+</div>
+</div><!-- 여기까지 box로 감싸는 기본틀 : 밑에 div맡출 것-->
       
     <!-- END: Content-->
     <div class="clearfix"></div>
