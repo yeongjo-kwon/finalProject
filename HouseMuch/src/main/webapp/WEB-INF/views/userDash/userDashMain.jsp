@@ -15,6 +15,13 @@ div#dash-title {
 	margin-bottom: 20px;
 	padding-bottom: 0;
 	color: #00000078;
+	float: left;
+}
+
+#chooseDate{
+	margin: 25px 20px 20px 20px;
+    width: 100px;
+	padding-bottom: 0;
 }
 
 .section-label {
@@ -54,6 +61,26 @@ button.btn.btn-flat-danger.waves-effect, .btn-flat {
 	padding: 0 0 10px 0;
 	font-size: 1.5em;
 }
+
+.dashTb tbody tr td a {
+	color: #666666;
+	text-decoration: none;
+    background-color: transparent;
+}
+
+button#mngBtn {
+    height: 20px;
+    width: 50px;
+}
+
+input#mngcostClaimdate {
+    width: 0;
+}
+
+form[name="hiddenFrm"] {
+    float: right;
+    padding-top: 23px;
+}
 </style>
 
 <script type="text/javascript">
@@ -69,45 +96,125 @@ button.btn.btn-flat-danger.waves-effect, .btn-flat {
 
 	/* 내 차량 등록 내역으로 이동 */
 	function moveToCar() {
-		location.href = "<c:url value=''/>";
+		location.href = "";
 	}
 	
 	/* 관리비 납부 페이지로 이동 */
 	function moveToPay(){
 		location.href = "<c:url value='/mngcost/mngcostPayment.do'/>";
 	}
-
-	//데이터 구하기
-	/* $.ajax({
-		url:"/userDash/selectMngcostUserdash.do",
-		data:{
-			mngcostClaimdate:$('#mngcostClaimdate').val()
-		},
-		type:"get",
-		dataType:"json",
-		success:function(res){
-			alert(res);
-		},
-		error:function(xhr,status,error){
-			alert("error : "+ error);
-		}
-	}); */
 	
-	function selectMonthlyMngcost(){
-		$.ajax({
-			url:"/apt/userDash/selectMonthlyMngCostUserdash.do",
-			type:"get",
-			dataType:"json",
-			success:function(res){
-				alert(res);
+	/* 공백 및 '원' 제거 */
+	function convPriceToNum(price){
+		var num=price.trim().replace(/,/gi, '').replace('원', '');
+		return Number(num);
+	}
+	
+	function chooseDate(date){
+		//값 세팅
+		$('#mngcostClaimdate').val(date);
+	}
+	
+	$(function(){
+		/* 월별 관리비 조회 차트 */
+		var labels=[];
+		var data=[];
+		<c:forEach var="cVo" items="${cList}">
+			labels.push('${cVo.YM}');
+			data.push(convPriceToNum('${cVo.TPRICE}'));
+		</c:forEach>
+		
+		/* var cArr=${cList};
+		$(cArr).each(function(idx,item){
+			labels.push(item.YM);
+			data.push(convPriceToNum(item.TPRICE));
+			alert("item.YM="+item.YM);
+		});
+		alert("cArr="+cArr); */
+		
+		var ctx = document.getElementById('myChart').getContext('2d');
+		var myChart = new Chart(ctx, {
+			type:"line",
+			data:{
+				labels:labels,
+				datasets:[{
+					label:labels,
+					data: data, //실제값
+		            backgroundColor:[
+			  			'rgba(255, 99, 132, 0.2)'
+			  			,'rgba(54, 162, 235, 1)'
+			            ,'rgba(255, 206, 86, 1)'
+			            ,'rgba(75, 192, 192, 1)'
+			            ,'rgba(153, 102, 255, 1)'
+			            ,'rgba(255, 159, 64, 1)'
+			            ,'rgba(255, 128, 128, 1)'
+			            ,'rgba(227, 227, 0, 1)'
+			            ,'rgba(200, 191, 231, 1)'
+			            ,'rgba(192, 192, 192, 1)'
+			  		],
+		            fill:true, //line의 안쪽 색을 넣을건지
+		            borderColor: 'rgba(255, 99, 132, 1)',
+		            borderWidth: 1 //border의 굵기
+				}]
 			},
-			error:function(xhr,status,error){
-				alert("error : "+ error);
+			options:{
+				scales: {
+		            yAxes: [{ //y축과 관련한 옵션
+		                ticks: {
+		                    beginAtZero: true, //0부터 표기할지
+		              		userCallback: function(value, index,values){
+		              			return value.toLocaleString(); //천단위 콤마
+		              		}
+		                },
+		                scaleLabel: {
+		                    display: true,
+		                    labelString:'단위 (원)' //y축 label 설정
+		                },
+		                stacked:true
+		           }]
+		      	}
 			}
 		});
-
-	}
-
+		
+	/* 관리비 상세조회 차트 */
+	var labels=[];
+	var data=[];
+	<c:forEach var="mVo" items="${mList}">
+		labels.push('${mVo.mngcostContent}');
+		data.push('${mVo.mngcostPrice}');
+	</c:forEach>
+	
+	var ctx = document.getElementById("myDoughnutChart").getContext('2d');
+	var myDoughnutChart = new Chart(ctx, {
+	    type: 'doughnut',
+	    data: {
+	    	labels: labels,
+	  		datasets:[{
+		  		data:data,
+		  		backgroundColor:[
+		  			'rgba(255, 99, 132, 0.2)'
+		  			,'rgba(54, 162, 235, 1)'
+		            ,'rgba(255, 206, 86, 1)'
+		            ,'rgba(75, 192, 192, 1)'
+		            ,'rgba(153, 102, 255, 1)'
+		            ,'rgba(255, 159, 64, 1)'
+		            ,'rgba(255, 128, 128, 1)'
+		            ,'rgba(227, 227, 0, 1)'
+		            ,'rgba(200, 191, 231, 1)'
+		            ,'rgba(192, 192, 192, 1)'
+		  		]
+		  	}]
+		},
+		options: {
+		    responsive:true,
+		    legend:{
+		       position:'bottom'
+		    }
+		}
+	});
+		
+});
+	
 </script>
 
 <!-- START : Content -->
@@ -115,10 +222,6 @@ button.btn.btn-flat-danger.waves-effect, .btn-flat {
 	<div class="content-overlay"></div>
 	<div class="header-navbar-shadow"></div>
 
-	<!-- hidden용 폼 -->
-	<form name="hiddenFrm">
-		<input type="text" value="${mngcostClaimdate }" id="mngcostClaimdate">
-	</form>
 	<!-- 찐 START -->
 	<div class="content-wrapper container p-0">
 		<!------------ 첫번째div ------------>
@@ -175,7 +278,7 @@ button.btn.btn-flat-danger.waves-effect, .btn-flat {
 									<!-- for문 시작 -->
 									<c:forEach var="pVo" items="${pList }">
 										<!-- 미납됐을 때 -->
-										<c:if test="${pVo.mngcostLimitdate>today and empty pVo.mngcostPaydate }">
+										<c:if test="${pVo.mngcostLimitdate<today and empty pVo.mngcostPaydate }">
 											<c:set var="total" value="${total + pVo.mngcostTotalPrice }"/>
 										</c:if>
 										<%-- <!-- 완납했을 때 -->
@@ -207,19 +310,27 @@ button.btn.btn-flat-danger.waves-effect, .btn-flat {
 				</div>
 
 				<!------------ 세번째div ------------>
-				<!-- 청구일자 구하기 시작 -->
-				<c:set var="mngcostClaimdate" value="0" />
-				<c:forEach var="pVo" items="${pList }">
-					<c:set var="mngcostClaimdate" value="${pVo.mngcostClaimdate }" />
-				</c:forEach>
-				<!-- 청구일자 구하기 끝 -->
 				<div class="row match-height">
 					<!-- 3-1 -->
 					<div class="col-12 col-md-6 col-lg-6">
 						<div class="card">
 							<div class="card-header">
 								<div class="section-title">
-									<h2>이번 달 관리비</h2>
+									<h2>관리비 내역 차트</h2>
+									<select id="chooseDate" onchange="chooseDate(this.value)">
+										<!-- 반복 시작 -->
+										<c:forEach var="sVo" items="${sList }">
+											<option value="${sVo.mngcostClaimdate }">
+												<fmt:formatDate value="${sVo.mngcostClaimdate }" pattern="yyyy-MM"/>
+											</option>
+										</c:forEach>
+										<!-- 반복 끝 -->
+									</select>
+									<!-- hidden용 폼 -->
+									<form name="hiddenFrm" action="<c:url value='/userDash/userDashMain.do'/>" method="post">
+										<input type="submit" id="mngBtn" value="확인">
+										<input type="hidden" id="mngcostClaimdate" name="mngcostClaimdate">
+									</form>
 								</div>
 							</div>
 							<div class="card-body">
@@ -275,9 +386,14 @@ button.btn.btn-flat-danger.waves-effect, .btn-flat {
 														src="<c:url value='/resources/aptUser_images/dot3.JPG'/>">
 														&nbsp; <!-- 제목이 긴 경우 일부만 보여주기 --> 
 													<c:if test="${fn:length(fMap['SUGG_TITLE'])>=25}">
-														${fn:substring(fMap['SUGG_TITLE'],0,25) } ...
-													</c:if> <c:if test="${fn:length(fMap['SUGG_TITLE'])<25}">
-														${fMap['SUGG_TITLE'] }
+														<a href="<c:url value='/suggestBoard/suggestBoardDetail.do?suggBoardNo=${fMap["SUGG_BOARD_NO"] }'/>">
+															${fn:substring(fMap['SUGG_TITLE'],0,25) } ...
+														</a>
+													</c:if> 
+													<c:if test="${fn:length(fMap['SUGG_TITLE'])<25}">
+														<a href="<c:url value='/suggestBoard/suggestBoardDetail.do?suggBoardNo=${fMap["SUGG_BOARD_NO"] }'/>">
+															${fMap['SUGG_TITLE'] }
+														</a>
 													</c:if>
 												</td>
 											</tr>
@@ -289,38 +405,42 @@ button.btn.btn-flat-danger.waves-effect, .btn-flat {
 						</div>
 					</div>
 					<!------- 내 부가시설 ------->
-					<div class="col-lg-4 col-md-6 col-12">
-						<div class="card" id="divList">
-							<div class="card-header">
-								<h6 class="section-label">내 부가시설</h6>
-								<button type="button" class="btn btn-flat"
-									onclick="moveToFacility()">더보기
-								</button>
-							</div>
-							<div class="card-body">
-								<table summary="최근 부가시설 내역 5건을 보여주는 표입니다." class="dashTb">
-									<!-- 내역 없을 때 -->
-									<%-- <c:if test="${}">
-										<tr>
-											<td colspan="5">내역이 존재하지 않습니다.</td>
-										</tr>
-									</c:if>
-									<!-- 내역 있을 때 -->
-									<c:if test="${}">
-										<!-- for문 시작 -->
-										<c:forEach var="" items="">
-											<tr>
-												<td><img alt="도트 이미지"
-													src="<c:url value='/resources/aptUser_images/dot3.JPG'/>">
-													&nbsp;</td>
-											</tr>
-										</c:forEach>
-									</c:if> --%>
-									<!--- for문 끝 --->
-								</table>
-							</div>
-						</div>
-					</div>
+	               <div class="col-lg-4 col-md-6 col-12">
+	                  <div class="card" id="divList">
+	                     <div class="card-header">
+	                        <h6 class="section-label">내 부가시설</h6>
+	                        <button type="button" class="btn btn-flat"
+	                           onclick="moveToFacility()">더보기
+	                        </button>
+	                     </div>
+	                     <div class="card-body">
+	                        <table summary="최근 부가시설 내역 5건을 보여주는 표입니다." class="dashTb">
+	                           <!-- 내역 없을 때 -->
+	                            <c:if test="${empty addList}">
+	                              <tr>
+	                                 <td colspan="5">이용중인 시설이 없습니다.</td>
+	                              </tr>
+	                           </c:if>
+	                           <!-- 내역 있을 때 -->
+	                           <c:if test="${!empty addList}">
+	                              <!-- for문 시작 -->
+	                              <c:forEach var="addVo" items="${addList}">
+	                                 <tr>
+	                                    <td><img alt="도트 이미지"
+	                                       src="<c:url value='/resources/aptUser_images/dot3.JPG'/>">
+	                                       &nbsp;
+	                                       <a href="<c:url value='/living/add/addFacilityDetail.do?addNo=${addVo.addNo }'/>">
+	                                       ${addVo.addName}
+	                                       </a>
+	                                    </td>
+	                                 </tr>
+	                              </c:forEach>
+	                           </c:if>
+	                           <!--- for문 끝 --->
+	                        </table>
+	                     </div>
+	                  </div>
+	                </div>
 					<!------- 내 차량내역 ------->
 					<div class="col-lg-4 col-md-6 col-12">
 						<div class="card" id="divList">
