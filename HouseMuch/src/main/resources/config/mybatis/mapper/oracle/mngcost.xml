@@ -284,13 +284,48 @@
 	
 	<select id="selectMngcostPaymentList" parameterType="householdVo"
 			resultType="hashMap">
-		SELECT MNGCOST_LIST_NO,
-		       DONG,
-		       HO,
-		       MNGCOST_TOTAL_PRICE,
-		       MNGCOST_CLAIMDATE,
-		       MNGCOST_LIMITDATE,
-		       MNGCOST_PAYDATE
+		SELECT *
+		FROM(
+			SELECT A.*,
+				   ROWNUM AS RNUM
+			FROM(
+				SELECT MNGCOST_LIST_NO,
+				       DONG,
+				       HO,
+				       MNGCOST_TOTAL_PRICE,
+				       MNGCOST_CLAIMDATE,
+				       MNGCOST_LIMITDATE,
+				       MNGCOST_PAYDATE
+				FROM MNGCOST_PAYMENT_LIST L
+				    JOIN HOUSEHOLD_INFO I
+				    ON L.HOUSEHOLD_CODE = I.HOUSEHOLD_CODE
+				WHERE L.HOUSEHOLD_CODE
+				    IN (SELECT HOUSEHOLD_CODE
+				        FROM HOUSEHOLD_INFO
+				        WHERE APT_NO=#{aptNo}
+				        AND AUTH_CODE='RESIDENT')
+				<if test='dong!=null and dong!="" and dong!="0"'>
+					AND DONG=#{dong}
+				</if>
+				<if test='ho!=null and ho!="" and ho!="0"'>
+					AND HO=#{ho}
+				</if>
+				<if test='authCode=="Y"'>
+					AND MNGCOST_PAYDATE IS NULL
+				</if>
+				ORDER BY MNGCOST_CLAIMDATE DESC
+			)A
+		)
+		<![CDATA[
+		WHERE RNUM>#{firstRecordIndex}  
+		AND RNUM<=#{firstRecordIndex}+#{recordCountPerPage}
+		]]>
+	</select>
+	
+	<!-- 납입내역 총 레코드 수 -->
+	<select id="selectTotalRecordMngcostPaymentList"
+			parameterType="householdVo" resultType="int">
+		SELECT COUNT(*)
 		FROM MNGCOST_PAYMENT_LIST L
 		    JOIN HOUSEHOLD_INFO I
 		    ON L.HOUSEHOLD_CODE = I.HOUSEHOLD_CODE
@@ -308,7 +343,6 @@
 		<if test='authCode=="Y"'>
 			AND MNGCOST_PAYDATE IS NULL
 		</if>
-		ORDER BY MNGCOST_CLAIMDATE DESC
 	</select>
 	
 	<!-- 세대 전기료 등록 시, 세대 정보 리스트  -->
@@ -340,6 +374,16 @@
 			   #{householdCode},
 			   3,
 			   SYSDATE)
-
 	</insert>
+	
+	<!-- 세대 전기료 등록 시, 세대코드 중복 확인 -->
+	<select id="adminElectricChargeRegDupCheck" parameterType="string"
+			resultType="int">
+		SELECT COUNT(*)
+		FROM UTILITY_COST_INFO
+		WHERE HOUSEHOLD_CODE=#{householdCode}
+		AND U_CTG_NO=3
+		AND TO_CHAR(U_COST_USEDATE, 'YYYY-MM')
+		        = TO_CHAR(SYSDATE, 'YYYY-MM')
+	</select>
 </mapper>

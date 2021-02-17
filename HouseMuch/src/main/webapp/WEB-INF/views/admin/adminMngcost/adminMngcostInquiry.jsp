@@ -166,6 +166,7 @@
 	<div class="app-content content ">
 		<div class="content-overlay"></div>
 		<div class="header-navbar-shadow"></div>
+		<br>
 		<div class="content-wrapper">
 			<div class="content-header row">
 	         <div class="content-header-left col-md-9 col-12 mb-2">
@@ -177,8 +178,10 @@
 	                   <li class="breadcrumb-item">
 	                   	<a href="<c:url value='/admin/adminAll/adminAllMain.do'/>">Home</a>
 	                   </li>
-	                   <li class="breadcrumb-item"><a href="#">관리비 관리</a></li>
-	                   <li class="breadcrumb-item active">지출내역 관리</li>
+	                   <li class="breadcrumb-item">관리비 관리</li>
+	                   <li class="breadcrumb-item active">
+	                   	<a href="<c:url value='/admin/adminMngcost/adminMngcostInquiry.do'/>">지출내역 관리</a>
+	                   </li>
 	                 </ol>
 	               </div>
 	             </div>

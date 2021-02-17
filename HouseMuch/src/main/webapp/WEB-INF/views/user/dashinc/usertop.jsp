@@ -561,13 +561,19 @@ ul.dept02 li#subMenu:first-child {
 				<li class=" nav-item"><a class="d-flex align-items-center"
 					href="#"><i data-feather='menu'></i><span
 						class="menu-title text-truncate" data-i18n="eCommerce">관리비
-							조회</span></a>
+							관리</span></a>
 					<ul class="menu-content">
 						<!-- 관리비 조회 -->
 						<li><a class="d-flex align-items-center"
-							href="<c:url value='/userDash/myMngcost/mngcostCheck.do'/>">
+							href="<c:url value='/userDash/myMngcost/myMngcostInquiry.do'/>">
 								<i data-feather="circle"></i><span class="menu-item"
 								data-i18n="Shop">관리비 조회</span>
+						</a></li>
+						<!-- 관리비 납부 -->
+						<li><a class="d-flex align-items-center"
+							href="<c:url value='/userDash/myMngcost/myMngcostPayment.do'/>">
+								<i data-feather="circle"></i><span class="menu-item"
+								data-i18n="Shop">관리비 납부</span>
 						</a></li>
 
 					</ul></li>

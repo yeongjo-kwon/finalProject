@@ -42,7 +42,7 @@ $(function () {
 						$('#isValid').val(Number($('#isValid').val())+1);
 						return false;
 					}else if($(now).find('#mngcostContent').val().length<=0){
-						$('#mngcostContent').val("내용 없음");
+						$(now).find('#mngcostContent').val("내용 없음");
 					}
 				}
 			});

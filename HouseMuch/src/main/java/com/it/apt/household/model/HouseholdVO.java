@@ -1,6 +1,8 @@
 package com.it.apt.household.model;
 
-public class HouseholdVO {
+import com.it.apt.common.SearchVO;
+
+public class HouseholdVO extends SearchVO{
 	private String householdCode;
 	private int aptNo;
 	private String dong;

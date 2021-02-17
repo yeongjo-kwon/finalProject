@@ -119,4 +119,14 @@ public class MngcostDAOMybatis implements MngcostDAO{
 	public int insertUtilityCostInfo(UtilityCostInfoVO utilityCostVo) {
 		return sqlSession.insert(namespace+"insertUtilityCostInfo", utilityCostVo);
 	}
+
+	@Override
+	public int adminElectricChargeRegDupCheck(String householdCode) {
+		return sqlSession.selectOne(namespace+"adminElectricChargeRegDupCheck", householdCode);
+	}
+
+	@Override
+	public int selectTotalRecordMngcostPaymentList(HouseholdVO householdVo) {
+		return sqlSession.selectOne(namespace+"selectTotalRecordMngcostPaymentList", householdVo);
+	}
 }

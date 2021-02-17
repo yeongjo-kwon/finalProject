@@ -5,6 +5,11 @@
 <script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/jquery-3.5.1.min.js"></script>
 <script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/yeongjoJs/yjInquiryAjax.js"></script>
 <script type="text/javascript">
+	/*차트에 넣을 값 변환 (한희님 용)
+	function convPriceToNum(price){
+		var num=price.trim().replace(/,/gi, '').replace('원', '');
+		return Number(num);
+	}*/
 	$(function(){
 		var d=new Date();
 		$('#currDate').html(formatDate(d));
@@ -190,16 +195,13 @@
 <section id="about">
 <div class="container">
 	<!-- START : 대시보드 박스 -->
-	<input type="hidden" id="mngcostClaimdate">
-    
 	<div class="app-content content"><!-- 바꾸면 안됨 -->
-	   	<!-- col-md-12까지가 한계-->
 	   	<div class="card-title">
 	    	<h4 class="card-title"><i data-feather='list'></i>미납 내역</h4>
 	    </div>
 	    <br>
 	    <form action="<c:url value='/mngcost/mngcostPaymentIMP.do'/>" method="post" name="frmPayIMP">
-		   	<div class="col-md-6 col-lg-5 float-left" style="background-color:#ffffff;padding:0; margin-right:20px;margin-bottom:50px; box-shadow : 0 3px 10px 0 rgba(34, 41, 47, 0.1);">
+		   	<div class="col-md-6 col-lg-5" style="background-color:#ffffff;padding:0; margin:auto; box-shadow : 0 3px 10px 0 rgba(34, 41, 47, 0.1);">
 		      	<div class="card-body">
 		      		<div class="text-center">
 		      			<img alt="하우스머치 로고" style="width:50%;margin: 10% 0;"

@@ -20,6 +20,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.it.apt.common.PaginationInfo;
+import com.it.apt.common.Utility;
 import com.it.apt.energy.UtilityCostInfoVO;
 import com.it.apt.household.model.HouseholdVO;
 import com.it.apt.member.model.MemberService;
@@ -303,10 +305,33 @@ public class AdminMngcostController {
 			HttpSession session) {
 		MemberVO memVo=(MemberVO)session.getAttribute("memVo");
 		householdVo.setAptNo(memberService.selectAptNo(memVo.getId()));
-		logger.info("관리자 관리비 청구 조회, 아파트 번호 추가 후 파라미터 householdVo={}", householdVo);
+		logger.info("관리자 관리비 청구 조회 - 아파트 번호 추가 후 파라미터 householdVo={}", householdVo);
+		
+		//페이징 처리 관련 세팅
+		//[1] PaginationInfo
+		PaginationInfo pagingInfo=new PaginationInfo();
+		//블록 당 보여질 페이지수, 페이지 당 보여질 레코드 수 설정
+		pagingInfo.setBlockSize(Utility.BLOCK_SIZE); 
+		pagingInfo.setRecordCountPerPage(10);
+		pagingInfo.setCurrentPage(householdVo.getCurrentPage());
+		
+		//[2] householdVo 안의 SearchVo 세팅
+		householdVo.setRecordCountPerPage(Utility.RECORD_COUNT);
+		householdVo.setFirstRecordIndex(pagingInfo.getFirstRecordIndex());
+		logger.info("관리자 관리비 청구 조회 - SearchVo 변수 추가 후 파라미터 householdVo={}", householdVo);
 		
 		List<Map<String, Object>> payList=mngcostService.selectMngcostPaymentList(householdVo);
 		logger.info("관리자 관리비 청구 내역 조회 결과 payList={}", payList);
+		
+		int totalRecord=mngcostService.selectTotalRecordMngcostPaymentList(householdVo);
+		logger.info("청구(납입) 내역 조회 결과 총 레코드 수, totalRecord={}", totalRecord);
+		pagingInfo.setTotalRecord(totalRecord);
+		
+		//ajax 반환 값에 페이징 맵 넣어버리기
+		Map<String, Object> pagingMap=new HashMap<String, Object>();
+		pagingMap.put("pagingInfo", pagingInfo);
+		
+		payList.add(pagingMap);
 		
 		return payList;
 	}
@@ -346,7 +371,7 @@ public class AdminMngcostController {
 		
 		int cnt=mngcostService.insertUtilityCostInfoMulti(utilityCostList);
 		if(cnt>0){
-			msg="세대 전기료 다중 등록에 성공하였습니다.";
+			msg="세대 전기료 등록에 성공하였습니다.";
 		}
 		
 		model.addAttribute("msg", msg);
@@ -360,36 +385,50 @@ public class AdminMngcostController {
 	public Map<String, Object> adminElectricChargeRegDupCheck(@RequestParam(required = false) HashMap<String, Object> repeaterMap) {
 		logger.info("세대 전기료 등록 시 세대 중복확인, 파라미터 repeaterMap={}", repeaterMap);
 		
-		String[] sArr=new String[10];
-		int idx=0;
+		//등록 대상 세대코드 목록 (기본 값 제외)
+		List<String> householdCodeList=new ArrayList<String>();
 		for(int i=0; i<repeaterMap.size()/3; i++) {
-			String householdCode1=(String)repeaterMap.get("invoice["+i+"][householdCode]");
+			String householdCode=(String)repeaterMap.get("invoice["+i+"][householdCode]");
+			if(!householdCode.equals("0")) {
+				householdCodeList.add(householdCode);
+			}
+		}
+		logger.info("등록 대상 세대코드 목록 (기본 값 제외)={}", householdCodeList);
+			
+		//등록 대상끼리 중복된 세대코드 목록
+		List<String> sList=new ArrayList<String>();
+		
+		for(int i=0; i<householdCodeList.size(); i++) {
+			String householdCode1=householdCodeList.get(i);
 			int count=0;
-			for(String s:sArr) {
+			for(String s:sList) {
 				if(householdCode1.equals(s)) {
 					count++;
 					break;
 				}
 			}
 			if(count==0) {
-				for(int j=0; j<repeaterMap.size()/3; j++) {
-					String householdCode2=(String)repeaterMap.get("invoice["+j+"][householdCode]");
+				for(int j=0; j<householdCodeList.size(); j++) {
+					String householdCode2=householdCodeList.get(j);
 					if(i!=j) {
 						if(householdCode1.equals(householdCode2)) {
-							sArr[idx++]=householdCode1;
+							sList.add(householdCode1);
 							break;
 						}
 					}
 				}
 			}
 		}
-		logger.info("등록 대상끼리 중복된 세대코드={}", sArr);
+		logger.info("등록 대상끼리 중복된 세대코드 목록={}", sList);
 		
-		String message="하나의 세대에 중복등록할 수 없습니다.";
+		//입력된 데이터와 중복체크
+		List<String> dbList=mngcostService.adminElectricChargeRegDupCheckMulti(householdCodeList);
+		logger.info("입력된 데이터와 중복된 세대코드 목록={}", dbList);
 		
 		HashMap<String, Object> dupMessageMap=new HashMap<String, Object>();
-		dupMessageMap.put("message", message);
-		dupMessageMap.put("householdArr", sArr);
+		dupMessageMap.put("currDup", sList);
+		dupMessageMap.put("alreadyDup", dbList);
+		logger.info("map확인 ={}", dupMessageMap);
 		
 		return dupMessageMap;
 	}

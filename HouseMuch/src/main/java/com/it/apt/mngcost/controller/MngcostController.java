@@ -1,7 +1,6 @@
 package com.it.apt.mngcost.controller;
 
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpSession;
@@ -66,7 +65,7 @@ public class MngcostController {
 	}
 	
 	@ResponseBody
-	@RequestMapping("/showSubCtg.do") //관리자도 공유
+	@RequestMapping("/showSubCtg.do") //관리자, 마이페이지도 공유
 	public List<MngcostSubCtgVO> showSubCtg
 			(@RequestParam(defaultValue = "0") int mngcostMCtgNo) {
 		logger.info("관리비 소분류 리스트 보여주기, 파라미터 mngcostMCtgNo={}", mngcostMCtgNo);
@@ -144,8 +143,20 @@ public class MngcostController {
 		return cnt;
 	}
 	
+	/*
 	@RequestMapping("/mngcostPaymentSuccess.do")
-	public void mngcostPaymentSuccess() {
-		logger.info("관리비 납부 성공 페이지");
+	public String mngcostPaymentSuccess(@RequestParam(required = false)String message,
+			Model model) {
+		if(message==null || message.isEmpty()) {
+			model.addAttribute("msg", "잘못된 경로입니다.");
+			model.addAttribute("url", "/mngcost/mngcostPayment.do");
+			
+			return "common/message";
+		}
+		
+		logger.info("관리비 납부 성공 페이지, 파라미터 message={}", message);
+		
+		return "mngcost/mngcostPaymentSuccess";
 	}
+	*/
 }

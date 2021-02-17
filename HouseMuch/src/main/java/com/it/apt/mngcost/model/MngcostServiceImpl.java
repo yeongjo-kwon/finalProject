@@ -1,5 +1,6 @@
 package com.it.apt.mngcost.model;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -167,5 +168,29 @@ public class MngcostServiceImpl implements MngcostService{
 		}
 		
 		return cnt;
+	}
+
+	@Override
+	public List<String> adminElectricChargeRegDupCheckMulti(List<String> householdCodeList) {
+		List<String> alreadyCode=new ArrayList<String>();
+		for(String householdCode:householdCodeList) {
+			int cnt=mngcostDao.adminElectricChargeRegDupCheck(householdCode);
+			if(cnt>0) {
+				int count=0;
+				for(String s:alreadyCode) {
+					if(householdCode.equals(s)) {
+						count++;
+						break;
+					}
+				}
+				if(count==0) alreadyCode.add(householdCode);
+			}
+		}
+		return alreadyCode;
+	}
+
+	@Override
+	public int selectTotalRecordMngcostPaymentList(HouseholdVO householdVo) {
+		return mngcostDao.selectTotalRecordMngcostPaymentList(householdVo);
 	}
 }
