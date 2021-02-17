@@ -34,85 +34,113 @@
  <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
  <script type="text/javascript"
 	src="${pageContext.request.contextPath}/resources/js/jquery-3.5.1.min.js"></script>
+
+	
 <script type="text/javascript">
 //전역변수 
+
+//처음 로딩 시 전기차트 불러오기
 var data =${dataList};
-console.log("dataList"+data);//그대로들어옴
-
 var labels =${labelList};//따옴표없어서 에러남 -> 자바에서 붙여서 보냄 -> 에러안남
+console.log("dataList"+data);//그대로들어옴
 console.log("labelList"+labels);
-function ynBarChart(ctx){
-//Set new default font family and font color to mimic Bootstrap's default styling
-Chart.defaults.global.defaultFontFamily = '-apple-system,system-ui,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif';
-Chart.defaults.global.defaultFontColor = '#292b2c';
 
-// Bar Chart Example
-	
-	var ynBarChart = new Chart(ctx, {
-	  type: 'bar',
-	  data: {
-	    labels: labels,
-	    datasets: [{
-	      label: "사용량(kwh)",
-	      backgroundColor: "rgba(255,64,30,0.7)",
-	      borderColor: "rgba(255,64,30,0.8)",
-	      data: data,
-	    }],
-	  },
-	  options: {
-	    scales: {
-		      xAxes: [{
-		        time: {
-		          unit: 'month'
-		        },
-		        gridLines: {
-		          display: false
-		        },
-		        ticks: {
-		          maxTicksLimit: 12
-		        }
-		      }],
-		      yAxes: [{
-		        ticks: {
-		          min: 0,
-		          max: 500,
-		          maxTicksLimit: 10
-		        },
-		        gridLines: {
-		          display: true
-		        }
-		      }],
-		    },
-		    legend: {
-		      display: true
-	    }
-	  }
-	});
-}
-
+/*
+ * 차트만들 때 넣을 변수
+   1.요소id  / 2.데이터배열  / 3.라벨배열
+ */
+var elementId;//document.getElementById("houseElectChart");
+var dataArr =[];
+var labelArr =[];
 $(function(){
-	  
-	console.log("나와랏");
-	var ctx = document.getElementById("ynBarChart");
-	ynBarChart(ctx);
 	
-	$('.utiltab').on('click',function(){
+	//처음로딩시 전기차트탭
+	elementId = document.getElementById("houseElectChart");
+	houseElectChart(elementId,data,labels);
+	
+	//탭클릭하면 공과금 분류번호 읽어서 ajax태우기
+	$('.fulltab-item a').on('click',function(){
 		var ctgId = $(this).attr('id');
 		console.log("ctgId는  "+ctgId);
+		
 		var uCtgNo = ctgId.slice(-1);
 		console.log("uCtgNo는  "+uCtgNo);
-		/* $.ajax({
-			url:"<c:url value='/energy/utilCostChart.do'/>",
-				data:{
-					nCtgNo=$().
-					
-				}
-					type:
-						dataType:
-		}); */
-	});
+		
+		var householdCode = '${sessionScope.memVo.householdCode}';
+		console.log("householdCode는  "+householdCode);
 
-});
+		
+	
+		$.ajax({
+			url:"<c:url value='/energy/utilCostChart.do'/>",
+			async: false,
+			type:"post",
+			data:{
+					uCtgNo:uCtgNo,
+					householdCode:householdCode,
+			},
+			dataType:"json",
+			success:function(res){
+				
+				console.log(res);
+				dataArr = new Array();
+				labelArr = new Array();
+
+				//length = 7
+				var avgValues =  res.pop();//맨마지막 요소 뽑아서 리턴하고 그 요소는 사라짐
+				
+				//length = 6
+				for(var i=0;i<res.length;i++){
+					dataArr.push(res[i].U_COST_AMOUNT);
+					labelArr.push(res[i].U_COST_USEDATE);
+				}
+				
+				var avgPrice = avgValues.PRICE_AVG;//평균 요금 값 뽑았다 슈발탱 ㅜㅜ
+				var avgUse = avgValues.AMOUNT_AVG;//평균 사용량 
+				console.log("avgValues => "+avgValues);
+				console.log("평균요금 => "+avgPrice);
+				console.log("평균사용량 => "+ avgUse);
+				console.log("분류번호 => "+ uCtgNo);
+
+				console.log("데이터배열 => "+ dataArr);
+				console.log("라벨배열 => "+ labelArr);
+				
+				if(uCtgNo==3){
+					elementId = document.getElementById("houseElectChart");
+					houseElectChart(elementId,dataArr,labelArr);	//수도 차트 만들기	
+				}
+				else if(uCtgNo==2){//수도
+					elementId = document.getElementById("houseWaterChart");
+					houseWaterChart(elementId,dataArr,labelArr);	//수도 차트 만들기	
+				}
+				else if(uCtgNo==1){
+					elementId = document.getElementById("houseGasChart");
+					houseGasChart(elementId,dataArr,labelArr);	//가스 차트 만들기	
+				}
+				
+				
+				//평균사용량, 평균요금 set
+				/* document.writeln(navigator.language);
+				avgUse.toLocaleString('ko-KR');
+				avgPrice.toLocaleString('ko-KR'); */
+				
+				var tabId = "#util-tab"+uCtgNo;
+				var avgUseId = "#avgUse"+uCtgNo;
+				var avgPriceId = "#avgPrice"+uCtgNo;
+				
+				$(avgUseId).text(avgUse.toLocaleString('ko-KR'));
+				$(avgPriceId).text(avgPrice.toLocaleString());
+			},
+			error:function(xhr,status,error){
+				alert("ajaxChart에러:"+error);
+			}
+
+			
+		});//ajax
+	});//click
+
+});//
+
 
 </script> 
  
@@ -171,6 +199,7 @@ $(function(){
 .nav-link:hover, .nav-tabs .nav-item.show .nav-link, .nav-tabs .nav-item.show .nav-link:focus, .nav-tabs 
 .nav-item.show .nav-link:hover, .nav-tabs .nav-link.active, .nav-tabs .nav-link.active:focus, .nav-tabs 
 .nav-link.active:hover {
+width:100%;
     color: #5c9f24;
     /* background-color: #f6f6f6; */
     border-color: transparent;
@@ -180,6 +209,7 @@ $(function(){
 
 /* 눌린 후 대기중 */
 .nav-tabs .nav-item.show .nav-link, .nav-tabs .nav-link.active {
+width:100%;
     color: #5c9f24;
      background-color:#fff; /* rgba(246,246,246,0.5);  */
     border-color: #e0e0e0;
@@ -189,14 +219,18 @@ $(function(){
 
 
 .nav-tabs-line .nav-link {
+
     padding: .715rem 1.429rem;
     border-bottom: 3px solid #5c9f24;
 }
 .nav-tabs .nav-link {
+    border: 1px solid #ddd;
+    background-color:rgba(230,230,230,0.5);
     color: #565656;
     transition: .25s;
 }
 .nav-tabs .nav-link {
+
     border: 1px solid transparent;
     border-top-left-radius: .215rem;
     border-top-right-radius: .215rem;
@@ -208,20 +242,13 @@ $(function(){
     overflow: hidden;
 }
 
-
-.nav-link {
-    position: relative;
-    display: block;
-    padding: .715rem 1.072rem;
-    overflow: hidden;
-}
 .nav-link {
     display: block;
     padding: .715rem 1.429rem;
 }
 
 .fulltab-item{
-	width:25%;
+	width:33.333333%;
 	boder:none;
 	text-align: center;
 }
@@ -234,172 +261,116 @@ $(function(){
 	padding:4rem;
 	box-shadow: 0 0 6px rgba(0,0,0,0.2);
 }
+/* .tab-pane.active{
+	width: 100%;
+	margin: 0 3px 0 3px;
+} */
 </style>
 
-<div class="yiWrapper" style="width:100%; min-height:700px; margin: 0 auto;">
+<div class="yiWrapper" style="width:100%; min-height:700px; margin: 0 auto;" class="center-block">
 <div class="clearfix" style="height:80px;background-color:#f6f6f6;position:sticky;"></div>
  
       <!-- ======= 탭+차트 Section ======= -->
-    <section id="departments" style="background-color: rgba(237,240,234,0.5)">
-			<h3 class="apt-text-dark text-center mb-10"><b>${DongHo} 에너지 조회</b></h3>
-			<br>
+    <section id="departments" style="background-color: rgba(237,240,234,0.5);margin: 0 auto;" >
       <div class="container p-0" data-aos="fade-up">
-    <!--     <div class="section-title card pb-1 mb-5 mt-10">
-          <div class="card-body pt-8 text-center">
-				
-				관리비 지불내역에 포함된 세대 에너지 사용량 현황입니다.
-				자세한 관리비 지출내역 조회를 원하신다면 <a href="#">관리비 조회</a>를 참고하세요<br>
-				
-				</div>
-        </div>
- -->
- 
-    <div class="row">
+			<h3 class="text-center mb-10"><b><span id="dongho" class="apt-text-dark">${DongHo}</span> <span class="text-secondary">에너지 조회</span></b></h3>
+			<br>
+
+    <div class="row container conter-block"  style="min-width: 1200px;">
                 <!-- Example Tabs Line Left -->
                 <div class="example-wrap">
-                  <div class="nav-tabs-vertical" data-plugin="tabs">
-                    <ul class="nav nav-tabs nav-tabs-line mr-25" role="tablist">
+                  <div class="nav-tabs-vertical w-100" data-plugin="tabs" style="min-width: 1200px;">
+                    <ul class="row nav nav-tabs nav-tabs-line mr-25" role="tablist"  style="width:100%;">
                       <li class="nav-item fulltab-item" role="presentation"><a class="nav-link active" data-toggle="tab" href="#exampleTabsLineLeftOne"
-                          aria-controls="exampleTabsLineLeftOne" role="tab">전기</a></li>
+                          aria-controls="exampleTabsLineLeftOne" role="tab" id="util3">전기</a></li>
+                      
                       <li class="nav-item fulltab-item" role="presentation"><a class="nav-link" data-toggle="tab" href="#exampleTabsLineLeftTwo"
-                          aria-controls="exampleTabsLineLeftTwo" role="tab">수도</a></li>
+                          aria-controls="exampleTabsLineLeftTwo" role="tab" id="util2">수도</a></li>
+                      
                       <li class="nav-item fulltab-item" role="presentation"><a class="nav-link" data-toggle="tab" href="#exampleTabsLineLeftThree"
-                          aria-controls="exampleTabsLineLeftThree" role="tab">가스</a></li>
-                      <li class="nav-item fulltab-item" role="presentation"><a class="nav-link" data-toggle="tab" href="#exampleTabsLineLeftFour"
-                          aria-controls="exampleTabsLineLeftFour" role="tab">전체</a></li>
+                          aria-controls="exampleTabsLineLeftThree" role="tab" id="util1">가스</a></li>
                     </ul>
-                    <div class="tab-content py-15">
+                   
+                    
+                    
+					  <!-- 여기부터 차트 -->                  
+					 <div class="row tab-content w-100">
+                    
+                    	<!-- 전기차트탭 -->
                       <div class="tab-pane active" id="exampleTabsLineLeftOne" role="tabpanel">
-                        Mel, incorruptis confidam derepta inportuno perpetuam placatae. Expetenda summam
-                        venandi cotidie euripidis vexetur, scribendi recta fortunam
-                        hanc oblivione. Iniuria ipso statuam utrumque asperiores
-                        eae cogitemus, evertitur triarium perspexit conclusionemque
-                        propterea repellendus agatur scilicet, leniter intervalla
-                        nocet praeterierunt tuum privatione, senserit sale vias,
-                        delectatum dedecora ratione o religionis derigatur diuturnum
-                        arbitrantur conspiratione, legam opera splendore iste democritum
-                        apte romanum legum egregios.
+	                       
+	                    <!-- 평균 -->
+	                    <div class="row card m-0 auto w-100 mb-5" style="min-width:1080px;text-align:center">
+		                       	<div class="card-body" style="width: 100%;text-align:center">
+			                        <h5 class="d-block text-center">
+			                        	<i data-feather="zap" class="material-icons orange600"></i> 
+			               					최근 12개월기준  평균 사용량 <b>${electAvgMap['ELEC_AMOUNT_AVG'] }</b>(Kwh) , 평균요금 <b>
+					                		<fmt:formatNumber pattern="###,###,###" value="${electAvgMap['ELEC_PRICE_AVG'] }"/></b>원
+			             			</h5>
+					                <p class="text-center apt-text-secandary font-sm-1 mb-2">전기 사용량은 매 달 집계되며, 요금은 관리비에 세대별 전기료 항목으로 부과됩니다.</p>
+					                
+					                
+		                       	</div>
+		               </div>
+						<!-- 전기평균 끝 -->                    
+	                       
+			              	
+		              	<div class="row m-0 auto w-100" style="min-width: 1080px;">
+		              		<canvas id="houseElectChart" width="100%" height="50"></canvas>
+		              	</div>
                       </div>
-                      <div class="tab-pane" id="exampleTabsLineLeftTwo" role="tabpanel">
-                        Mnesarchum velit cumanum utuntur tantam deterritum, democritum vulgo contumeliae
-                        abest studuisse quanta telos. Inmensae. Arbitratu dixisset
-                        invidiae ferre constituto gaudeat contentam, omnium nescius,
-                        consistat interesse animi, amet fuisset numen graecos incidunt
-                        euripidis praesens, homines religionis dirigentur postulant.
-                        Magnum utrumvis gravitate appareat fabulae facio perveniri
-                        fruenda indicaverunt texit, frequenter probet diligenter
-                        sententia meam distinctio theseo legerint corporis quoquo,
-                        optari futurove expedita.
+                      
+                      <!-- 수도차트 탭 -->
+                      <div class="tab-pane row" id="exampleTabsLineLeftTwo" role="tabpanel" id="util-tab2">
+	                       
+	                       <div class="row card m-0 auto w-100 mb-5" style="min-width:1080px;text-align:center">
+	                       	<div class="card-body" style="width: 100%;text-align:center">
+				                <h5 class="text-center"><span class="material-icons blue600 mr-1 md-24" style="vertical-align: center">opacity</span> 
+		               			최근 12개월기준  평균 사용량 <b><span id="avgUse2"></span></b>(L) , 평균요금 <b><span id="avgPrice2"></span></b>원
+		               			</h5>
+		               			<p class="text-center apt-text-secandary font-sm-1 mb-2">
+								수도 사용량은 두 달에 한 번 집계되며, 요금은 두달에 한 번 납부합니다.</p>
+				              
+               	             </div>
+	                       </div>
+	  						
+		              	 <div class="row m-0 auto w-100">
+                        	<canvas id="houseWaterChart" width="100%" height="30"></canvas>
+                     	 </div>
                       </div>
-                      <div class="tab-pane" id="exampleTabsLineLeftThree" role="tabpanel">
-                       <!-- <canvas id="myAreaChart" width="100%" height="30"></canvas> -->
-                         Dicent feramus necesse proficiscuntur libidinem quisquis, petulantes divitias compositis,
-                        disseretur voluptates crudeli sustulisti. Hostis res utuntur
-                        bono incurrunt navigandi laboribus istae tali, miserum
-                        metuamus labor quasi synephebos iudicante. Effecerit sicine
-                        falsarum pugnantibus imperitos, vero successionem exhorrescere
-                        illis magnopere deteriora maioribus necessariam industria.
-                        Illi variari stabilique augendas suscipiet, corrigere conducunt,
-                        divinum affecti, eruditus clarorum. Spatio gustare cupiditates
-                        desideret aliena sinat utrumque.
+                      
+                      <!-- 가스차트 탭 -->
+                      <div class="tab-pane row" id="exampleTabsLineLeftThree" role="tabpanel" id="util-tab1" style="min-width: 1200px;">
+                        <div class="row card m-0 auto w-100 mb-5" style="min-width:1080px;text-align:center">
+	                       	<div class="card-body" style="width: 100%;text-align:center;">
+				                <h5 class="text-center"><span class="material-icons red600 mr-2">fireplace</span> 
+		               			최근 12개월기준  평균 사용량   <b><span id="avgUse1"></span></b>(MJ), 평균요금 <b><span id="avgPrice1"></span></b> (원)
+		               			</h5>
+								 <p class="text-center apt-text-secandary font-sm-1 mb-2">
+								가스 사용량은 두 달에 한 번 집계되며, 요금은 두달에 한 번 납부합니다.</p>
+			               
+	                    </div>
+                       </div>
+                       
+                       <div class="row m-0 auto w-100" style="min-width: 1080px;">
+                        <canvas id="houseGasChart" width="100%" height="30" style="min-width: 960px;"></canvas>
+                        </div>
                       </div>
-                      <div class="tab-pane" id="exampleTabsLineLeftFour" role="tabpanel">
-                        Dicent feramus necesse proficiscuntur libidinem quisquis, petulantes divitias compositis,
-                        disseretur voluptates crudeli sustulisti. Hostis res utuntur
-                        bono incurrunt navigandi laboribus istae tali, miserum
-                        metuamus labor quasi synephebos iudicante. Effecerit sicine
-                        falsarum pugnantibus imperitos, vero successionem exhorrescere
-                        illis magnopere deteriora maioribus necessariam industria.
-                        Illi variari stabilique augendas suscipiet, corrigere conducunt,
-                        divinum affecti, eruditus clarorum. Spatio gustare cupiditates
-                        desideret aliena sinat utrumque.
-                      </div>
-                    </div>
-                  </div>
+                      
+                 
+                   
+				 </div><!-- 여기까치 차트탭 -->
                 </div>
                 <!-- End Example Tabs Line Left -->
-              </div>
             </div>
+          </div>
+          </div>
           </div>
         </div>
         <!-- End Panel Tabs -->
- 
- 
- 
- 
- 
- 
- 
- 
- 
-        <div class="row" data-aos="fade-up" data-aos-delay="100">
-          <div class="col-lg-2 mb-5 mb-lg-0 pr-0">
-            <ul class="nav nav-tabs flex-column pt-0">
-	            	
-		             <!-- 전기탭제목 -->
-		              <li class="nav-item">
-		                <a class="nav-link active show utiltab" data-toggle="tab" href="#tab-2" id="util3">
-		                <p></p>
-		             	<h4>전기</h4>
-		                <p></p>
-		                </a>
-		              </li>
-		             
-		             <!-- 수도탭제목 -->
-		              <li class="nav-item">
-		                <a class="nav-link utiltab" data-toggle="tab" href="#tab-1" id="util2">
-		              <p></p>
-		                  <h4>수도</h4>
-		                <p></p>
-		                </a>
-		              </li>
-		             
-		             <!-- 가스탭제목 -->
-		              <li class="nav-item">
-		                <a class="nav-link utiltab" data-toggle="tab" href="#tab-3" id="util1">
-		              <p></p>
-		                  <h4>가스</h4>
-		                <p></p>
-		                </a>
-		              </li>
-		             
-		            </ul>
-		          </div>	
-          <div class="col-lg-10 pl-0">
-            <div class="tab-content bg-white p-10" style="box-shadow: 0 0 6px rgba(0,0,0,0.2);">
-			<!-- 전기탭판 -->
-              <div class="tab-pane active show p-5" id="tab-2">
-                <h5 class="text-center"><span class="material-icons orange600 mr-1 ">lightbulb</span>
-                최근 12개월 평균 사용량 <b>${electAvgMap['ELEC_AMOUNT_AVG'] }</b>(Kwh) , 평균요금 <b><fmt:formatNumber pattern="###,###,###" value="${electAvgMap['ELEC_PRICE_AVG'] }"/></b>원
-                
-                </h5>
-                
-			<!-- 	<p class="text-center mb-2"><i data-feather="info"></i>기본구조 : 기본요금 + 전력량요금 &nbsp;&nbsp;|&nbsp;&nbsp;	세금: 부가가치세(10%) + 전력산업기반기금(3.7%) </p> -->
-                <p class="text-center apt-text-secandary font-sm-1 mb-2">전기 사용량은 매 달 집계되며, 요금은 관리비에 세대별 전기료 항목으로 부과됩니다.</p>
-                <hr><br>
-              	<canvas id="ynBarChart" width="100%" height="50"></canvas>
-              </div>
-              
-              <!-- 수도 탭판-->
-              <div class="tab-pane p-5" id="tab-1">
-                <h5><span class="material-icons blue600 mr-1 md-24" style="vertical-align: center">opacity</span> 수도 사용량은 두 달에 한 번 집계되며, 요금은 두달에 한 번 납부합니다.</h5>
-             	<canvas id="myAreaChart" width="100%" height="30"></canvas>
-              </div>
 
-			<!-- 가스 탭판 -->
-              <div class="tab-pane p-5" id="tab-3">
-                <h5> <span class="material-icons red600 mr-2">fireplace</span> 가스 사용량은 두 달에 한 번 집계되며, 요금은 두달에 한 번 납부합니다.</h5>
-               <canvas id="myPieChart" width="100%" height="50"></canvas>
-              </div>
-              
-            </div>
-          </div>
-        </div>
-
-      </div>
     </section><!-- End 탭+차트 Section -->
-
-</div>
+      </div><!-- wrapper -->
 <script type="text/javascript">
   feather.replace();
 
@@ -409,21 +380,21 @@ $(function(){
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
         <script src="js/scripts.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js" crossorigin="anonymous"></script>
-        <script src="${pageContext.request.contextPath}/resources/ynResources/ynChart/assets/demo/chart-area-demo.js"></script>
-  <%--       <script src="${pageContext.request.contextPath}/resources/ynResources/ynChart/assets/demo/chart-bar-demo.js"></script> --%>
-        <script src="${pageContext.request.contextPath}/resources/ynResources/ynChart/assets/demo/chart-pie-demo.js"></script>
+      <%--   <script src="${pageContext.request.contextPath}/resources/ynResources/ynChart/assets/demo/chart-area-demo.js"></script> --%>
+  
 
 <!-- 이나차트 -->
-       <%--  <script src="${pageContext.request.contextPath}/resources/ynResources/ynChart/assets/demo/yina-bar-chart.js"></script> --%>
+  <script src="${pageContext.request.contextPath}/resources/ynResources/ynChart/yina-chart.js"></script>
+
 <!-- 탭리소스 -->
   <!-- Vendor JS Files -->
   <script src="${pageContext.request.contextPath}/resources/ynResources/ynChart/tab/vendor/jquery/jquery.min.js"></script>
   <script src="${pageContext.request.contextPath}/resources/ynResources/ynChart/tab/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
   <script src="${pageContext.request.contextPath}/resources/ynResources/ynChart/tab/vendor/jquery.easing/jquery.easing.min.js"></script>
-  <script src="${pageContext.request.contextPath}/resources/ynResources/ynChart/tab/vendor/php-email-form/validate.js"></script>
+
   <script src="${pageContext.request.contextPath}/resources/ynResources/ynChart/tab/assets/vendor/waypoints/jquery.waypoints.min.js"></script>
-  <script src="${pageContext.request.contextPath}/resources/ynResources/ynChart/tab/vendor/counterup/counterup.min.js"></script>
-  <script src="${pageContext.request.contextPath}/resources/ynResources/ynChart/tab/vendor/owl.carousel/owl.carousel.min.js"></script>
+
+
   <script src="${pageContext.request.contextPath}/resources/ynResources/ynChart/tab/vendor/venobox/venobox.min.js"></script>
   <script src="${pageContext.request.contextPath}/resources/ynResources/ynChart/tab/vendor/aos/aos.js"></script>
 

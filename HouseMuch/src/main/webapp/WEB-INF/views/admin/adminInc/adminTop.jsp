@@ -47,8 +47,9 @@
 <link rel="preconnect" href="https://fonts.gstatic.com">
 <link rel="stylesheet" type="text/css"
 	href="https://fonts.googleapis.com/css2?family=Inconsolata&amp;family=Roboto+Slab&amp;family=Slabo+27px&amp;family=Sofia&amp;family=Ubuntu+Mono&amp;display=swap">
-<link rel="stylesheet" type="text/css"
-	href="${pageContext.request.contextPath}/resources/app-assets/vendors/css/calendars/fullcalendar.min.css">
+<%-- <link rel="stylesheet" type="text/css"
+	href="${pageContext.request.contextPath}/resources/app-assets/vendors/css/calendars/fullcalendar.min.css"> 달력주석테스트--%>
+	<link href='${pageContext.request.contextPath}/resources/ynCalendar/lib/main.css' rel='stylesheet' />
 <link rel="stylesheet" type="text/css"
 	href="${pageContext.request.contextPath}/resources/app-assets/vendors/css/pickers/flatpickr/flatpickr.min.css">
 
@@ -121,7 +122,7 @@
 <link rel="stylesheet" type="text/css"
 	href="${pageContext.request.contextPath}/resources/app-assets/css/plugins/forms/pickers/form-flat-pickr.css">
 <link rel="stylesheet" type="text/css"
-	href="${pageContext.request.contextPath}/resources/app-assets/css/pages/app-calendar.css">
+	href="${pageContext.request.contextPath}/resources/app-assets/css/pages/app-calendar.css"> 
 <link rel="stylesheet" type="text/css"
 	href="${pageContext.request.contextPath}/resources/app-assets/css/plugins/forms/form-validation.css">
 
@@ -480,6 +481,12 @@ function subMenuScroll(){
 					href="#"><span class="menu-title text-truncate"
 						data-i18n="eCommerce">부가 시설 관리</span></a>
 					<ul class="menu-content">
+						<!-- 행정2-3 : 부가시설목록  -->
+						<li><a class="d-flex align-items-center"
+							href="<c:url value='/admin/adminLiving/adminAdd/adminAddInfoList.do'/>">
+								<i data-feather="circle"></i><span class="menu-item"
+								data-i18n="Wish List">부가 시설 목록 관리</span>
+						</a></li>
 						<!-- 행정2-1 : 부가시설 등록 -->
 						<li><a class="d-flex align-items-center"
 							href="<c:url value='/admin/adminLiving/adminAdd/adminAddInfoRegister.do'/>">
@@ -492,28 +499,22 @@ function subMenuScroll(){
 								<i data-feather="circle"></i><span class="menu-item"
 								data-i18n="Details">시설 정보 수정</span>
 						</a></li>
-						<!-- 행정2-3 : 부가시설목록  -->
-						<li><a class="d-flex align-items-center"
-							href="<c:url value='/admin/adminLiving/adminAdd/adminAddInfoList.do'/>">
-								<i data-feather="circle"></i><span class="menu-item"
-								data-i18n="Wish List">부가 시설 목록 관리</span>
-						</a></li>
 						<!-- 행정2-4 : 부가시설 신청내역 -->
-						<li><a class="d-flex align-items-center"
+						<%-- <li><a class="d-flex align-items-center"
 							href="<c:url value='/admin/adminLiving/adminAdd/adminAddResidence.do'/>">
 								<i data-feather="circle"></i><span class="menu-item"
 								data-i18n="Wish List">부가 시설 신청내역</span>
-						</a></li>
+						</a></li> --%>
 						<!-- 행정2-5 : 부가시설 접수중단 목록(ADD_OUTDATE IS NOT NULL)-->
-						<li><a class="d-flex align-items-center"
+						<%-- <li><a class="d-flex align-items-center"
 							href="<c:url value='/admin/adminLiving/adminAdd/adminAddDel.do'/>">
 								<i data-feather="circle"></i><span class="menu-item"
-								data-i18n="Wish List">부가 삭제 내역(신청 안받는 시설 목록)</span>
-						</a></li>
+								data-i18n="Wish List">운영 중단 시설 내역</span>
+						</a></li> --%>
 					</ul></li>
 
 				<!-- 행정3 : 차량 관리 -->
-				<li class=" nav-item"><a class="d-flex align-items-center"
+				<%-- <li class=" nav-item"><a class="d-flex align-items-center"
 					href="#"><span class="menu-title text-truncate"
 						data-i18n="eCommerce">차량 관리</span></a>
 					<ul class="menu-content">
@@ -544,7 +545,7 @@ function subMenuScroll(){
 								<i data-feather="circle"></i><span class="menu-item"
 								data-i18n="Wish List">방문 차량 등록(작업용)</span>
 						</a></li>
-					</ul></li>
+					</ul></li> --%>
 				<hr>
 				<!----------------------------------------------- 여기까지 단독메뉴  ------------------------------------------------------------->
 

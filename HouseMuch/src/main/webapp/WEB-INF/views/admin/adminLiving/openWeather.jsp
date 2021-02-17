@@ -1,5 +1,9 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+    <!-- JavaScript Bundle with Popper -->
+    <!-- CSS only -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js" integrity="sha384-b5kHyXgcpbZJO/tY9Ul7kGkf1S0CWuKcCD38l8YkeH8z8QjE0GmW1gYU5S9FOnJ0" crossorigin="anonymous"></script>
 <!DOCTYPE html>
 <html>
 <head>
@@ -71,7 +75,7 @@ http://api.openweathermap.org/data/2.5/weather?id=1835848&appid=18e287dc7b746939
 			$('.ctemp').append($cTemp);
 			$('.chightemp').append($maxTemp);
 
-			var $cDate = curYY+'/'+curMonth+'/'+curDD+' '+curHH+':'+curMM+"<br>";
+			var $cDate = curYY+'년 '+curMonth+'월 '+curDD+'일 , '+curHH+':'+curMM+"<br>";
 			$('#weather').prepend($cDate);
 			
 			$('.cicon').append('<img src="http://openweathermap.org/img/wn/'+$weatherIcon+'.png">');
@@ -80,13 +84,42 @@ http://api.openweathermap.org/data/2.5/weather?id=1835848&appid=18e287dc7b746939
 			*/
 	});
 </script>
-	<h5 id="weather">  현재 날씨</h5>
-	<div style="float: left;">
-	<div class="ctemp">현재 온도: </div>
-	<div class="clowtemp">최저 온도: </div>
-	<div class="chightemp">최고 온도: </div>
+<style>
+.wth-item{
+	line-height: 1.5;
+	font-family: Noto Sans;
+	font-size: 1.1em;
+	letter-spacing: -0.2;
+}
+
+.wth-now{
+	line-height: 2;
+	font-family: Noto Sans;
+	font-size: 1.5em;
+
+}
+</style>
+<div class="row">
+	
+	<h3 id="weather" class="d-inline col-8 mb-1 text-left"></h3><h3 class="d-inline col-4 text-right pr-0">오늘의 날씨</h3>
+<hr class="mt-2 mb-5">
+<div class="row">
+	<div class="row" style="float: left;">
+
+		<div class="col text-center">
+			<div class="col ctemp wth-item wth-now ">현재 온도&nbsp; </div>
+			<div class="cicon"></div>
+		</div>			
+		<div class="col text-center">
+			<div class="clowtemp wth-item">최저 온도&nbsp; </div><span></span>
+			<div class="chightemp wth-item">최고 온도&nbsp; </div>
+		</div>
+	
 	</div>
-	<div class="cicon" style="float: left;" ></div>
+</div>
+</div>
+	
+	
 <!-- HTML -->
 </body>
 </html>

@@ -179,7 +179,7 @@ function pageFunc(curPage){
 				<th scope="col" class="font-medium-1 text-center">제목</th>
 				<th scope="col" class="font-medium-1 text-center">첨부</th>
 				<th scope="col" class="font-medium-1 text-center">작성일</th>
-				<th scope="col" class="font-medium-1 text-center">조회수</th>
+		<!-- 		<th scope="col" class="font-medium-1 text-center">조회수</th> -->
 			</tr>
 		</thead>
 
@@ -251,7 +251,7 @@ function pageFunc(curPage){
 								pattern="yyyy-MM-dd" /></td>
 
 						<!-- 조회수 -->
-						<td class="text-center">조회수</td>
+						<!-- <td class="text-center">조회수</td> -->
 
 					</tr>
 				</c:forEach>
