@@ -134,4 +134,66 @@ public class EnergyController {
 	}
 	
 	
+	
+	
+	//**********************************************************************************************
+	@RequestMapping("/userDash/userEnergy.do")
+	private String userDash_energyChart(HttpSession session,Model model) {
+		//http://localhost:9090/apt/energy/energyChart.do
+		logger.info("에너지 차트  초기화면");
+		
+		MemberVO memVo = (MemberVO)session.getAttribute("memVo");
+		String householdCode = memVo.getHouseholdCode();
+		
+		List<Map<String, Object>> electList = energyService.electListByHouseholdeCode(householdCode);
+		logger.info("전기차트리스트 electList.size={}",electList.size());
+		
+		if(electList.size()==0 || electList.isEmpty()) {
+			model.addAttribute("msg","공과금 내역이 없습니다. 관리실에 문의해주세요");
+			model.addAttribute("url","/suggestBoard/suggestBoardList.do");
+			return "common/message";
+		}
+		
+		
+		List<String> labelList = new ArrayList<String>();
+		List<String> dataList = new ArrayList<String>();
+		
+		String dong="",ho="";
+		for (int i = 0; i <electList.size() ; i++) {
+			String yyyymm = (String)electList.get(i).get("USE_MONTH"); 
+			//2020-02월
+			String[] ym = yyyymm.split("-");
+			String labels = "\'"+ ym[0] +"-"+ ym[1] + "\'"; //labels
+			labelList.add(labels);
+
+			String data = String.valueOf(electList.get(i).get("U_COST_AMOUNT")); //data
+			dataList.add(data);
+			
+			dong = (String) electList.get(i).get("DONG");
+			ho = (String) electList.get(i).get("HO");
+			
+		}
+		String DongHo = dong + ho;
+		
+		
+		
+		
+		Map<String, Object> electAvgMap = energyService.electAvgByHouseholdeCode(householdCode);
+		logger.info("전기차트 평균값 electAvgMap.size={}",electAvgMap.size());
+		
+		List<Map<String, Object>> uCtgList = energyService.utilCtgList();
+		logger.info("공과금 분류목록 uCtgList.size={}",uCtgList.size());
+		
+		model.addAttribute("DongHo",DongHo);
+		model.addAttribute("labelList",labelList);
+		model.addAttribute("dataList",dataList);
+		
+		model.addAttribute("electList",electList);
+		model.addAttribute("electAvgMap",electAvgMap);
+		model.addAttribute("uCtgList",uCtgList);
+		
+		return "userDash/userEnergy";
+	}
+
+	
 }

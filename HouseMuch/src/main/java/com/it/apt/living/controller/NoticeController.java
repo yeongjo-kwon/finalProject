@@ -166,11 +166,13 @@ public class NoticeController {
 	
 //***************************************** 아파트일정 출력  *********************************************//
 		
-	@RequestMapping("/aptScheduler.do")
-	public void aptScheduler() {
+	@RequestMapping(value = "/aptScheduler.do",method = RequestMethod.GET)
+	public void aptScheduler(@RequestParam(defaultValue = "0") int noticeNo) {
 		logger.info("달력보여주기");
 		
 	}
+	
+	
 
 	@ResponseBody
 	@RequestMapping("/aptSchedulerList.do")

@@ -104,7 +104,7 @@
 		<c:if test="${vo.nCtgNo==1 && (!empty vo.scdNo)}">
 			  	<h5 class="font-medium text-right col align-bottom mt-10 mr-0 p-0" >
 		    	    <span class="align-text-bottom align-bottom" aria-hidden="true">
-		    	    <a href="<c:url value='living/noti/aptScheduler.do?noticeNo=${vo.noticeNo }'/>">
+		    	    <a href="<c:url value='/living/noti/aptScheduler.do'/>">
 					<!-- 달력아이콘CDN -->
 					<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-calendar4-week" viewBox="0 0 16 16">
 					  <path d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5zM2 2a1 1 0 0 0-1 1v1h14V3a1 1 0 0 0-1-1H2zm13 3H1v9a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V5z"/>
@@ -140,7 +140,7 @@
   			<path d="M.05 3.555A2 2 0 0 1 2 2h12a2 2 0 0 1 1.95 1.555L8 8.414.05 3.555zM0 4.697v7.104l5.803-3.558L0 4.697zM6.761 8.83l-6.57 4.027A2 2 0 0 0 2 14h12a2 2 0 0 0 1.808-1.144l-6.57-4.027L8 9.586l-1.239-.757zm3.436-.586L16 11.801V4.697l-5.803 3.546z"/>
 			</svg>
         	생활 지원 센터&nbsp;&nbsp;<a href="#"><span aria-hidden="true"><i data feather="at-sign"></i> 
-        	${memVo.email }</span>
+        	${vo.email }</span>
         	</a>
   		</div>
 

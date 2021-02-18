@@ -27,9 +27,8 @@ function pageFunc(curPage){
 						<h2 class="content-header-title float-left mb-0">일정 및 공지</h2>
 						<div class="breadcrumb-wrapper">
 							<ol class="breadcrumb">
-								<li class="breadcrumb-item"><a href="index.html">행정관리자
-										업무</a></li>
-								<li class="breadcrumb-item"><a href="#">일정 및 공지 관리</a></li>
+								<li class="breadcrumb-item">행정관리자 업무</li>
+								<li class="breadcrumb-item">일정 및 공지 관리</li>
 								<li class="breadcrumb-item active">일정 및 공지 목록</li>
 							</ol>
 						</div>

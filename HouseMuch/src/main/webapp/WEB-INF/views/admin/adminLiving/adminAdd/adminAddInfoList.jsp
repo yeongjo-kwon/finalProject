@@ -63,6 +63,10 @@ function pageFunc(curPage){
     height: 15rem;
 	object-fit: cover;
 }
+
+.ynlink{
+ color: #2FA599 !important;
+}
 </style>
 <!-- 컨텐츠시작 -->
 <!-- searchKeyword , searchCondition 보내는 frmSearch 시작 -->     
@@ -86,11 +90,11 @@ function pageFunc(curPage){
                             <h2 class="content-header-title float-left mb-0">부가시설 목록</h2>
                             <div class="breadcrumb-wrapper">
                                 <ol class="breadcrumb">
-                                    <li class="breadcrumb-item"><a href="<c:url value='/admin/adminLiving/adminLiving.do'/>">행정관리 메인</a>
+                                    <li class="breadcrumb-item"><a href="<c:url value='/admin/adminLiving/adminLiving.do'/>" class="ynlink">행정관리 메인</a>
                                     </li>
-                                    <li class="breadcrumb-item"><a href="<c:url value='/admin/adminLiving/adminAdd/adminAddInfoList.do'/>">부가시설 목록</a>
+                                    <li class="breadcrumb-item"><a href="<c:url value='/admin/adminLiving/adminAdd/adminAddInfoList.do'/>" class="ynlink">부가시설 목록</a>
                                     </li>
-                                    <li class="breadcrumb-item"><a href="#">부가시설 목록</a>
+                                    <li class="breadcrumb-item"><a href="#" class="ynlink">부가시설 목록</a>
                                     </li>
                                 </ol>
                             </div>
@@ -101,7 +105,7 @@ function pageFunc(curPage){
                     <div class="form-group breadcrumb-right">
                         <div class="dropdown">
                             <button class="btn-icon btn btn-primary btn-round btn-sm dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i data-feather="grid"></i></button>
-                            <div class="dropdown-menu dropdown-menu-right"><a class="dropdown-item" href="app-todo.html"><i class="mr-1" data-feather="check-square"></i><span class="align-middle">Todo</span></a><a class="dropdown-item" href="app-chat.html"><i class="mr-1" data-feather="message-square"></i><span class="align-middle">Chat</span></a><a class="dropdown-item" href="app-email.html"><i class="mr-1" data-feather="mail"></i><span class="align-middle">Email</span></a><a class="dropdown-item" href="app-calendar.html"><i class="mr-1" data-feather="calendar"></i><span class="align-middle">Calendar</span></a></div>
+                            <div class="dropdown-menu dropdown-menu-right"><a class="dropdown-item" href="app-todo.html" ><i class="mr-1" data-feather="check-square"></i><span class="align-middle">Todo</span></a><a class="dropdown-item" href="app-chat.html"><i class="mr-1" data-feather="message-square"></i><span class="align-middle">Chat</span></a><a class="dropdown-item" href="app-email.html"><i class="mr-1" data-feather="mail"></i><span class="align-middle">Email</span></a><a class="dropdown-item" href="app-calendar.html"><i class="mr-1" data-feather="calendar"></i><span class="align-middle">Calendar</span></a></div>
                         </div>
                     </div>
                 </div>
@@ -245,7 +249,7 @@ function pageFunc(curPage){
                                 <div class="item-wrapper">
                                     <div class="item-rating">
                                 <!-- 현재 이용자 수 -->
-                                <p class="card-text">현재 이용자 수 : ${vo.orderCnt }</p>
+                                <p class="card-text ynlink">현재 이용자 수 : ${vo.orderCnt }</p>
                                     
                                     </div>
                              
@@ -260,10 +264,12 @@ function pageFunc(curPage){
                             </div>
                             <div class="item-options text-center">
 
-                                <a href="<c:url value='/admin/adminLiving/adminAdd/adminAddResidence.do?addNo=${vo.addNo }'/>" class="btn btn-light btn-wishlist">
-                                    <span class="add-to-cart">이용자 내역 조회</span>
+                                 <a href="#" class="">
+                                    <!-- <span class="add-to-cart">운영 중단</span> -->
+                                
                                 </a>
                                 <button type="button" class="btn btn-danger addinfoOut" value="${vo.addNo }" style="border-radius: 0">운영 중단</button>
+                                
                                 <a href="<c:url value='/admin/adminLiving/adminAdd/adminAddEdit.do?addNo=${vo.addNo }'/>" class="btn btn-primary btn-wishlist">
                                     <span class="add-to-cart">상세정보 수정</span>
                                 </a>
