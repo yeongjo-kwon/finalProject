@@ -191,25 +191,25 @@ function pageFunc(curPage){
 									<c:forEach var="vo" items="${list}">
 										<tr>
 											<!-- 공지글 번호 -->
-											<td><span class="font-weight-bold">${vo.noticeNo }</span>
+											<td class="text-center"><span class="font-weight-bold">${vo.noticeNo }</span>
 											</td>
 
 											<!-- 공지글 카테고리 -->
-											<td>${vo.nCtgName }</td>
+											<td class="text-center">${vo.nCtgName }</td>
 
 											<!-- 공지글 제목 -->
 
 											<td>${vo.noticeTitle }</td>
 
 											<!-- 공지글 등록일-->
-											<td><fmt:formatDate value="${vo.noticeRegdate }"
+											<td class="text-center"><fmt:formatDate value="${vo.noticeRegdate }"
 													pattern="yyyy-MM-dd" /></td>
 
 											<!-- 작성자 이름 인데 일단 회원번호로 테스트-->
-											<td>${vo.memberName}</td>
+											<td class="text-center">${vo.memberName}</td>
 
 											<!-- 포인트다 여기서 수정/삭제 가능 -->
-											<td>
+											<td class="text-center">
 												<div class="dropdown">
 													<button type="button"
 														class="btn btn-sm dropdown-toggle hide-arrow"

@@ -140,10 +140,10 @@ var addOut = function(addNo,addOrderListNo){
 								<tr>
 									<th class="font-medium-1 text-center">세대코드</th>
 									<th class="font-medium-1 text-center">회원번호</th>
-									<th class="font-medium-1 text-center">회원ID</th>
 									<th class="font-medium-1 text-center">회원명</th>
+									<th class="font-medium-1 text-center">회원ID</th>
 									<th class="font-medium-1 text-center">이메일</th>
-									<th class="font-medium-1 text-center">상태</th>
+									<th class="font-medium-1 text-center">탈퇴여부</th>
 								</tr>
 							</thead>
 							<tbody>
@@ -151,13 +151,12 @@ var addOut = function(addNo,addOrderListNo){
 					 			<!-- 리스트 없으면 list.size()==0 -->
 								<c:if test="${empty famList}">
 									<tr>
-										<td><span class="text-center">세대원이 없습니다</span></td>
+										<td colspan="6"><span class="text-center" >세대원이 없습니다</span></td>
 									</tr>
 								</c:if> 
 
 
 								<!-- 레코드반복시작 -->
-								
 								<c:if test="${!empty famList }">
 									<c:forEach var="fam" items="${famList}">
 										<tr class="famInfo">
@@ -180,7 +179,7 @@ var addOut = function(addNo,addOrderListNo){
 											<!-- 상태 -->
 											<c:choose>
 												<c:when test="${fam.outdate==null}">
-													<td class="text-center">이용중</td>
+													<td class="text-center">사이트이용중</td>
 												</c:when>
 												<c:otherwise>
 													<td class="text-center">탈퇴한 회원</td>
@@ -205,18 +204,22 @@ var addOut = function(addNo,addOrderListNo){
 	     			
 	     			
 	     			 <div class="row">
-	     			 <div class="col text-left"></div>
-	     			 <div class="col text-right">
+	     				<div class="col text-left text-bottom align-text-bottom pt-3 ml-1">
+	     				
+	     				<div class="row text-left text-bottom align-text-bottom"><span class="text-danger align-text-bottom" style="vertical-align: bottom;">
+						<i data-feather="info"></i>&nbsp;이용 신청 익월 관리비에 이용료가 청구되며, 해지신청한 당월 말일까지 시설 이용이 가능합니다.</span></div>
+	     				</div>
+	     			 	<div class="col text-right pt-1">
 	     			 	
-	                    <div  class="btn btn-round p-1 text-right" style="background-color: #fff;"  id="btExcel">
-	                   			<a href="<c:url value='/living/add/orderListExcel.do'/>">
-	                   			<img alt="" src="${pageContext.request.contextPath}/resources/aptUser_images/Excel_download_icon.svg">
-									<span class="align-middle" style="color: #999">엑셀다운로드</span>
-	                   			</a>
-	                    </div>
+		                    <div  class="btn btn-round p-1 text-right" style="background-color: #fff;"  id="btExcel">
+		                   			<a href="<c:url value='/living/add/orderListExcel.do'/>">
+		                   			<img alt="" src="${pageContext.request.contextPath}/resources/aptUser_images/Excel_download_icon.svg">
+										<span class="align-middle" style="color: #999">엑셀다운로드</span>
+		                   			</a>
+		                    </div>
+	     			 	</div>
 	     			 </div>
-      
-	     			 </div>
+       
 					<!-- 전체 신청내역 테이블시작 -->
 					<div class="table-responsive table-hover bg-white mt-1" id="familyOrder">
 						<table class="table table-bordered ">
@@ -248,7 +251,7 @@ var addOut = function(addNo,addOrderListNo){
 								<!-- 리스트 없으면 list.size()==0 -->
 								<c:if test="${empty orderList}">
 									<tr>
-										<td><span class="text-center" id="emptyList">이용중인 시설이 없습니다.</span></td>
+										<td colspan="7"><span class="text-center" id="emptyList">이용중인 시설이 없습니다.</span></td>
 									</tr>
 								</c:if> 
 
@@ -263,7 +266,8 @@ var addOut = function(addNo,addOrderListNo){
 											</td>
 
 											<!-- 시설명 -->
-											<td class="text-center" >${vo.addName }</td>
+											<td class="text-center" ><a href="<c:url value='/living/add/addFacilityDetail.do?addNo=${vo.addNo }'/>"></a>
+											${vo.addName }</td>
 
 											<!-- 신청일-->
 											<td class="text-center">

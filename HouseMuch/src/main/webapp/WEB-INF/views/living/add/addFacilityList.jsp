@@ -329,16 +329,16 @@ $(function(){
         <div class="list-group">
      
           <a href="<c:url value='/living/add/addOrderList.do?householdCode=${sessionScope.memVo.householdCode}'/>" 
-          class="list-group-item" >이용중인 시설</a>
+          class="list-group-item text-center" ><i data-feather="user-check"></i>&nbsp;이용중인 시설</a>
 		        <!-- 이용중인 시설 목록 -->
-		        <c:if test="${!empty orderList }">
 		    	   <div class="card card-body">
+		        <c:if test="${!empty orderList }">
 		         	<c:forEach var="orderVo" items="${orderList}">
 		    	      	<p id="orderList">${orderVo.addName }</p>
 		         	</c:forEach>
 		        </c:if>
 		        <c:if test="${empty orderList }">
-		    	      	<p id="emptyOrder">이용중인 시설이 없습니다.</p>
+		    	      	<p id="emptyOrder" class="text-center">이용중인 시설이 없습니다.</p>
 		        </c:if>
     	  </div>
         </div>

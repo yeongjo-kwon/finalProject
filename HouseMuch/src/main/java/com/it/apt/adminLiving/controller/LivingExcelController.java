@@ -34,7 +34,9 @@ public class LivingExcelController {
 		logger.info("세션세대코드 householdCode={}",householdCode);
 		
 		List<AddOrderExcelVO> orderExcelList = addService.selectAddOrderExcel(householdCode);
+		logger.info("엑셀목록결과 리스트 orderExcelList.size()={}",orderExcelList.size());
 		logger.info("엑셀목록결과 리스트 전체출력 orderExcelList={}",orderExcelList);
+
 		
 		//파일명에 날짜붙임(파일명중복방지)
 		Date d = new Date();

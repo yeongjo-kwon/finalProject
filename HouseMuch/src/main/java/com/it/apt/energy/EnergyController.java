@@ -34,7 +34,7 @@ public class EnergyController {
 	}
 
 	@RequestMapping("/energyChart.do")
-	private void energyChart(HttpSession session,Model model) {
+	private String energyChart(HttpSession session,Model model) {
 		//http://localhost:9090/apt/energy/energyChart.do
 		logger.info("에너지 차트  초기화면");
 		
@@ -44,9 +44,17 @@ public class EnergyController {
 		List<Map<String, Object>> electList = energyService.electListByHouseholdeCode(householdCode);
 		logger.info("전기차트리스트 electList.size={}",electList.size());
 		
+		if(electList.size()==0 || electList.isEmpty()) {
+			model.addAttribute("msg","공과금 내역이 없습니다. 관리실에 문의해주세요");
+			model.addAttribute("url","/suggestBoard/suggestBoardList.do");
+			return "common/message";
+		}
+		
+		
 		List<String> labelList = new ArrayList<String>();
 		List<String> dataList = new ArrayList<String>();
 		
+		String dong="",ho="";
 		for (int i = 0; i <electList.size() ; i++) {
 			String yyyymm = (String)electList.get(i).get("USE_MONTH"); 
 			//2020-02월
@@ -56,12 +64,14 @@ public class EnergyController {
 
 			String data = String.valueOf(electList.get(i).get("U_COST_AMOUNT")); //data
 			dataList.add(data);
+			
+			dong = (String) electList.get(i).get("DONG");
+			ho = (String) electList.get(i).get("HO");
+			
 		}
-		
-		String dong = (String) electList.get(0).get("DONG");
-		String ho = (String) electList.get(0).get("HO");
-		
 		String DongHo = dong + ho;
+		
+		
 		
 		
 		Map<String, Object> electAvgMap = energyService.electAvgByHouseholdeCode(householdCode);
@@ -77,6 +87,8 @@ public class EnergyController {
 		model.addAttribute("electList",electList);
 		model.addAttribute("electAvgMap",electAvgMap);
 		model.addAttribute("uCtgList",uCtgList);
+		
+		return "energy/energyChart";
 	}
 
 

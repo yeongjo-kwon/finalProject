@@ -3,6 +3,8 @@ package com.it.apt.adminLiving.add.model;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -35,6 +37,7 @@ public class AddServiceImpl implements AddService{
 	public Map<String, Object> selectAddInfoByAddNo(int addNo) {
 		return addDao.selectAddInfoByAddNo(addNo);
 	}
+
 
 	@Override
 	public Map<String, Object> searchAuthCode(int memberNo) {

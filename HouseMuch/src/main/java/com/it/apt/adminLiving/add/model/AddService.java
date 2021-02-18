@@ -3,6 +3,8 @@ package com.it.apt.adminLiving.add.model;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+
 public interface AddService {
 	//부가시설 분류목록 조회
 	List<AddCategoryVO> selectAddCategory();
@@ -25,6 +27,8 @@ public interface AddService {
 	// 부가시설정보 수정
 	int updateAddinfo(AddFacilityInfoVO vo);
 	
+	//String getFileInfo(String originalFileName, HttpServletRequest request); 
+	 
 	// 부가시설정보 삭제 (접수중단)
 	int updateAddinfoOut(int addNo);
 	

@@ -19,6 +19,14 @@ $(function(){
 	
 	$('#btSubmit').on('click',function(){
 		console.log("btSubmit 클릭함");
+		var userHoueholdCode = $('input[name=householdCode]').val();
+		if(userHoueholdCode.length>0){
+			$('form[name=frmOrder]').submit();
+		}else{
+			alert("세대코드를 입력하세요");
+			event.preventDefault();
+			return false;
+		}
 	});
 	
 	
@@ -206,7 +214,7 @@ input[type=checkbox]:unchecked {
 				</div>
 			
 				<div class="text-center">
-					<input type="submit" class="btn btn-primary col-md-4" id="btSubmit" value="신청 완료">
+					<input type="submit" class="btn btn-primary col-md-4 mt-5" id="btSubmit" value="신청 완료">
 				</div>
           </form>
         </div>

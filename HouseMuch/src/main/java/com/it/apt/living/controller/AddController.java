@@ -169,7 +169,7 @@ public class AddController {
 	public String addOrder(@RequestParam(defaultValue = "0")int addNo
 			,@RequestParam String householdCode
 			,Model model,HttpSession session) {
-		//http://localhost:9090/apt/living/add/addOrder.do?addNo=3&householdCode=test1
+		//http://localhost:9090/apt/living/add/addOrder.do?addNo=3
 		logger.info("부가시설 신청뷰 보여주기,파라미터 addNo={},householdCode={}",addNo,householdCode);
 		
 		if(addNo==0) {
@@ -203,49 +203,68 @@ public class AddController {
 	public String addOrder_post(@RequestParam(defaultValue = "0")int addNo
 			,@ModelAttribute AddOrderVO vo, Model model, HttpSession session) {
 		logger.info("이용신청하기 addNo={}, vo={}",addNo,vo);
+
+		String userHouseholdCode =vo.getHouseholdCode(); 
+		logger.info("입력한 세대코드 userHouseholdCode={}",userHouseholdCode);
 		
+		//http://localhost:9090/apt/living/add/addOrder.do?addNo=3
 		MemberVO memVo = (MemberVO)session.getAttribute("memVo");
-		String householdCode = memVo.getHouseholdCode();
+		String sessionHouseholdCode = memVo.getHouseholdCode();
 		int memberNo = memVo.getMemberNo();
-		
-		//if[1].입력한 householdCode와 일치 여부 확인
-		int checkCode = memService.chkCodeKey(householdCode);
-		logger.info("세대코드 체크(1나오면 OK) checkCode={}",checkCode);
-		
- String msg="",url="";
-		if(checkCode==0) { 
-			//1-1. 불일치할 경우 -> 다시 돌아가기
-			msg="입력정보를 확인해주세요";
-			url="/living/add/addOrder.do?addNo="+addNo;
-		
-		}else{
+		logger.info("세션 세대코드 sessionHouseholdCode={}",sessionHouseholdCode);
+
+		String msg="",url="";
+		//**** 입력한 세대코드가 세션값이랑 같은지 확인 ****
+		if( !userHouseholdCode.equals(sessionHouseholdCode) ){
 			
-			//1-2
-			//if[2].입력한 householdCode로 등록내역 있는지 확인(ADD_OUTDATE IS NULL)
-			int checkUse = addService.checkHouseholdCodeInUse(vo);
-			logger.info("사용중체크 checkUse={}",checkUse);
-			if(checkUse>0) {
-				//2-1.일치 + 이용중인경우
-				msg="이미 이용중인 시설입니다";
+			logger.info("여기들어왔으면 같으면안돼 : 입력userHouseholdCode={} , 세션sessionHouseholdCode={}",userHouseholdCode,sessionHouseholdCode);
+		
+			msg="가입시 입력한 본인 세대코드를 입력하세요";
+			url="/living/add/addOrder.do?addNo="+addNo+"&householdCode="+sessionHouseholdCode;//남의집꺼보지마랔ㅋㅋㅋㅋ
+			
+		}else if(userHouseholdCode.equals(sessionHouseholdCode)) {
+			
+			//if[1].입력한 householdCode와 DB일치 여부 확인
+			int checkCode = memService.chkCodeKey(sessionHouseholdCode);
+			logger.info("세대코드 체크(1나오면 OK) checkCode={}",checkCode);
+			
+		
+			if(checkCode==0) { 
+				//1-1. DB불일치할 경우 -> 다시 돌아가기
+				msg="유효하지 않은 세대코드입니다. 관리실로 문의해주세요";
+				url="/suggestBoard/suggestBoardList.do";
+				/*
+				 * url="/living/add/addOrder.do?addNo="+addNo;
+				 */			
 			}else{
-				//2-2. 일치 + 이용중이 아닐 경우 vo에 정보 담고  addOrder에 등록 -> 마이페이지 등록목록으로 이동
 				
-				  vo.setAddNo(addNo); 
-				  vo.setMemberNo(memberNo);
-				  vo.setHouseholdCode(householdCode); vo.setMemberName(vo.getMemberName());
-				  
-				 
-				logger.info("신청직전  vo={}",vo);
-				int result = addService.insertAddOrder(vo);
-				logger.info("이용신청요청된 result={}",result);
-				
-				if(result>0) {
-					msg="이용신청 완료되었습니다.";
-					url="/living/add/addOrderList.do?householdCode="+vo.getHouseholdCode();
+				//1-2
+				//if[2].입력한 householdCode로 등록내역 있는지 확인(ADD_OUTDATE IS NULL)
+				int checkUse = addService.checkHouseholdCodeInUse(vo);
+				logger.info("사용중체크 checkUse={}",checkUse);
+				if(checkUse>0) {
+					//2-1.일치 + 이용중인경우
+					msg="이미 이용중인 시설입니다";
+				}else{
+					//2-2. 일치 + 이용중이 아닐 경우 vo에 정보 담고  addOrder에 등록 -> 마이페이지 등록목록으로 이동
+					
+					  vo.setAddNo(addNo); 
+					  vo.setMemberNo(memberNo);
+					  vo.setHouseholdCode(sessionHouseholdCode);
+					  vo.setMemberName(vo.getMemberName());
+					  
+					logger.info("신청직전  vo={}",vo);
+					int result = addService.insertAddOrder(vo);
+					logger.info("이용신청요청된 result={}",result);
+					
+					if(result>0) {
+						msg="이용신청 완료되었습니다.";
+						url="/living/add/addOrderList.do?householdCode="+vo.getHouseholdCode();
+					}
 				}
-			}
-			
-		}//세대코드가 있을 경우if
+				
+			}//세대코드가 있을 경우if
+		}//입력값=세션값 일치할 if
 		
 		model.addAttribute("msg",msg);
 		model.addAttribute("url",url);
@@ -277,7 +296,7 @@ public class AddController {
 		
 		model.addAttribute("famList",famList);
 		model.addAttribute("orderList",orderList);
-		return "/living/add/addOrderList";
+		return "living/add/addOrderList";
 	}
 	
 	@ResponseBody
@@ -290,14 +309,39 @@ public class AddController {
 		return memOrderList;
 	}
 	
-	
-	
-//	@RequestMapping(value = "/addOut.do",method = RequestMethod.GET)
-//	public void addOut(@RequestParam(defaultValue = "0")int addNo,@RequestParam String householdCode
-//			,Model model,HttpSession session) {
-//	logger.info("부가시설 해지신청");
-//		
-//	}
+	@RequestMapping("/addOut.do")
+	public String addOut(@RequestParam(defaultValue = "0")int addOrderListNo
+			,@RequestParam(defaultValue = "0")int addNo
+			,Model model,HttpSession session) {
+		//http://localhost:9090/apt/living/add/addOut.do?addOrderListNo=58
+		logger.info("부가시설 해지신청 파라미터 addOrderListNo={}",addOrderListNo);
+		MemberVO memVo = (MemberVO)session.getAttribute("memVo");
+		String householdCode = memVo.getHouseholdCode();
+		
+		if (addOrderListNo==0) {
+			AddOrderVO vo = new AddOrderVO();
+			vo.setAddNo(addNo);
+			vo.setHouseholdCode(householdCode);
+			
+			addOrderListNo = addService.getAddOrderListNo(vo);
+		}
+		
+		
+		int cnt = addService.updateOutdateByAddOrderListNo(addOrderListNo);
+		logger.info("부가시설 해지신청 결과cnt={}",cnt);
+		
+		String msg="해지처리 실패하였습니다.",url="/living/add/addOrderList.do?householdCode="+householdCode;
+		if(cnt>0) {
+			msg="해지신청완료되었습니다. 해지신청한 달 말일 까지만 이용 가능합니다.";
+			url="/living/add/addOrderList.do?householdCode="+householdCode;
+		}
+		
+		model.addAttribute("msg",msg);
+		model.addAttribute("url",url);
+		
+		return "common/message";
+	}
+
 
 	
 }
