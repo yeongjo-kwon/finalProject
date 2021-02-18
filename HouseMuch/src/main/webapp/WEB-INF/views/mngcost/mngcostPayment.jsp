@@ -64,6 +64,7 @@
 			
 			if($(this).val()=="${param.mngcostListNo}"){
 				$(this).prop("checked", true);
+				$(this).next().prop("checked", true);
 				cnt++;
 			}
 		});
@@ -111,7 +112,9 @@
 			
 			$('#payName').val(payName);
 			
-			$('form[name=frmPayIMP]').submit();
+			if(confirm('결제를 진행하시겠습니까?')){
+				$('form[name=frmPayIMP]').submit();
+			}
 		});
 	});
 	
@@ -284,7 +287,7 @@
 						연체 기간에 따른 연체료를<br>
 						함께 납부하셔야합니다.<br>
 						<br>
-						관리비가 연체되지 않도록 주의 부탁립니다.<br>
+						관리비가 연체되지 않도록 주의 부탁드립니다.<br>
 						<br>
 						&lt; 감사합니다 &gt;
 					</p>

@@ -8,6 +8,7 @@
 		payListInqAjax();
 		
 		$('#customSwitch10').change(function(){
+			$('input[name=currentPage]').val(1);
 			if($('#notPaid').val()=="Y"){
 				$('#notPaid').val("N");
 			}else if($('#notPaid').val()=="N"){
@@ -46,13 +47,7 @@
 							
 							for(var i=firstPage; i<=lastPage; i++){
 								if(i==currentPage){
-									if(firstPage==lastPage){
-										pageStr+='<li class="page-item active"><a class="page-link" href="javascript:void(0);" style="background-color:#2FA599;">'+i+'</a></li>';
-									}else if(currentPage==firstPage){
-										pageStr+='<li class="page-item"><a class="page-link" style="height:32px; position:absolute;"></a></li><li class="page-item active"><a class="page-link" href="javascript:void(0);" style="background-color:#2FA599;">'+i+'</a></li>';
-									}else{
-										pageStr+='<li class="page-item active"><a class="page-link" href="javascript:void(0);" style="background-color:#2FA599; position:absolute;">'+i+'</a></li><li class="page-item"><a class="page-link" style="height:32px;"></a></li>';
-									}
+									pageStr+='<li class="page-item active"><a class="page-link" href="javascript:void(0);" style="background-color:#2FA599;">'+i+'</a></li>';
 								}else{
 									pageStr+='<li class="page-item"><a href="#" class="page-link" onclick="pageFunc('+i+')">'+i+'</a>';
 								}
@@ -74,7 +69,8 @@
 								str+="<td class='text-right'>"+numFormat(item.MNGCOST_TOTAL_PRICE)+"원</td>";
 								str+="<td>"+formatDate(item.MNGCOST_LIMITDATE)+"</td> <td>";
 								if(item.MNGCOST_PAYDATE==null){
-									str+="<div class='avatar pull-up my-0'><a href='#' class='btn btn-warning'>미납</a></div>";
+									str+="<div class='avatar pull-up my-0'>";
+									str+="<a href='#' onclick='sendMailAjax(\""+item.HOUSEHOLD_CODE+"\",\""+item.MNGCOST_CLAIMDATE+"\",\""+item.MNGCOST_TOTAL_PRICE+"\",\""+item.MNGCOST_LIMITDATE+"\", this)' class='btn btn-warning'>미납</a></div>";
 								}else{
 									str+=formatDate(item.MNGCOST_PAYDATE);
 								}
@@ -82,7 +78,6 @@
 							}
 						}
 					});
-					
 					$('#tbPayList').html(str);
 				}
 			},
@@ -103,11 +98,75 @@
 	    return [year, month, day].join('-');
 	};
 	
+	//날짜 포맷(타임스탬프 변환)
+	function formatTimestamp(date) {
+	    var d = new Date(date),
+	        month = '' + (d.getMonth() + 1),
+	        day = '' + d.getDate(),
+	        year = d.getFullYear(),
+	    	hour = '' + d.getHours(),
+	    	minute = '' + d.getMinutes(),
+	    	second = '' + d.getSeconds();
+	    if (month.length < 2) month = '0' + month;
+	    if (day.length < 2) day = '0' + day;
+	    if (hour.length < 2) hour = '0' + hour;
+	    if (minute.length < 2) minute = '0' + minute;
+	    if (second.length < 2) second = '0' + second;
+		
+	    return [year, month, day].join('-')+" "+[hour, minute, second].join(':');
+	};
+	
 	function pageFunc(curPage){
 		$('input[name=currentPage]').val(curPage);
 		payListInqAjax();
 	}
+	
+	function sendMailAjax(householdCode, mngcostClaimdate, mngcostTotalPrice, mngcostLimitdate, sendRowEl){
+		sendRowEl.setAttribute("class", "btn disabledButton");
+		$.ajax({
+			url:"<c:url value='/email/sendPressPayment.do'/>",
+			type:"post",
+			data:{
+				householdCode:householdCode,
+				mngcostClaimdate:formatTimestamp(Number(mngcostClaimdate)),
+				mngcostTotalPrice:mngcostTotalPrice,
+				mngcostLimitdate:formatDate(Number(mngcostLimitdate))
+			},
+			dataType:"text",
+			success:function(res){
+				alert(res);
+			},
+			error:function(xhr, status, error){
+				alert("error : "+error);
+			}
+		});
+	}
 </script>
+<style>
+	.page-item.active {
+	    border-radius: 0;
+	    background-color: #E5F9F0;
+	    border-color: #82E3C8;
+	}
+	
+	.disabledButton{
+	    display: inline-block;
+		border-color: #82868B !important; 
+		background-color: #82868B !important;
+		color: #FFFFFF !important;
+		user-select: none;
+		border: 1px solid transparent;
+	    padding: 0.786rem 1.5rem;
+	    font-size: 1rem;
+	    line-height: 1;
+	    border-radius: 0.358rem;
+	    pointer-events: none;
+	    cursor: default;
+	}
+	.disabledButton:hover{
+		color: #FFFFFF;
+	}
+</style>
 	<!-- BEGIN: Content-->
 	<div class="app-content content ">
      <div class="content-overlay"></div>

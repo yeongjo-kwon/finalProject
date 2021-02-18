@@ -64,7 +64,7 @@
 
 <main id="main">
  <!-- ======= Hero Section ======= -->
- 	<section id="hero">
+ 	<section id="hero" style="height: 80vh">
  		<div class="hero-container">
 	    	<div id="heroCarousel" class="carousel slide carousel-fade" data-ride="carousel">
 	
@@ -74,7 +74,7 @@
 	
 	          <!-- Slide 1 -->
 	          <div class="carousel-item active" style="background: url(${pageContext.request.contextPath}/resources/assets/img/slide/aptMain1.jpg);">
-	          	<div class="carousel-background "><img src="${pageContext.request.contextPath}/resources/user/assets/img/slide/aptMain1.jpg" alt="aptMain1" width="100%"></div>
+	          	<div class="carousel-background "><img src="${pageContext.request.contextPath}/resources/user/assets/img/slide/aptMain1.jpg" alt="aptMain1" width="100%" style="min-height:80vh;background-size:cover;"></div>
 	            <div class="carousel-container">
 	              <div class="carousel-content">
 	                <h2 class="animate__animated animate__fadeInDown">HOUSE MUCH?</h2>
@@ -88,7 +88,7 @@
 	
 	          <!-- Slide 2 -->
 	          <div class="carousel-item" style="background: url(resources/assets/img/slide/aptMain2.jpg);">
-				<div class="carousel-background"><img src="<c:url value='/resources/user/assets/img/slide/aptMain2.jpg'/>" alt="aptMain2" width="100%"></div>
+				<div class="carousel-background"><img src="<c:url value='/resources/user/assets/img/slide/aptMain2.jpg'/>" alt="aptMain2" width="100%" style="min-height:80vh;background-size:cover;"></div>
 	            <div class="carousel-container">
 	              <div class="carousel-content">
 	                <h2 class="animate__animated animate__fadeInDown">Our Site</h2>
@@ -102,7 +102,7 @@
 	
 	          <!-- Slide 3 -->
 	          <div class="carousel-item" style="background: url(resources/assets/img/slide/slide-3.jpg);">
-	            <div class="carousel-background"><img src="<c:url value='/resources/user/assets/img/slide/slide-3.jpg'/>" alt="slide-3" width="100%"></div>
+	            <div class="carousel-background"><img src="<c:url value='/resources/user/assets/img/slide/slide-3.jpg'/>" alt="slide-3" width="100%" style="min-height:80vh;background-size:cover;"></div>
 	            <div class="carousel-container">
 	              <div class="carousel-content">
 	                <h2 class="animate__animated animate__fadeInDown">With Us</h2>
