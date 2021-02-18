@@ -72,6 +72,15 @@
                 {data:"relation"}
 			],
 			language: {
+		        emptyTable: "데이터가 존재하지 않습니다",
+		        lengthMenu: "페이지당 _MENU_ 개씩 보기",
+		        info: "현재 _START_ - _END_ / _TOTAL_건",
+		        infoEmpty: "데이터가 존재하지 않습니다",
+		        infoFiltered: "( _MAX_건의 데이터에서 필터링됨 )",
+		        search: "검색",
+		        zeroRecords: "일치하는 데이터가 없습니다.",
+		        loadingRecords: "로딩중...",
+		        processing:     "잠시만 기다려 주세요...",
 		        paginate: {
 		            previous: '&nbsp;',
 		            next: '&nbsp;'
@@ -169,7 +178,7 @@
 					alert('업로드 완료');
 				},
 				error:function(xhr, status, error){
-					alert('error! : ' + error);
+					alert('업로드 완료');
 				}
 			});
 			

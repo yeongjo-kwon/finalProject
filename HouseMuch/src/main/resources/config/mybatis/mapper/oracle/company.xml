@@ -3,13 +3,6 @@
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="config.mybatis.mapper.oracle.company">
-	<sql id="searchWhere">
-		<where>
-			<if test="MNG_COMP_CTG_NO != 0">AND MNG_COMP_CTG_NO = #{mngCompCtgNo} </if>
-			<if test="MNG_COMP_NAME != null">AND MNG_COMP_NAME '%' || #{mngCompName} || '%' </if>
-		</where>
-	</sql>
-	
 	<select id="allCompanyCtg" resultType="companyCtgVo">
 		select * from mng_company_category
 	</select>
@@ -45,11 +38,11 @@
 	
 	<select id="contractByNo" parameterType="int" resultMap="contractMap">
 		select 
-		l.*, 
-		i.mng_comp_ctg_no,
-		i.mng_comp_name,
-		i.mng_comp_tel,
-		c.mng_comp_ctg_name 
+			l.*, 
+			i.mng_comp_ctg_no,
+			i.mng_comp_name,
+			i.mng_comp_tel,
+			c.mng_comp_ctg_name 
 		from comp_contract_list l 
 		join mng_company_info i 
 		on l.mng_comp_no=i.mng_comp_no
@@ -88,6 +81,83 @@
 		where l.apt_no=#{aptNo}
 	</select>
 	
+	<update id="updateCompany" parameterType="companyVo">
+		update mng_company_info
+		set mng_comp_ctg_no=#{mngCompCtgNo}, 
+			mng_comp_name=#{mngCompName},
+			mng_comp_tel=#{mngCompTel}
+		where mng_comp_no=#{mngCompNo}
+	</update>
+		
+	<update id="updateContract" parameterType="companyVo">
+		update comp_contract_list
+		set contract_content=#{contractContent}, 
+			contract_price=#{contractPrice}, 
+			contract_date=#{contractDate}, 
+			is_add_facility=#{isAddFacility}
+		where contract_no=#{contractNo}
+	</update>
+	
+	<delete id="deleteContract" parameterType="int">
+		delete comp_contract_list
+		where contract_no=#{contractNo}
+	</delete>
+	
+	<!-- /////////////////////////////////// -->
+	
+	<insert id="insertAddCost" parameterType="addCostVo">
+		<selectKey keyProperty="costNo" resultType="int" order="BEFORE">
+			select mng_company_cost_seq.nextval from dual
+		</selectKey>
+		insert into mng_company_cost(cost_no,cost_content,mng_comp_no,cost_price,cost_regdate,apt_no)
+		values(#{costNo},#{costContent},#{mngCompNo},#{costPrice},#{costRegdate},#{aptNo})
+	</insert>
+	
+	<update id="updateAddCost" parameterType="addCostVo">
+		update mng_company_cost
+		set cost_content=#{costContent}, mng_comp_no=#{mngCompNo}, cost_price=#{costPrice},cost_regdate=#{costRegdate}
+		where apt_no=#{aptNo} and cost_no=#{costNo}	
+	</update>
+	
+	<delete id="deleteAddCost" parameterType="map">
+		delete mng_company_cost
+		where apt_no=#{aptNo} and cost_no=#{costNo}	
+	</delete>
+	
+	<select id="listAddCost" parameterType="map" resultType="hashMap">
+		select c.cost_no, 
+			c.cost_content, 
+			c.mng_comp_no,
+			c.cost_price, 
+			to_char(c.cost_regdate,'YYYY-MM-DD') as cost_regdate,
+			c.apt_no, 
+			c.cost_flag,
+			i.mng_comp_name,
+			i.mng_comp_tel
+		from mng_company_cost c 
+		join mng_company_info i 
+		on c.mng_comp_no=i.mng_comp_no
+		where apt_no=#{aptNo}
+		<if test="costFlag != null">
+			and cost_flag=#{costFlag}
+		</if>
+		order by cost_no desc
+	</select>
+	
+	<update id="payCost" parameterType="addCostVo">
+		update mng_company_cost
+		set cost_flag='Y'
+		where cost_no=#{costNo}
+	</update>
+	
+	<select id="selectByCostNo" parameterType="int" resultType="addCostVo">
+		select c.cost_no, c.cost_content, c.mng_comp_no,c.cost_price, to_char(c.cost_regdate,'YYYY-MM-DD') as cost_regdate 
+    		,c.apt_no, c.cost_flag,i.mng_comp_name 
+		from mng_company_cost c 
+		join mng_company_info i 
+		on c.mng_comp_no=i.mng_comp_no
+		where cost_no=#{costNo}
+	</select>
 </mapper>
 
 

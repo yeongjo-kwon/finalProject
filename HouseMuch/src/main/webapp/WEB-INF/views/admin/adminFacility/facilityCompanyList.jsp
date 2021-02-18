@@ -48,11 +48,10 @@ $(function(){
             	str+="<button type='button' class='btn btn-sm dropdown-toggle hide-arrow' data-toggle='dropdown'><span>▼</span></button>";
 				str+="<div class='dropdown-menu'>";
 				str+="<a class='dropdown-item' href='<c:url value='/admin/adminFacility/facilityCompanyDetail.do?contractNo="+row.contractNo+"'/>'><span>상세보기</span></a>";
-				str+="<a class='dropdown-item' href='#'><span>수정</span></a>";
-				str+="<a class='dropdown-item'><span>삭제</span></a>";	
+				str+="<a class='dropdown-item' href='<c:url value='/admin/adminFacility/facilityCompanyEdit.do?contractNo="+row.contractNo+"'/>'><span>수정</span></a>";
+				str+="<a class='dropdown-item' href='<c:url value='/admin/adminFacility/contractDel.do?contractNo="+row.contractNo+"'/>'><span>삭제</span></a>";	
 				str+="</div></div>";
             	return str; 
-            	//"<button id='btn_info' type='button' class='btn' onClick='openInfo("+row.user_id+")'>상세정보</button>"; 
             }}
 		],
 		language: {
@@ -73,9 +72,6 @@ $(function(){
 	});
 		
 });
-function openInfo(user_id) {
-	alert(user_id); 
-}
 	
 </script>
 

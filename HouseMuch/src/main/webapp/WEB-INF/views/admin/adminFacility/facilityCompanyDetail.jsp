@@ -8,11 +8,41 @@
 
 <script type="text/javascript" src="${pageContext.request.contextPath}/SmartEditor2/js/HuskyEZCreator.js"></script>
 <script type="text/javascript" src="//code.jquery.com/jquery-1.11.0.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.2.61/jspdf.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.js"></script>
 <script type="text/javascript">
 $(function(){
 	var contractDate=moment('${cVo.contractDate }').format('YYYY년 MM월 DD일');
 	$('#contractDate').html(contractDate);
+	
+	var doc = new jsPDF();
+	var specialElementHandlers = {
+	    '#editor': function(element, renderer) {
+	        return true;
+	    }
+	}
+	
+	$('#savePdfBtn').click(function() {
+	    html2canvas($("#printContent"), {
+	        onrendered : function(canvas) {
+	            // 한글깨짐현상때문에 jpeg->jspdf 전환
+	            var imgData = canvas.toDataURL('image/png');
+	            var pageWidth = 210;
+	            var pageHeight = pageWidth * 1.414;
+	            var imgWidth = pageWidth - 20;
+	            var imgHeight = $('#printContent').height() * imgWidth / $('#printContent').width();
+	            var doc = new jsPDF('p','mm',[pageHeight, pageWidth]);
+	            doc.addImage(imgData, 'PNG', 10, 10, imgWidth, imgHeight);
+	            doc.save('계약세부사항.pdf');
+	        }
+	    });
+	});
+	
 });
+var fnPrint = function() {
+	document.body.innerHTML = printContent.innerHTML;
+	window.print();
+};
 
 </script>
 
@@ -29,7 +59,13 @@ $(function(){
 			<div class="content-header-left col-md-9 col-12 mb-2">
 				<div class="col-12">
 					<h2 class="content-header-title float-left mb-0">보수 업체 계약 내역</h2>
+					<div class="breadcrumb-wrapper">
+						<ol class="breadcrumb ">
+							<li class="breadcrumb"><a href="#" style="color:gray;">보수 업체 계약 상세보기</a></li>
+						</ol>
+					</div>
 				</div>
+				
 			</div>
 		</div>
 		
@@ -40,7 +76,7 @@ $(function(){
                 <div class="col-md-8">
                     <div class="card">
                         <div class="card-body">
-                           	<div class="row">
+                           	<div class="row" id="printContent">
 
                                 <div class="col-xl-12 col-md-6 col-12 mb-1">
                                     <div class="form-group">
@@ -87,14 +123,16 @@ $(function(){
                                     </div>
                                 </div>
 
-                                <div class="col-xl-12 col-md-6 col-12">
-                                    <div class="form-group" style="text-align:center;">
-                                        <input type="button" class="btn btn-primary center"  value="수정">
-                                        <input type="button" class="btn btn-primary center"  value="삭제">
-                                    </div>
-                                </div>
-                              
                            	</div>
+                           	<div id="editor"></div> <!-- jspdf에서 특별한 작업을 중간에 추가할때 사용 -->
+                       	 	<div class="col-xl-12 col-md-6 col-12">
+                                <div class="form-group" style="text-align:center;">
+                                    <input type="button" class="btn btn-primary center" onClick="location.href='<c:url value="/admin/adminFacility/facilityCompanyEdit.do?contractNo=${cVo.contractNo }"/>'" value="수정">
+                                    <input type="button" class="btn btn-primary center" onClick="location.href='<c:url value="/admin/adminFacility/contractDel.do?contractNo=${cVo.contractNo }"/>'" id="delBtn" value="삭제">
+                                	<input type="button" class="btn btn-flat-primary waves-effect float-right" style="float:right;" value="pdf" id="savePdfBtn" >
+                                	<input type="button" class="btn btn-flat-primary waves-effect float-right" style="float:right;" value="인쇄" onClick="fnPrint()">
+                                </div>
+                            </div>
                         	
                         </div>
                     </div>
@@ -105,10 +143,17 @@ $(function(){
                         <div class="card-body">
                         	<h2>계약 업체 목록</h2>
                         	<div class="list-group">
-                        		<a class="list-group-item active">현재 계약 목록</a>
-                        		<a class="list-group-item list-group-item-action">다른목록1</a>
-                        		<a class="list-group-item list-group-item-action">다른목록2</a>
-                        		<a class="list-group-item list-group-item-action">다른목록3</a>
+                        		<c:forEach var="vo" items="${cList }">
+                        			<c:if test="${vo.contractNo == cVo.contractNo }">
+                        				<a class="list-group-item active">[${vo.mngCompCtgName }]${vo.mngCompName } </a>
+                        			</c:if>
+                        			<c:if test="${vo.contractNo != cVo.contractNo }">
+		                        		<a class="list-group-item list-group-item-action" href="<c:url value='/admin/adminFacility/facilityCompanyDetail.do?contractNo=${vo.contractNo }'/>">
+		                        			[${vo.mngCompCtgName }]${vo.mngCompName } 	
+		                        		</a>
+	                        		</c:if>
+                        		</c:forEach>
+                        		
                         	</div>
                         </div>
                 	</div>
