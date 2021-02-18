@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="config.mybatis.mapper.oracle.car">
+
+	<insert id="insertCar" parameterType="carVo">
+		<selectKey keyProperty="carRegNo" resultType="int" order="BEFORE">
+			select car_register_seq.nextval from dual
+		</selectKey>
+		insert into car_register(car_reg_no, household_code, note, car_number, regdate, is_visitor)
+		values(#{carRegNo},#{householdCode},#{note},#{carNumber},#{regdate},#{isVisitor})
+	</insert>
+	
+	<select id="carListByCode" parameterType="hashMap" resultType="carVo">
+		select car_reg_no,
+			household_code,
+			note,
+			car_number,
+			to_char(orderdate,'YYYY-MM-DD') as orderdate, 
+			to_char(regdate,'YYYY-MM-DD') as regdate, 
+			is_visitor
+		from car_register 
+		where household_code=#{householdCode}
+		<if test="isVisitor != null">
+			and is_visitor=#{isVisitor}
+		</if>
+		order by car_reg_no
+	</select>
+	
+	<select id="aptCarList" parameterType="hashMap" resultType="map">
+		select c.car_reg_no, 
+			c.household_code, 
+			c.note, 
+			c.car_Number, 
+			to_char(c.orderdate,'YYYY-MM-DD') as orderdate, 
+			to_char(c.regdate,'YYYY-MM-DD') as regdate, 
+			c.is_visitor,
+			h.dong,
+			h.ho
+		from car_register c join household_info h on c.household_code = h.household_code
+		where apt_no=#{aptNo}
+		<if test="isVisitor != null">
+			and is_visitor=#{isVisitor}
+		</if>
+		order by orderdate desc
+	</select>
+	
+	<select id="chartByAptNo" parameterType="int" resultType="map">
+		select count(*) as count, 
+		to_char(c.regdate,'YYYY-MM') as regdate
+		from car_register c 
+		join household_info h 
+		on c.household_code = h.household_code
+		where apt_no=#{aptNo} and is_visitor='Y'
+		group by to_char(c.regdate,'YYYY-MM')
+		order by regdate
+	</select>
+	
+	
+</mapper>
+
+
+

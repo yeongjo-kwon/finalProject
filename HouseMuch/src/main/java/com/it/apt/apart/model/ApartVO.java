@@ -3,7 +3,7 @@ package com.it.apt.apart.model;
 public class ApartVO {
 	private int aptNo;
 	private String aptName;
-	private int zipcodeSeq;
+	private String zipcodeSeq;
 	private String address;
 	private String addressDetail;
 	private int totalHousehold;
@@ -20,10 +20,11 @@ public class ApartVO {
 	public void setAptName(String aptName) {
 		this.aptName = aptName;
 	}
-	public int getZipcodeSeq() {
+	
+	public String getZipcodeSeq() {
 		return zipcodeSeq;
 	}
-	public void setZipcodeSeq(int zipcodeSeq) {
+	public void setZipcodeSeq(String zipcodeSeq) {
 		this.zipcodeSeq = zipcodeSeq;
 	}
 	public String getAddress() {
