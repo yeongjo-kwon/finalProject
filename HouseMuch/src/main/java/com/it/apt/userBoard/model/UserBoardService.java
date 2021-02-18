@@ -21,5 +21,6 @@ public interface UserBoardService {
 	int updateFileUpload(UserBoardVO vo);
 	List<Map<String, Object>> selectAllByUserdash(SearchVO vo);
 	int selectTotalRecordUserdash(SearchVO vo);
+	int deleteUserBoardMulti(String[] boardNoArray);
 	
 }

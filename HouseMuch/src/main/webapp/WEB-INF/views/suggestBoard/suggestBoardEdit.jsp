@@ -13,27 +13,48 @@
 <script type="text/javascript" src="//code.jquery.com/jquery-1.11.0.min.js"></script>
 <script type="text/javascript">
 $(function(){
+	/* 스마트에디터 적용 */
+	var oEditors = [];
+	nhn.husky.EZCreator.createInIFrame({ 
+		oAppRef : oEditors, 
+		elPlaceHolder : "smartEditor", 
+		sSkinURI : "${pageContext.request.contextPath}/SmartEditor2/SmartEditor2Skin.html", 
+		fCreator : "createSEditor2", 
+		htParams : { 
+		// 툴바 사용 여부 (true:사용/ false:사용하지 않음) 
+		bUseToolbar : true, 
+		// 입력창 크기 조절바 사용 여부 (true:사용/ false:사용하지 않음) 
+		bUseVerticalResizer : false, 
+		// 모드 탭(Editor | HTML | TEXT) 사용 여부 (true:사용/ false:사용하지 않음) 
+		bUseModeChanger : false 
+		}
+	}); 
+	
 	/* 
 	-유효성 검사	
 	*/
 	$('form[name=frmWrite]').find('#btEdit').click(function(){
+		oEditors.getById["smartEditor"].exec("UPDATE_CONTENTS_FIELD", []);
+	    var content=$('#smartEditor').val().replace(/<br>$/, "");
+	    
 		if($('#suggCtgNo').val()==0){
 			alert('카테고리를 선택하세요.');
-			event.preventDefault();
+			return false;
 			$('#suggCtgNo').focus();
 		}else if($('#suggTitle').val()==0){
 			alert('제목을 입력하세요.');
-			event.preventDefault();
+			return false;
 			$('#suggTitle').focus();
-		}else if($('[name="suggContent"]').val()==0){
+		}else if(content=="" || content==null){
 			alert('내용을 입력하세요.');
-			event.preventDefault();
-			$('[name="suggContent"]').focus();
+			return false;
+			content.focus();
 		}
 		
-		oEditors.getById["smartEditor"].exec("UPDATE_CONTENTS_FIELD", []);
+		/* oEditors.getById["smartEditor"].exec("UPDATE_CONTENTS_FIELD", []);
 		$("#smartEditor").value = $("#smartEditor").value.replace(/<br>$/, "");
-		location.href='<c:url value="/suggestBoard/suggestBoardList.do"/>';
+		location.href='<c:url value="/suggestBoard/suggestBoardList.do"/>'; */
+		
 	});
 	
 });
@@ -71,32 +92,14 @@ function btExit(){
 					</div>
 					<div class="form-group col-10 col-xl-10">
 						<input type="text" class="form-control" name="suggTitle" value="${map['suggTitle'] }"
-							id="suggTitle" placeholder="제목" data-rule="minlen:4"
-							data-msg="Please enter at least 8 chars of subject" />
+							id="suggTitle" placeholder="제목" data-rule="minlen:4" />
 						<div class="validate"></div>
 					</div>
 				</div>
 				<div class="form-group">
-					<textarea class="form-control" name="suggContent" rows="5"
-						id="smartEditor" data-rule="required""
-						data-msg="Please write something for us" placeholder="내용을 입력하세요.">${map['suggContent'] }</textarea>
-					<script>
-						var oEditors = [];
-						nhn.husky.EZCreator.createInIFrame({ 
-							oAppRef : oEditors, 
-							elPlaceHolder : "smartEditor", 
-							sSkinURI : "${pageContext.request.contextPath}/SmartEditor2/SmartEditor2Skin.html", 
-							fCreator : "createSEditor2", 
-							htParams : { 
-							// 툴바 사용 여부 (true:사용/ false:사용하지 않음) 
-							bUseToolbar : true, 
-							// 입력창 크기 조절바 사용 여부 (true:사용/ false:사용하지 않음) 
-							bUseVerticalResizer : false, 
-							// 모드 탭(Editor | HTML | TEXT) 사용 여부 (true:사용/ false:사용하지 않음) 
-							bUseModeChanger : false 
-							}
-						}); 
-					</script>
+					<textarea class="form-control" name="suggContent" rows="20"
+						id="smartEditor" data-rule="required" style="width:100%;"
+						placeholder="내용을 입력하세요.">${map['suggContent'] }</textarea>
 					<div class="validate"></div>
 				</div>
 				<div class="text-center">

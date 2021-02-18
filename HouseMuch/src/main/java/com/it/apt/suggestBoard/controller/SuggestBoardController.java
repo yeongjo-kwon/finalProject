@@ -242,6 +242,25 @@ public class SuggestBoardController {
 		return "common/message";
 	}
 	
+	@RequestMapping("/deleteSuggBoardMulti.do")
+	public String deleteSuggBoardMulti(@RequestParam("suggBoardNoArray[]") String[] suggBoardNoArray,
+			Model model) {
+		logger.info("건의게시판 다중 선택 삭제하기, 파라미터 suggBoardNoArray={}",suggBoardNoArray);
+		
+		int cnt=suggService.deleteSuggBoardMulti(suggBoardNoArray);
+		logger.info("건의게시판 다중 선택 삭제 결과, cnt={}",cnt);
+		
+		String msg="글 삭제 실패!", url="/suggestBoard/suggesetBoardList.do";
+		if(cnt>0) {
+			msg="삭제되었습니다.";
+		}
+		
+		model.addAttribute("msg", msg);
+		model.addAttribute("url", url);
+		
+		return "common/message";
+	}
+	
 	/* SUGGEST_ANSWER 댓글 게시판 */
 	@RequestMapping("/suggestAnswer.do")
 	public void suggestAnswer(HttpSession session,

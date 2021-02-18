@@ -195,8 +195,7 @@ ul.dept01, ul.dept02 {
     padding: 0 20px 0 20px;
 }
 
-a {
-	color: #7DB249;
+.nav-menu a {
 	text-decoration: none;
 	background-color: transparent;
 }
@@ -372,9 +371,7 @@ function subMenuScroll(){
 								class="mr-50" data-feather="user"></i>내 계정 관리</a><a
 								class="dropdown-item"
 								href="<c:url value='/admin/adminAll/adminAllMain.do'/>"><i
-								class="mr-50" data-feather="check-square"></i>관리자 페이지</a><a
-								class="dropdown-item" href="#"><i class="mr-50"
-								data-feather="message-square"></i> 1:1채팅</a> <a
+								class="mr-50" data-feather="check-square"></i>관리자 페이지</a> <a
 								class="dropdown-item" href="<c:url value='/login/logout.do'/>"><i
 								class="mr-50" data-feather="power"></i>로그아웃</a>
 						</div></li>
@@ -392,7 +389,7 @@ function subMenuScroll(){
 		<div class="navbar-header">
 			<ul class="nav navbar-nav flex-row">
 				<li class="nav-item mr-auto"><a class="navbar-brand"
-					href="${pageContext.request.contextPath}/main/main.do"> <span
+					href="${pageContext.request.contextPath}/admin/adminAll/adminAllMain.do"> <span
 						class="brand-logo"> </span>
 						<div class="brand-text">
 							<img alt="하우스머치관리자로고"

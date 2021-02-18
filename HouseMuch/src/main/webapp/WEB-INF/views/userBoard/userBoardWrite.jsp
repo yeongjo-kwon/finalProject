@@ -65,7 +65,7 @@ $(function(){
 			alert('제목을 입력하세요.');
 			return false;
 			$('#boardTitle').focus();
-		}else if(content=="" || content==null){
+		}else if(content=="" && content==null){
 			alert('내용을 입력하세요.');
 			return false;
 			$('[name="boardContent"]').focus();
