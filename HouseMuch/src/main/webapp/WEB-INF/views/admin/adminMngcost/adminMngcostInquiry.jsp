@@ -178,9 +178,9 @@
 	                   <li class="breadcrumb-item">
 	                   	<a href="<c:url value='/admin/adminAll/adminAllMain.do'/>">Home</a>
 	                   </li>
-	                   <li class="breadcrumb-item">관리비 관리</li>
+	                   <li class="breadcrumb-item">지출내역 관리</li>
 	                   <li class="breadcrumb-item active">
-	                   	<a href="<c:url value='/admin/adminMngcost/adminMngcostInquiry.do'/>">지출내역 관리</a>
+	                   	<a href="<c:url value='/admin/adminMngcost/adminMngcostInquiry.do'/>">지출내역 조회</a>
 	                   </li>
 	                 </ol>
 	               </div>

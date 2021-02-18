@@ -34,4 +34,7 @@ public interface MngcostService {
 	int insertUtilityCostInfoMulti(List<UtilityCostInfoVO> utilityCostList);
 	List<String> adminElectricChargeRegDupCheckMulti(List<String> householdCodeList);
 	int selectTotalRecordMngcostPaymentList(HouseholdVO householdVo);
+	
+	//미납세대 이메일 조회
+	String selectEmailUnpaidHousehold(String householdCode);
 }

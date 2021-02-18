@@ -225,7 +225,8 @@
 			   M.HOUSEHOLD_CODE,
 			   CEIL(APRICE+UPRICE
 			   			+(SELECT SUM(MNGCOST_PRICE)
-			       	  	  FROM MNGCOST_INFO WHERE APT_NO=#{aptNo}
+			       	  	  FROM MNGCOST_INFO
+			       	  	  WHERE APT_NO=#{aptNo}
 			          	  AND TO_CHAR(MNGCOST_USEDATE, 'YYYY-MM')=#{startdate})
 			              	/(SELECT TOTAL_HOUSEHOLD
 						      FROM APARTMENT_INFO
@@ -289,7 +290,8 @@
 			SELECT A.*,
 				   ROWNUM AS RNUM
 			FROM(
-				SELECT MNGCOST_LIST_NO,
+				SELECT L.HOUSEHOLD_CODE,
+					   MNGCOST_LIST_NO,
 				       DONG,
 				       HO,
 				       MNGCOST_TOTAL_PRICE,
@@ -385,5 +387,16 @@
 		AND U_CTG_NO=3
 		AND TO_CHAR(U_COST_USEDATE, 'YYYY-MM')
 		        = TO_CHAR(SYSDATE, 'YYYY-MM')
+	</select>
+	
+	
+<!-- 미납 대상 이메일 가져오기 -->
+	<select id="selectEmailUnpaidHousehold" parameterType="string"
+			resultType="string">
+		SELECT EMAIL
+		FROM MEMBER_INFO
+		WHERE HOUSEHOLD_CODE=#{householdCode}
+		AND EMAIL IS NOT NULL
+		AND ROWNUM=1
 	</select>
 </mapper>

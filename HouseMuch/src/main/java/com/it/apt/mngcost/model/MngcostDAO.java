@@ -32,4 +32,7 @@ public interface MngcostDAO {
 	int insertUtilityCostInfo(UtilityCostInfoVO utilityCostVo);
 	int adminElectricChargeRegDupCheck(String householdCode);
 	int selectTotalRecordMngcostPaymentList(HouseholdVO householdVo);
+	
+	//미납세대 이메일 조회
+	String selectEmailUnpaidHousehold(String householdCode);
 }

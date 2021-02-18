@@ -193,4 +193,10 @@ public class MngcostServiceImpl implements MngcostService{
 	public int selectTotalRecordMngcostPaymentList(HouseholdVO householdVo) {
 		return mngcostDao.selectTotalRecordMngcostPaymentList(householdVo);
 	}
+	
+	//미납세대 이메일 조회
+	@Override
+	public String selectEmailUnpaidHousehold(String householdCode) {
+		return mngcostDao.selectEmailUnpaidHousehold(householdCode);
+	}
 }

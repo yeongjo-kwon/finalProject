@@ -129,4 +129,10 @@ public class MngcostDAOMybatis implements MngcostDAO{
 	public int selectTotalRecordMngcostPaymentList(HouseholdVO householdVo) {
 		return sqlSession.selectOne(namespace+"selectTotalRecordMngcostPaymentList", householdVo);
 	}
+
+	//미납세대 이메일 조회
+	@Override
+	public String selectEmailUnpaidHousehold(String householdCode) {
+		return sqlSession.selectOne(namespace+"selectEmailUnpaidHousehold", householdCode);
+	}
 }

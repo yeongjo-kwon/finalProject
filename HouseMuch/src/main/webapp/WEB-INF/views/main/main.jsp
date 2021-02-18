@@ -61,7 +61,7 @@
 		
 		          <!-- Slide 1 -->
 		          <div class="carousel-item active">
-		          	<div class="carousel-background "><img src="${pageContext.request.contextPath}/resources/aptUser_images/aptLogin.jpg" alt="aptMain1" width="100%"></div>
+		          	<div class="carousel-background "><img src="${pageContext.request.contextPath}/resources/aptUser_images/aptLogin.jpg" alt="aptMain1" width="100%" style="min-height:80vh;background-size:cover;"></div>
 		            <div class="carousel-container">
 		              <div class="carousel-content">
 		                <h2 class="animate__animated animate__fadeInDown">${aptName }</h2>
@@ -70,7 +70,6 @@
 		              </div>
 		            </div>
 		          </div>
-	   
 		      </div>
 			</div>
 		</div>
@@ -78,13 +77,13 @@
 	<!-- End Banner -->
 	
 	<section class="mt-2 container mb-0 pb-0">
-		<div class="col-lg-12 mt-2 mt-lg-2 mb-0 row" style="margin-right: 0px;padding-right: 0px;margin-left: 0px;padding-left: 0px;">
-			<div class="box-bin d-flex container">
-				<div>
+		<div class="col-lg-12 mt-2 mt-lg-2 mb-0" >
+			<div class="box-bin d-flex container row" style="margin:0">
+				<div class="col-12 col-xl-4">
 					<h2>국내 현황판</h2>
 					<span id="updateTime" style="font-weight: bold;"></span><br> 00시 데이터 기준으로 오전9시~10시 사이에 자동으로 업데이트 됩니다.
 				</div>
-				<div class="card-body">
+				<div class="card-body col-xs-12">
 					<div class="d-flex d-lg-flex d-md-block align-items-center">
 						<h2>
 						<span style="color: #f89009;" id="totalCase"></span>
@@ -94,7 +93,7 @@
 					<h6 class="text-muted font-weight-normal mb-0 w-100 text-truncate">국내 확진자</h6>
 				</div>
 				
-				<div class="card-body">
+				<div class="card-body col-xs-12">
 					<div class="d-flex d-lg-flex d-md-block align-items-center">
 						<h2>
 						<span style="color: #009a87;" id="totalRecovered"></span>
@@ -104,7 +103,7 @@
 					<h6 class="text-muted font-weight-normal mb-0 w-100 text-truncate">국내 완치자</h6>
 				</div>
 				
-				<div class="card-body" >
+				<div class="card-body col-xs-12" >
 					<div class="d-flex d-lg-flex d-md-block align-items-center">
 						<h2>
 						<span style="color: #ee2323;" id="totalDeath"></span>
@@ -114,7 +113,7 @@
 					<h6 class="text-muted font-weight-normal mb-0 w-100 text-truncate">국내 사망자</h6>
 				</div>
 				
-				<div class="card-body" id="total">
+				<div class="card-body col-xs-12" id="total">
 					<div class="d-flex d-lg-flex d-md-block align-items-center">
 						<h2>
 						<span style="color: #006dd7;" id="gage"></span>
@@ -173,7 +172,7 @@
 		<div class="container">
 
 			<div class="row no-gutters">
-				<div class="col-xl-6 d-flex align-items-stretch box-bin" style="width:50%">
+				<div class="col-12 d-flex align-items-stretch box-bin" style="width:50%">
 					<div class="p-5">
 						<h3 class="d-inline" style="font-weight:700; font-size:34px;"><a href="<c:url value='/living/noti/noticeList.do'/>"> 우리아파트 공지사항</a></h3>
 						

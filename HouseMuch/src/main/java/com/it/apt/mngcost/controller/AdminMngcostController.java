@@ -316,7 +316,7 @@ public class AdminMngcostController {
 		pagingInfo.setCurrentPage(householdVo.getCurrentPage());
 		
 		//[2] householdVo 안의 SearchVo 세팅
-		householdVo.setRecordCountPerPage(Utility.RECORD_COUNT);
+		householdVo.setRecordCountPerPage(10);
 		householdVo.setFirstRecordIndex(pagingInfo.getFirstRecordIndex());
 		logger.info("관리자 관리비 청구 조회 - SearchVo 변수 추가 후 파라미터 householdVo={}", householdVo);
 		
@@ -330,6 +330,7 @@ public class AdminMngcostController {
 		//ajax 반환 값에 페이징 맵 넣어버리기
 		Map<String, Object> pagingMap=new HashMap<String, Object>();
 		pagingMap.put("pagingInfo", pagingInfo);
+		logger.info("페이지정보 pagingInfo={}", pagingInfo);
 		
 		payList.add(pagingMap);
 		

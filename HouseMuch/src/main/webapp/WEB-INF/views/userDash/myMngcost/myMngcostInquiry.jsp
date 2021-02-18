@@ -89,7 +89,9 @@
 	                   	<a href="<c:url value='/userDash/userDashMain.do'/>">Home</a>
 	                   </li>
 	                   <li class="breadcrumb-item">관리비 관리</li>
-	                   <li class="breadcrumb-item active"><b>관리비 조회</b></li>
+	                   <li class="breadcrumb-item active">
+	                   	<a href="<c:url value='/userDash/myMngcost/myMngcostInquiry.do'/>">관리비 조회</a>
+	                   </li>
 	                 </ol>
 	               </div>
 	             </div>
