@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ include file="../../adminInc/adminTop.jsp" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <!-- 스마트 에디터 리소스  -->
 <link
 	href="${pageContext.request.contextPath}/resources/userBoard/css/boardStyle.css"
@@ -12,13 +13,12 @@
 <!-- 스마트 에디터 js  -->
 <script type="text/javascript">
 $(function(){
-	/* 
-	-유효성 검사 Ajax사용
-	*/
+	
 	$('#addName').focus();
+
 	
 	$('form[name=frmWrite]').find('#btOK').click(function(){
-	/*	if($('#addCtgNo').val()==0){
+		/* if($('#addCtgNo').length>0){
 			alert('시설 분류를 선택하세요.');
 			event.preventDefault();
 			$('#addCtgNo').focus();
@@ -30,8 +30,8 @@ $(function(){
 			alert('내용을 입력하세요.');
 			event.preventDefault();
 			$('[name="addContent"]').focus();
-		}
-	*/	
+		} */
+		
 		oEditors.getById["smartEditor"].exec("UPDATE_CONTENTS_FIELD", []);
 		$("#smartEditor").value = $("#smartEditor").value.replace(/<br>$/, "");
 		location.href='<c:url value="/admin/adminLiving/adminAdd/adminAddInfoList.do"/>';
@@ -57,7 +57,7 @@ $(function(){
 
 /* function작업 */
 function exit(){
-	if(confirm('작성중인 작업을 종료하시겠습니까?')){
+	if(confirm('부가시설 수정사항을 저장하지 않고 작업을 종료하시겠습니까?')){
 		location.href="<c:url value='/admin/adminLiving/adminAdd/adminAddInfoList.do'/>";
 	}else{
 		event.preventDefault();
@@ -129,6 +129,11 @@ function exit(){
                                     <!-- Form -->
                                     <form action="<c:url value='/admin/adminLiving/adminAdd/adminAddEdit.do'/>" 
                                     method="post" class="mt-2" name="frmWrite" enctype="multipart/form-data">
+                                       
+                                       <!-- 수정시 필요한 hidden값 -->
+                                       <input type="text" name="addNo" value="${map['addNo'] }">
+                                       <input type="text" name="oldImgFileinfo" value="${oldImgFileinfo }">
+                                       
                                         <div class="row">
                                             <div class="col-md-6 col-12">
                                                 <div class="form-group mb-2">
@@ -247,8 +252,10 @@ function exit(){
                                                         <div class="media-body">
                                                             <h5 class="mb-1 mt-1">썸네일 이미지 첨부</h5>
                                                             <small class="text-muted">새로운 썸네일 이미지를 등록하면 기존의 썸네일 이미지는 삭제됩니다.</small>
-                                                            <p class="my-50" id="fileText" name="fileText">${map['ADDINFO_IMG_ORIGINAL_FILENAME'] }</p>
-                                                            <!--  -->
+                                                            <p class="my-50" id="fileText" name="fileText" class="text-primary">
+																${map['addinfoImgOriginalFilename']}
+                                                            </p><!-- 파일있으면 보내는  -->
+                                                          
                                                                 <a href="javascript:void(0);" id="blog-image-text" ><span class="my-50 d-block" id="fileText"></span></a>
                                                             <div class="d-inline-block">
                                                                 <div class="form-group mb-0">

@@ -1,6 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ include file="../../mainInc/mainTop.jsp" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<% pageContext.setAttribute("newLineChar", "\n"); %>
 <script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/jquery-3.5.1.js"></script>
    <script src="https://unpkg.com/feather-icons"></script><!-- 아이콘리소스 -->
    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css">
@@ -152,7 +154,9 @@
       <div class="col-lg-8">
 
         <!-- 공직Content -->
-        <p class="lead font-medium" style="min-height: 400px;">${vo.noticeContent }</p>
+        <div class="lead font-medium" style="min-height: 400px;">
+       	 ${fn:replace(vo.noticeContent, newLineChar, "<br/>")}
+        </div>
 		<hr>
        </div><!-- 내용끝 -->
 
@@ -162,7 +166,7 @@
       <div class="col-md-4">
 
         <!-- Search Widget -->
-        <div class="card mb-4">
+  <!--       <div class="card mb-4">
           <h5 class="card-header">공지 검색</h5>
           <div class="card-body">
             <div class="input-group">
@@ -172,7 +176,7 @@
               </span>
             </div>
           </div>
-        </div>
+        </div> -->
 
         <!-- 첨부파일자리 -->
         <div class="card my-4">

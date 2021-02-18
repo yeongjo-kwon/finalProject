@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.Properties;
 
 import javax.annotation.Resource;
+import javax.mail.Session;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
@@ -23,6 +24,7 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import com.it.apt.adminLiving.add.model.AddCategoryVO;
 import com.it.apt.adminLiving.add.model.AddFacilityInfoVO;
 import com.it.apt.adminLiving.add.model.AddService;
+import com.it.apt.adminLiving.notice.model.NoticeBoardService;
 import com.it.apt.common.LivingFileUtil;
 import com.it.apt.common.PaginationInfo;
 import com.it.apt.common.Utility;
@@ -37,6 +39,7 @@ public class AdminAddController {
 	@Autowired private AddService addService;
 	@Autowired private MemberService memberService;
 	@Autowired private LivingFileUtil livingFileUtil;
+	@Autowired private NoticeBoardService livingService;
 	
 	@Resource(name="fileUploadProperties")	//-> context-common.xml 에 넣은 id랑 일치
 	private Properties fileUploadProps;
@@ -173,7 +176,8 @@ public class AdminAddController {
 
 	
 	@RequestMapping(value = "/adminAddEdit.do",method = RequestMethod.GET)
-	public String adminAddEdit(@RequestParam(defaultValue = "0")int addNo, Model model) {
+	public String adminAddEdit(@RequestParam(defaultValue = "0")int addNo
+			,HttpServletRequest request ,Model model) {
 		//http://localhost:9090/apt/admin/adminLiving/adminAdd/adminAddEdit.do?addNo=12
 		
 /*      
@@ -193,25 +197,103 @@ public class AdminAddController {
 		model.addAttribute("authMap", authMap);
 */		
 		
+		//1
+		logger.info("부가시설 수정화면, 파라미터 addNo={}", addNo);
+		if(addNo==0) {
+			model.addAttribute("msg", "잘못된 url입니다.");
+			model.addAttribute("url", "/admin/adminLiving/adminAdd/adminAddEdit.do?addNo="+addNo);
+			return "common/message";
+		}
+		
+		
 		//시설정보 불러오기 
 		Map<String, Object> map = addService.selectAddInfoByAddNo(addNo);
 		logger.info("부가시설 상세 결과 map={}",map);
 		
-		//썸넬파일정보 
 		
+		//썸넬파일정보 
+		Object oldImgFileinfo = map.get("ADDINFO_IMG_ORIGINAL_FILENAME");
 		//model에 담아서 보내기
 		model.addAttribute("map", map);
+		model.addAttribute("oldImgFileinfo", oldImgFileinfo);
 		return "admin/adminLiving/adminAdd/adminAddEdit";
 	
 	}
 	
 	
-//	@RequestMapping(value = "/adminAddEdit.do",method = RequestMethod.POST)
-//	public String adminAddEdit_post(@ModelAttribute AddFacilityInfoVO vo, Model model) {
-//		//로그찍기
-//		
-//		//첨부파일있으면 
-//	}
+	@RequestMapping(value = "/adminAddEdit.do",method = RequestMethod.POST)
+	public String adminAddEdit_post(@ModelAttribute AddFacilityInfoVO vo,
+			@RequestParam (required = false)String oldImgFileinfo, HttpServletRequest request,HttpSession session, Model model) {
+		logger.info("부가시설 수정 처리, 파라미터 vo={},oldImgFileinfo={}", vo,oldImgFileinfo);
+		
+		//첨부파일있으면 
+		String addinfoImgFilename="thumbnail-default.svg", addinfoImgOriginalFilename="thumbnail-default.svg";
+		try {
+			/*
+			 * [프로퍼티파일에서 행정용으로 지정한 경로]
+			 *  ROOT_FILEPATH = D:\\apt_LivingFile
+			 *	ADD_FILEPATH = \\apt_addFile
+			 */
+			String customPath=fileUploadProps.getProperty("ROOT_FILEPATH")+fileUploadProps.getProperty("ADD_FILEPATH");
+			AddFacilityInfoVO imgVo = livingFileUtil.addinfoImgUp(request, LivingFileUtil.IMAGE_TYPE, customPath);
+
+			//업로드된 값이 있다면 담은값으로, 없다면 초기화한 값으로 vo에 셋팅
+			vo.setAddinfoImgFilename(imgVo.getAddinfoImgFilename());
+			vo.setAddinfoImgOriginalFilename(imgVo.getAddinfoImgOriginalFilename());
+			 
+			logger.info("업로드 성공후 set된 img파일 ====> addinfoImgFilename={}",imgVo.getAddinfoImgFilename());
+			logger.info("set된 원본 img파일 ====> addinfoImgOriginalFilename={}",imgVo.getAddinfoImgOriginalFilename());
+			
+			logger.info("썸네일 업로드 성공");
+		} catch (IllegalStateException e) {
+			logger.info("파일업로드 실패!-IllegalState");
+			e.printStackTrace();
+		} catch (IOException e) {
+			logger.info("파일업로드 실패!-IO");
+			e.printStackTrace();
+		}
+		
+		//2
+		vo.setAddinfoImgFilename(addinfoImgFilename);
+		vo.setAddinfoImgOriginalFilename(addinfoImgOriginalFilename);
+
+		String msg="부가시설정보 수정 실패", url="/admin/adminLiving/adminAdd/adminAddEdit.do?addNo="+vo.getAddNo();
+		
+		MemberVO memVo = (MemberVO)session.getAttribute("memVo");
+		int memberNo = memVo.getMemberNo();
+		Map<String, Object> authMap = addService.searchAuthCode(memberNo);
+		String authCode = (String)authMap.get("AUTH_CODE");
+		if(authCode.equals("LIVING_MNG")){	//권한체크
+			
+		
+			
+			int cnt = addService.updateAddinfo(vo);//권한맞으면 수정처리
+			logger.info("부가시설 수정 결과, cnt={}", cnt);
+	
+			if(cnt>0) {
+				msg="부가시설 정보가 수정되었습니다.";
+				url="/living/add/addFacilityDetail.do?addNo="+vo.getAddNo();
+				
+//				// 새로 업로드한 경우, 업데이트까지 성공 후 기존파일 삭제
+//				if( !fileName.isEmpty() || fileName!=null ) {
+//					String upPath = fileUtil.getUploadPath(FileUploadUtil.PDS_TYPE, request);
+//					File oldFile = new File(upPath, oldFileName);
+//					if(oldFile.exists()) {
+//						boolean bool = oldFile.delete();
+//						logger.info("기존파일 삭제여부 :{}", bool);
+//					}
+//				}
+			}//if
+		}else {//권한 틀리면
+			msg="부가시설 정보 수정 권한이 없습니다.행정관리과로 문의하세요.";	
+		}	
+
+		
+		model.addAttribute("msg", msg);
+		model.addAttribute("url", url);
+
+		return "common/message";
+	}
 	
 	@RequestMapping("/adminAddDel.do")
 	public String addDel(@RequestParam(defaultValue = "0")int addNo,HttpSession session,Model model) {

@@ -156,7 +156,7 @@ ADD_ORDER_LIST
 	<!-- 시설정보 수정 -->
 	<update id="updateAddinfo" parameterType="addFacilityInfoVO">
 		UPDATE ADDITIONAL_FACILITY_INFO 
-		   SET ADD_CTG_NO = #{addCtgNo}
+		   SET ADD_CTG_NO = #{addCtgNo},
 		       ADD_NAME = #{addName},
 		       ADD_LOCATION_INFO = #{addLocationInfo}, 
 		       ADD_PRICE = #{addPrice},
@@ -164,7 +164,6 @@ ADD_ORDER_LIST
 		       ADDINFO_IMG_FILENAME = #{addinfoImgFilename},
 		       ADDINFO_IMG_ORIGINAL_FILENAME = #{addinfoImgOriginalFilename}
 		 WHERE ADD_NO = #{addNo}
-		   AND ADD_OUTDATE IS NULL
 	</update>
 	
 	<!-- 접수중단(시설삭제)  -->
@@ -290,7 +289,7 @@ ADD_ORDER_LIST
 	<!-- 6.신청번호로 이용개월수 (이용료 납부횟수) 구하기 -->
 	<select id="getChargedMonthsByAddOrderListNo" parameterType="int" resultType="int">
 		SELECT 
-			TRUNC(MONTHS_BETWEEN(ADD_MONTHS(SYSDATE,1),ADD_ORDERDATE)) 
+			TRUNC(MONTHS_BETWEEN(ADD_MONTHS(SYSDATE,0),ADD_ORDERDATE)) 
 													  AS ADD_CHARGE_CNT
 		  FROM ADD_ORDER_LIST  
 		 WHERE ADD_ORDER_LIST_NO = #{addOrderListNo}

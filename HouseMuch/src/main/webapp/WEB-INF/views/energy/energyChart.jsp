@@ -1,7 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@ include file="../mainInc/mainTop.jsp"%>
-
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <!-- 차트리소스 -->
  <link href="${pageContext.request.contextPath}/resources/ynResources/ynChart/styles.css" rel="stylesheet" />
  <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/js/all.min.js" crossorigin="anonymous"></script>
@@ -35,6 +35,7 @@
  <script type="text/javascript"
 	src="${pageContext.request.contextPath}/resources/js/jquery-3.5.1.min.js"></script>
 
+
 	
 <script type="text/javascript">
 //전역변수 
@@ -53,11 +54,11 @@ var elementId;//document.getElementById("houseElectChart");
 var dataArr =[];
 var labelArr =[];
 $(function(){
-	
+
 	//처음로딩시 전기차트탭
 	elementId = document.getElementById("houseElectChart");
 	houseElectChart(elementId,data,labels);
-	
+
 	//탭클릭하면 공과금 분류번호 읽어서 ajax태우기
 	$('.fulltab-item a').on('click',function(){
 		var ctgId = $(this).attr('id');
@@ -267,17 +268,31 @@ width:100%;
 } */
 </style>
 
+
+
 <div class="yiWrapper" style="width:100%; min-height:700px; margin: 0 auto;" class="center-block">
 <div class="clearfix" style="height:80px;background-color:#f6f6f6;position:sticky;"></div>
  
       <!-- ======= 탭+차트 Section ======= -->
     <section id="departments" style="background-color: rgba(237,240,234,0.5);margin: 0 auto;" >
       <div class="container p-0" data-aos="fade-up">
-			<h3 class="text-center mb-10"><b><span id="dongho" class="apt-text-dark">${DongHo}</span> <span class="text-secondary">에너지 조회</span></b></h3>
+      
+			<h3 class="text-center mb-10">
+				
+				<b><span id="dongho" class="apt-text-dark">${DongHo}</span> <span class="text-secondary">에너지 조회</span></b>
+			
+			</h3>
 			<br>
 
     <div class="row container conter-block"  style="min-width: 1200px;">
-                <!-- Example Tabs Line Left -->
+                
+                <!-- 차트데이터 없는 경우 -->
+                <c:if test="${fn:length(dataList)<=0 }">
+	
+				</c:if>
+				
+				
+                <!-- 탭제목 시작 -->
                 <div class="example-wrap">
                   <div class="nav-tabs-vertical w-100" data-plugin="tabs" style="min-width: 1200px;">
                     <ul class="row nav nav-tabs nav-tabs-line mr-25" role="tablist"  style="width:100%;">
@@ -302,7 +317,7 @@ width:100%;
 	                    <!-- 평균 -->
 	                    <div class="row card m-0 auto w-100 mb-5" style="min-width:1080px;text-align:center">
 		                       	<div class="card-body" style="width: 100%;text-align:center">
-			                        <h5 class="d-block text-center">
+			                        <h5 class="d-block text-center" >
 			                        	<i data-feather="zap" class="material-icons orange600"></i> 
 			               					최근 12개월기준  평균 사용량 <b>${electAvgMap['ELEC_AMOUNT_AVG'] }</b>(Kwh) , 평균요금 <b>
 					                		<fmt:formatNumber pattern="###,###,###" value="${electAvgMap['ELEC_PRICE_AVG'] }"/></b>원
@@ -361,12 +376,11 @@ width:100%;
                    
 				 </div><!-- 여기까치 차트탭 -->
                 </div>
-                <!-- End Example Tabs Line Left -->
             </div>
+          </div><!-- 탭div끝 -->
           </div>
-          </div>
-          </div>
-        </div>
+         
+        
         <!-- End Panel Tabs -->
 
     </section><!-- End 탭+차트 Section -->

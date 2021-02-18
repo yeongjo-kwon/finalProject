@@ -82,7 +82,7 @@
     <script src="${pageContext.request.contextPath}/resources/app-assets/js/scripts/pages/app-email.js"></script>
     <script src="${pageContext.request.contextPath}/resources/app-assets/js/scripts/pages/app-chat.js"></script>
 
-    <script src="${pageContext.request.contextPath}/resources/app-assets/js/scripts/pages/app-calendar-events.js"></script>
+<%--     <script src="${pageContext.request.contextPath}/resources/app-assets/js/scripts/pages/app-calendar-events.js"></script> --%>
     <script src="${pageContext.request.contextPath}/resources/app-assets/js/scripts/pages/app-calendar.js"></script>
     
 	<script src="${pageContext.request.contextPath}/resources/app-assets/js/scripts/pages/app-invoice-list.js"></script>
