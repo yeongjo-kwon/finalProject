@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -23,16 +24,22 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.it.apt.adminFacility.model.AddCostVO;
+import com.it.apt.adminFacility.model.CompanyService;
 import com.it.apt.adminOwner.model.AdminAllVO;
 import com.it.apt.adminOwner.model.AuthorityVO;
+import com.it.apt.adminOwner.model.OwnerIMPVO;
 import com.it.apt.adminOwner.model.OwnerService;
 import com.it.apt.adminOwner.model.ResidentVO;
+import com.it.apt.apart.model.ApartService;
+import com.it.apt.apart.model.ApartVO;
 import com.it.apt.household.model.HouseholdMemVo;
 import com.it.apt.household.model.HouseholdService;
 import com.it.apt.household.model.HouseholdVO;
 import com.it.apt.member.model.MemberService;
 import com.it.apt.member.model.MemberVO;
 import com.it.apt.mngcost.model.MngcostInfoVO;
+import com.it.apt.mngcost.model.MngcostPaymentListVO;
 import com.it.apt.mngcost.model.MngcostService;
 
 @Controller
@@ -43,7 +50,9 @@ public class AdminOwnerController {
 	@Autowired private OwnerService ownerService;
 	@Autowired private MemberService memberService;
 	@Autowired private MngcostService mngcostService;
+	@Autowired private CompanyService companyService;
 	@Autowired private HouseholdService householdService;
+	@Autowired private ApartService apartService;
 	
 	@RequestMapping("/adminOwnerMain")
 	public void ownerMain() {
@@ -321,5 +330,50 @@ public class AdminOwnerController {
 		model.addAttribute("url",url);
 		
 		return "common/message";		
+	}
+	
+	@RequestMapping("/facilityPayCost.do")
+	public void payCostView(HttpSession session, Model model) {
+		logger.info("----------PAYCOST---VIEW---------------");
+		
+		MemberVO memVo = (MemberVO) session.getAttribute("memVo");
+		logger.info("로그인 한 관리자의 memVo.getId()={}", memVo.getId());
+		int aptNo=memberService.selectAptNo(memVo.getId());
+
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("aptNo", aptNo);
+		map.put("costFlag", "N");
+		
+		List<Map<String, Object>> list = companyService.listAddCost(map);
+		logger.info("list.size={}", list.size());
+		
+		ApartVO apartVo =apartService.selectAptByAptNo(memberService.selectAptNo(memVo.getId()));
+		
+		model.addAttribute("apartVo", apartVo);
+		model.addAttribute("list", list);
+		logger.info("////////////----------PAYCOST---VIEW---------------///////////");
+	}
+	
+	@RequestMapping("/payIMP.do")
+	public void payIMP(@ModelAttribute OwnerIMPVO impVo, Model model) {
+		logger.info("::::::::::::::::::::결제 창 띄우기 ::::::::::::::::::::::::");
+		logger.info("impVo={}", impVo);
+		
+		logger.info("::::::::::::::::::::::::::::::::::::::::::::::::::::::");
+		model.addAttribute("impVo", impVo);
+	}
+	
+	
+	@ResponseBody
+	@RequestMapping("/updateCostMulti.do")
+	public int payAddCost(@ModelAttribute OwnerIMPVO impVo) {
+		logger.info("-----------결제중---------------");
+		
+		List<AddCostVO> addCostList=impVo.getAddCostList();
+		
+		int cnt=companyService.payCost(addCostList);
+		logger.info("결제 처리 결과 cnt={}", cnt);
+		logger.info("--------------------------------");
+		return cnt;
 	}
 }
