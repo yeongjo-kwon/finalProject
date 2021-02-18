@@ -36,27 +36,23 @@ $(function(){
 	$('#suggTitle').focus();
 	
 	$('form[name=frmWrite]').find('#btOk').click(function(){
-		var content=$('#smartEditor').val();
+		oEditors.getById["smartEditor"].exec("UPDATE_CONTENTS_FIELD", []);
+		var content=$('#smartEditor').val().replace(/<br>$/, "");
 		
 		if($('#suggCtgNo').val()==0){
 			alert('카테고리를 선택하세요.');
-			event.preventDefault();
+			return false;
 			$('#suggCtgNo').focus();
 		}else if($('#suggTitle').val()==0){
 			alert('제목을 입력하세요.');
-			event.preventDefault();
+			return false;
 			$('#suggTitle').focus();
 		}else if(content=="" || content==null){
 			alert('내용을 입력하세요.');
-			event.preventDefault();
+			return false;
 			$('[name="suggContent"]').focus();
 		}
-		
-		oEditors.getById["smartEditor"].exec("UPDATE_CONTENTS_FIELD", []);
-		$("#smartEditor").value = $("#smartEditor").value.replace(/<br>$/, "");
-		location.href='<c:url value="/suggestBoard/suggestBoardList.do"/>';
 	});
-	
 });
 
 /* function작업 */

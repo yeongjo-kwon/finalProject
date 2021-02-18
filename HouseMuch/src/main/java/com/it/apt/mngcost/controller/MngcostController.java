@@ -40,13 +40,6 @@ public class MngcostController {
 	
 	@RequestMapping("/mngcostInquiry.do")
 	public String mngcostInquiry(HttpSession session, Model model) {
-		MemberVO memVo=(MemberVO)session.getAttribute("memVo");
-		if(memVo==null) {
-			model.addAttribute("msg", "로그인이 필요합니다.");
-			model.addAttribute("url", "/login/login.do");
-			
-			return "common/message";
-		}//인터셉트
 		logger.info("관리비조회 페이지");
 		
 		List<MngcostMainCtgVO> mngcostMainCtgList
@@ -54,10 +47,19 @@ public class MngcostController {
 		logger.info("관리비 대분류 조회 결과 mngcostMainCtgList={}",
 										mngcostMainCtgList);
 		
+		MemberVO memVo=(MemberVO)session.getAttribute("memVo");
 		List<MngcostPaymentListVO> mngcostPayList
 			=mngcostService.selectPayList(memVo.getHouseholdCode());
 		logger.info("관리비 납부내역 조회 결과 mngcostPayList={}",
 										mngcostPayList);
+		
+		if(mngcostPayList==null || mngcostPayList.isEmpty()) {
+			model.addAttribute("msg", "청구 내역이 존재하지 않습니다.");
+			model.addAttribute("url", "/main/main.do");
+			
+			return "common/message";
+		}
+		
 		model.addAttribute("mngcostMainCtgList", mngcostMainCtgList);
 		model.addAttribute("mngcostPayList", mngcostPayList);
 		
