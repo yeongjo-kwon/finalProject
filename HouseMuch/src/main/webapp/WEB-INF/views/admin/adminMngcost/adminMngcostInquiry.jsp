@@ -172,7 +172,7 @@
 	         <div class="content-header-left col-md-9 col-12 mb-2">
 	           <div class="row breadcrumbs-top">
 	             <div class="col-12">
-	               <h2 class="content-header-title float-left mb-0">지출내역 관리</h2>
+	               <h2 class="content-header-title float-left mb-0">지출내역 정보</h2>
 	               <div class="breadcrumb-wrapper">
 	                 <ol class="breadcrumb">
 	                   <li class="breadcrumb-item">
@@ -180,7 +180,7 @@
 	                   </li>
 	                   <li class="breadcrumb-item">지출내역 관리</li>
 	                   <li class="breadcrumb-item active">
-	                   	<a href="<c:url value='/admin/adminMngcost/adminMngcostInquiry.do'/>">지출내역 조회</a>
+	                   	<a href="<c:url value='/admin/adminMngcost/adminMngcostInquiry.do'/>">지출내역 정보</a>
 	                   </li>
 	                 </ol>
 	               </div>
