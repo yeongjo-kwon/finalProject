@@ -76,13 +76,13 @@ public class AddController {
 		//[1] PaginationInfo 생성
 		PaginationInfo pager = new PaginationInfo();
 		pager.setBlockSize(Utility.BLOCK_SIZE);
-		pager.setRecordCountPerPage(10);	   //한페이지에 글 10줄씩 세팅
+		pager.setRecordCountPerPage(9);	   //한페이지에 글 10줄씩 세팅
 		
 		pager.setCurrentPage(vo.getCurrentPage());
 		logger.info("####지금 pager에들어간 현재페이지 ,vo.getCurrentPage()={} ",vo.getCurrentPage());
 		
 		//[2] 검색어변수 noticeBoardVO에 셋팅
-		vo.setRecordCountPerPage(10);
+		vo.setRecordCountPerPage(9);
 		vo.setFirstRecordIndex(pager.getFirstRecordIndex());
 		
 		

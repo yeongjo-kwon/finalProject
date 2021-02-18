@@ -108,9 +108,9 @@ $(function() {
                             <h2 class="content-header-title float-left mb-0">공지 사항 수정</h2>
                             <div class="breadcrumb-wrapper">
                                 <ol class="breadcrumb">
-                                    <li class="breadcrumb-item"><a href="index.html">행정관리자 메인</a>
+                                    <li class="breadcrumb-item"><a href="index.html" style="color: #2FA599;">행정관리자 메인</a>
                                     </li>
-                                    <li class="breadcrumb-item"><a href="#">일정 및 공지 관리</a>
+                                    <li class="breadcrumb-item"><a href="#" style="color: #2FA599;">일정 및 공지 관리</a>
                                     </li>
                                     <li class="breadcrumb-item active">일정/공지 수정</li>
                                 </ol>
@@ -243,7 +243,7 @@ $(function() {
                                               <!-- 오리지날파일명  -->
                                                             <p class="my-50">    
                                                             	<c:if test="${!empty vo.noticeFilename }">                   <!-- 누르면다운로드 -->
-                                                            <a href="javascript:void(0);" id="blog-image-text">	첨부된 파일&nbsp;:&nbsp;&nbsp;${vo.noticeOriginalFilename }</a>
+                                                            <a href="javascript:void(0);" id="blog-image-text" style="color: #2FA599;">	첨부된 파일&nbsp;:&nbsp;&nbsp;${vo.noticeOriginalFilename }</a>
                                                             	</c:if>            
                                                         <%--     	<c:if test="${empty vo.noticeFilename }">                   
                                                             <a href="javascript:void(0);" id="blog-image-text">	첨부된 파일&nbsp;:&nbsp;&nbsp;</a>

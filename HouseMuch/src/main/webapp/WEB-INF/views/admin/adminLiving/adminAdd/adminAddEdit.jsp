@@ -131,8 +131,8 @@ function exit(){
                                     method="post" class="mt-2" name="frmWrite" enctype="multipart/form-data">
                                        
                                        <!-- 수정시 필요한 hidden값 -->
-                                       <input type="text" name="addNo" value="${map['addNo'] }">
-                                       <input type="text" name="oldImgFileinfo" value="${oldImgFileinfo }">
+                                       <input type="hidden" name="addNo" value="${map['addNo'] }">
+                                       <input type="hidden" name="oldImgFileinfo" value="${oldImgFileinfo }">
                                        
                                         <div class="row">
                                             <div class="col-md-6 col-12">

@@ -70,7 +70,13 @@ function exit(){
 </script>
 <!-- 스마트 에디터 js : 끝 -->
 
+<style>
+.ynlink{
+ color: #2FA599 !important;
+}
 
+
+</style>
 
    <!-- BEGIN: Content-->
     <div class="app-content content ">
@@ -85,9 +91,9 @@ function exit(){
                             <div class="breadcrumb-wrapper">
                                 <ol class="breadcrumb">
                                     <li class="breadcrumb-item">
-                                    	<a href="<c:url value='/admin/adminLiving/adminLiving.do'/>">행정 관리 메인</a>
+                                    	<a href="<c:url value='/admin/adminLiving/adminLiving.do'/>" style="color: #2FA599">행정 관리 메인</a>
                                     </li>
-                                    <li class="breadcrumb-item"><a href="#">부가시설 관리</a>
+                                    <li class="breadcrumb-item"><a href="#" style="color: #2FA599">부가시설 관리</a>
                                     </li>
                                     <li class="breadcrumb-item active">부가시설 등록</li>
                                 </ol>
@@ -156,7 +162,7 @@ function exit(){
                                             <!-- 위치정보 -->
                                             <div class="col-md-6 col-12">
                                                 <div class="form-group mb-2">
-                                                    <label for="addLocationInfo">위치 정보</label>
+                                                    <label for="addLocationInfo">위치 및 소개</label>
                                                     <input type="text" id="addLocationInfo" name="addLocationInfo" class="form-control" value="" placeholder="위치정보를 입력하세요" />
                                                 </div>
                                             </div>
@@ -171,7 +177,7 @@ function exit(){
                                             
                                             <div class="col-12">
                                                 <div class="form-group mb-2">
-                                                    <label for="addContent">상세 설명</label>
+                                                    <label for="addContent">상세 정보</label>
                                                     <div id="blog-editor-wrapper">
                                                         <!-- <div id="blog-editor-container">
                                                             <div class="editor"> -->

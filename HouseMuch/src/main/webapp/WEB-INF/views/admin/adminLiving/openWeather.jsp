@@ -2,11 +2,12 @@
     pageEncoding="UTF-8"%>
     <!-- JavaScript Bundle with Popper -->
     <!-- CSS only -->
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js" integrity="sha384-b5kHyXgcpbZJO/tY9Ul7kGkf1S0CWuKcCD38l8YkeH8z8QjE0GmW1gYU5S9FOnJ0" crossorigin="anonymous"></script>
 <!DOCTYPE html>
 <html>
 <head>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js" integrity="sha384-b5kHyXgcpbZJO/tY9Ul7kGkf1S0CWuKcCD38l8YkeH8z8QjE0GmW1gYU5S9FOnJ0" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/feather-icons"></script>
 <title>Weather</title>
     <meta charset="utf-8">
     <script src="http://code.jquery.com/jquery-1.7.min.js" ></script>
@@ -71,9 +72,10 @@ http://api.openweathermap.org/data/2.5/weather?id=1835848&appid=18e287dc7b746939
 			// A.append(B)    A 뒤에 B를 추가 : A B
 			// X.prependTo(Y) Y 앞에 X를 추가 : X Y 
 			// X.prepend(Y)   X 앞에 Y를 추가 : Y X
-			$('.clowtemp').append($minTemp);
+			$('.clowtemp').append($minTemp);//최저온도
 			$('.ctemp').append($cTemp);
-			$('.chightemp').append($maxTemp);
+			$('.chightemp').append($maxTemp);//최고온도
+/* 			$('.chightemp').append($maxTemp);//최고온도 */
 
 			var $cDate = curYY+'년 '+curMonth+'월 '+curDD+'일 , '+curHH+':'+curMM+"<br>";
 			$('#weather').prepend($cDate);
@@ -99,20 +101,22 @@ http://api.openweathermap.org/data/2.5/weather?id=1835848&appid=18e287dc7b746939
 
 }
 </style>
+<body>
 <div class="row">
 	
-	<h3 id="weather" class="d-inline col-8 mb-1 text-left"></h3><h3 class="d-inline col-4 text-right pr-0">오늘의 날씨</h3>
+	<h3 id="weather" class="d-inline col-8 mb-1 text-left"></h3><h3 class="d-inline col-4 text-right pr-0 mr-0">오늘의 날씨</h3>
 <hr class="mt-2 mb-5">
 <div class="row">
 	<div class="row" style="float: left;">
 
 		<div class="col text-center">
-			<div class="col ctemp wth-item wth-now ">현재 온도&nbsp; </div>
-			<div class="cicon"></div>
+			<h3 class="col ctemp wth-item wth-now" style="font-weight: bold">현재 온도&nbsp; </h3>
+			<div class="cicon" ></div>
 		</div>			
 		<div class="col text-center">
-			<div class="clowtemp wth-item">최저 온도&nbsp; </div><span></span>
-			<div class="chightemp wth-item">최고 온도&nbsp; </div>
+			<div class="chightemp wth-item"><span><i data-feather="thermometer" class="text-danger"></i>최고 온도</span>&nbsp; </div>
+			<br>
+			<div class="clowtemp wth-item"><span><i data-feather="thermometer" class="text-primary"></i>최저 온도</span>&nbsp; </div>
 		</div>
 	
 	</div>
@@ -121,5 +125,8 @@ http://api.openweathermap.org/data/2.5/weather?id=1835848&appid=18e287dc7b746939
 	
 	
 <!-- HTML -->
+<script>
+      feather.replace()
+    </script>
 </body>
 </html>

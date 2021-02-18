@@ -355,14 +355,14 @@ html, body {
 
 
  <!-- Page Content -->
-  <div class="container p-0">
+  <div class="container p-0" style="background-color: rgba(237,240,234,0.5);margin: 0 auto;">
 <main id="main">
 
 	<!-- 일정내용a section -->
-	  <section class="breadcrumbs pb-0 bg-white" style="position: fixed; width:100%; z-index:99;">
+	  <section class="breadcrumbs pb-0 bg-white" style="position: fixed; width:100%; z-index:99;" >
 	   
 	   <div class="container m-0 auto p-0">
-	   <div style="width:100%; min-height:100px;" class="d-flex justify-content-between align-items-center fixed">
+	   <div style="width:100%; min-height:50px;" class="d-flex justify-content-between align-items-center fixed">
 		
 		<!-- 페이지 제목 -->
 		<div class="col-lg-4 p-0">
@@ -381,7 +381,8 @@ html, body {
 				</div>
 				
 				<!-- 일정설명 -->
-				<h4 class="fc-event mt-10 pl-10 text-right pr-0" name="scdContent" id="scdContent"></h4>
+				<h4 class="fc-event mt-10 pl-10 text-right pr-0" name="scdContent" id="scdContent">
+				</h4>
 				<!-- 일정번호, 일정내용  no는 hidden으로 링크에 넘길 것-->
 				<input type="hidden" class="fc-event" value="여기는noticeNo" name="noticeNo">
 				<input type="hidden" id="scdNo" class="fc-event" value="여기는scdNo" name="scdNo">
@@ -397,7 +398,7 @@ html, body {
 	<!-- 일정내용a section : 끝 -->
 </main>
 	<!-- 달력section -->
-<section id="secFullCalendar">
+<section id="secFullCalendar" style="background-color: #fff">
 <div class="clearfix" style="height:100px;background-color:#ffffff;position:sticky;"></div>
 	<div id="aptScdwrapper" class="row m-0 auto align-center p-0 pl-2 pt-10" >
 	<hr>

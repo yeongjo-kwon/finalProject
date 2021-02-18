@@ -44,16 +44,7 @@ public class AdminLivingController {
 	}
 	
 
-	//****************************** 행정관리자 차량관리 시작*************************************//
-	@RequestMapping("/adminCar/adminCarVisit.do")
-	public void adminCarVisit() {
-		logger.info("adminCarVisit 화면보여주기");
-	}
-	//****************************** 행정관리자 차량관리 끝*************************************//
-	
-	
 
-	
 	
 	
 }

@@ -533,10 +533,7 @@ ul.dept02 li#subMenu:first-child {
 								<i class="mr-50" data-feather="check-square">
 								</i>마이페이지
 							</a>
-							<a class="dropdown-item" href="#">
-								<i class="mr-50" data-feather="message-square">
-								</i> 1:1채팅
-							</a> 
+							<!-- 1:1채팅삭제 -->
 							<a class="dropdown-item" href="<c:url value='/login/logout.do'/>">
 							<i class="mr-50" data-feather="power">
 							</i>로그아웃
@@ -618,7 +615,7 @@ ul.dept02 li#subMenu:first-child {
 					<ul class="menu-content">
 						<!-- 에너지 조회 -->
 						<li><a class="d-flex align-items-center"
-							href="<c:url value='#'/>"> <i data-feather="circle"></i><span
+							href="<c:url value='/energy/userDash/userEnergy.do'/>"> <i data-feather="circle"></i><span
 								class="menu-item" data-i18n="Shop">공과금 조회</span>
 						</a></li>
 					</ul></li>
@@ -678,7 +675,7 @@ ul.dept02 li#subMenu:first-child {
 					</ul></li>
 
 				<!-- 내 친구목록-->
-				<li class=" nav-item"><a class="d-flex align-items-center"
+				<%-- <li class=" nav-item"><a class="d-flex align-items-center"
 					href="#"><i data-feather='menu'></i><span
 						class="menu-title text-truncate" data-i18n="eCommerce">내
 							친구목록</span></a>
@@ -688,7 +685,8 @@ ul.dept02 li#subMenu:first-child {
 							href="<c:url value='#'/>"> <i data-feather="circle"></i><span
 								class="menu-item" data-i18n="Shop">내 친구목록 조회</span>
 						</a></li>
-					</ul></li>
+					</ul>
+				</li> --%>
 
 				<!-- 내 계정관리-->
 				<li class=" nav-item"><a class="d-flex align-items-center"
