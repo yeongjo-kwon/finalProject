@@ -470,7 +470,8 @@ public class UserBoardController {
 	@RequestMapping("/userBoardDelete.do")
 	public String userBoardDelete(@RequestParam(defaultValue = "0") int boardNo
 			,@RequestParam String boardFilename
-			,HttpServletRequest request,Model model) {
+			,HttpServletRequest request
+			,Model model) {
 		// 1
 		logger.info("입주민게시판 글 삭제하기, 파라미터 boardNo={}, boardFilename={}"
 				, boardNo, boardFilename);
@@ -513,6 +514,36 @@ public class UserBoardController {
 		// 4
 		return "common/message";
 	}
+	
+	/*
+	 * @RequestMapping("/deleteUserBoardMulti.do") public String
+	 * deleteUserBoardMulti(@RequestParam("boardNoArray[]") String[] boardNoArray
+	 * ,@RequestParam String boardFilename ,HttpServletRequest request ,Model model)
+	 * { logger.info("입주민게시판 다중 선택 삭제하기, 파라미터 boardNoArray={}",boardNoArray);
+	 * 
+	 * int cnt=userService.deleteUserBoardMulti(boardNoArray);
+	 * logger.info("입주민게시판 다중 선택 삭제 결과, cnt={}",cnt);
+	 * 
+	 * String msg="글 삭제 실패!", url="/userBoard/userBoardList.do"; if(cnt>0) {
+	 * msg="삭제되었습니다.";
+	 * 
+	 * //기존 파일이 존재하면 기존 파일 삭제 String
+	 * uploadLastPath=fileuploadProperties.getProperty("file.upload.path");
+	 * logger.info("uploadLastPath={}"+uploadLastPath);
+	 * 
+	 * String
+	 * savePath1=request.getSession().getServletContext().getRealPath(uploadLastPath
+	 * ); String savePath=fileuploadProperties.getProperty("file.upload.path.test");
+	 * logger.info("savePath1={},savePath={}"+savePath1,savePath);
+	 * 
+	 * //업로드된 파일이 있는 경우에만 삭제 if(boardFilename!=null && !boardFilename.isEmpty()) {
+	 * File myfile=new File(savePath,boardFilename); if(myfile.exists()) { boolean
+	 * flag=myfile.delete(); logger.info("기존 파일 삭제 여부 flag={}"+flag); } }//안쪽 if }
+	 * 
+	 * model.addAttribute("msg", msg); model.addAttribute("url", url);
+	 * 
+	 * return "common/message"; }
+	 */
 
 	@RequestMapping("/fileDownload.do")
 	public ModelAndView fileDownload(@RequestParam(defaultValue = "0") int bStorageNo, String boardFilename,

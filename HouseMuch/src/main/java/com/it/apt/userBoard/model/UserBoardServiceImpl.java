@@ -5,6 +5,8 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
 import com.it.apt.common.SearchVO;
 
@@ -95,6 +97,24 @@ public class UserBoardServiceImpl implements UserBoardService{
 	@Override
 	public int selectTotalRecordUserdash(SearchVO vo) {
 		return userBoardDao.selectTotalRecordUserdash(vo);
+	}
+
+	@Override
+	@Transactional
+	public int deleteUserBoardMulti(String[] boardNoArray) {
+		int cnt=0;
+		try {
+			for(String boardNo : boardNoArray) {
+				cnt=userBoardDao.deleteUserBoard(Integer.parseInt(boardNo));
+				System.out.println(boardNo);
+			}
+		}catch(RuntimeException e) {
+			e.printStackTrace();
+			cnt=-1;
+			TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+		}
+		
+		return cnt;
 	}
 
 	

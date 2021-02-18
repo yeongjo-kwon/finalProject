@@ -21,11 +21,25 @@
 		$('#chkAll').click(function(){
 			//만약에 최상단 체크박스가 체크되면
 			if($(this).prop("checked")){
-				$('input[name=chk]').prop("checked",true); //전체 선택
+				$('input[type="checkbox"]').prop("checked",true); //전체 선택
 			}else{ //아니면
-				$('input[name=chk]').prop("checked",false); //전체 해제
+				$('input[type="checkbox"]').prop("checked",false); //전체 해제
 			}
 		});
+		
+		/* $('#btDel').click(function(){
+			var len=$('.suggFrm').find('input[type=checkbox]:checked').length;
+			
+			if(len==0){
+				alert('삭제할 글을 선택하세요.');
+				return false;
+			}else{
+				if(confirm('선택한 글(들)을 삭제하시겠습니까?')){
+					$('.suggFrm').prop('action','<c:url value="/userBoard/deleteUserBoardMulti.do?boardFilename=${boardFilename}"/>');
+					$('.suggFrm').submit();
+				}
+			}
+		}); */
 		
 	});
 
@@ -67,101 +81,112 @@
 			<h2>입주민게시판</h2>
 			<p>입주민들 간의 생활 속 이야기를 공유해보세요.</p>
 		</div>
-		<div>
-			<c:if test="${!empty param.searchKeyword }">
-				<p>검색어 : ${param.searchKeyword }, ${pagingInfo.totalRecord }건
-					검색되었습니다.</p>
-			</c:if>
+		<div class="row">
+			<div class="col-12">
+				<c:if test="${!empty param.searchKeyword }">
+					<p>검색어 : ${param.searchKeyword }, ${pagingInfo.totalRecord }건
+						검색되었습니다.</p>
+				</c:if>
+			</div>
+			<!-- <div class="col-2">
+				<button type="button" id="btDel" style="float: right;">삭제</button>
+			</div> -->
 		</div>
-		<table class="tbBoard"
-			summary="기본 게시판에 관한 표로써, 번호, 제목, 작성자, 작성일, 조회수에 대한 정보를 제공합니다.">
-			<!-- 일반 회원일 경우 -->
-			<c:if test="${authMap['AUTH_LEVEL']==1 }">
-				<colgroup>
-					<col style="width: 10%;" />
-					<col style="width: 10%;" />
-					<col style="width: 40%;" />
-					<col style="width: 15%;" />
-					<col style="width: 15%;" />
-					<col style="width: 10%;" />
-				</colgroup>
-				<thead>
-					<tr>
-						<th scope="col">번호</th>
-						<th scope="col">분류</th>
-						<th scope="col">제목</th>
-						<th scope="col">글쓴이</th>
-						<th scope="col">작성일</th>
-						<th scope="col">조회</th>
-					</tr>
-				</thead>
-			</c:if>
-			<!-- 관리자일 경우 -->
-			<c:if test="${authMap['AUTH_LEVEL']!=1 }">
-				<colgroup>
-					<col style="width: 5%;" />
-					<col style="width: 5%;" />
-					<col style="width: 10%;" />
-					<col style="width: 40%;" />
-					<col style="width: 15%;" />
-					<col style="width: 15%;" />
-					<col style="width: 10%;" />
-				</colgroup>
-				<thead>
-					<tr>
-						<th scope="col"><input type="checkbox" id="chkAll" /></th>
-						<th scope="col">번호</th>
-						<th scope="col">분류</th>
-						<th scope="col">제목</th>
-						<th scope="col">글쓴이</th>
-						<th scope="col">작성일</th>
-						<th scope="col">조회</th>
-					</tr>
-				</thead>
-			</c:if>
-			<tbody>
-				<!-- DB 없을 때 -->
-				<c:if test="${empty userList }">
-					<tr>
-						<td colspan="7">데이터가 존재하지 않습니다.</td>
-					</tr>
-				</c:if>
-				<!-- DB 있을 때 -->
-				<c:if test="${!empty userList }">
-					<!--게시판 내용 반복문 시작  -->
-					<c:forEach var="map" items="${userList }">
-						<c:set var="boardNo" value="${map['BOARD_NO'] }" />
+		<form class="suggFrm">
+			<input type="hidden" name="${boardFilename }" id="boardFilename">
+			<table class="tbBoard"
+				summary="기본 게시판에 관한 표로써, 번호, 제목, 작성자, 작성일, 조회수에 대한 정보를 제공합니다.">
+				<!-- 일반 회원일 경우 -->
+				<c:if test="${authMap['AUTH_LEVEL']==1 }">
+					<colgroup>
+						<col style="width: 10%;" />
+						<col style="width: 10%;" />
+						<col style="width: 40%;" />
+						<col style="width: 15%;" />
+						<col style="width: 15%;" />
+						<col style="width: 10%;" />
+					</colgroup>
+					<thead>
 						<tr>
-							<!-- 관리자일 경우 -->
-							<c:if test="${authMap['AUTH_LEVEL']!=1 }">
-								<td><input type="checkbox" name="chk" id="chk" /></td>
-							</c:if>
-							<td>${map['BOARD_NO'] }</td>
-							<td>${map['BOARD_CTG_NAME'] }</td>
-							<td>
-								<c:if test="${!empty map['BOARD_FILENAME'] }">
-									<img alt="파일이미지" src="<c:url value='/resources/aptUser_images/file.gif'/>">
-								</c:if>
-								<a href="<c:url value='/userBoard/userBoardDetail.do?boardNo=${boardNo }'/>"
-									style="color: black;">
-									<!-- 제목이 긴 경우 일부만 보여주기 -->
-									<c:if test="${fn:length(map['BOARD_TITLE'])>=25}">
-										${fn:substring(map['BOARD_TITLE'],0,25) } ... <span style="color: #7DB249;">[${map['COMM_COUNT'] }]</span>
-									</c:if>
-									<c:if test="${fn:length(map['BOARD_TITLE'])<25}">
-										${map['BOARD_TITLE'] } <span style="color: #7DB249;">[${map['COMM_COUNT'] }]</span>
-									</c:if></a>
-								</td>
-							<td>${map['MEMBER_NAME'] }</td>
-							<td><fmt:formatDate value="${map['BOARD_REGDATE'] }"
-									pattern="yyyy-MM-dd" /></td>
-							<td>${map['BOARD_READCOUNT'] }</td>
+							<th scope="col">번호</th>
+							<th scope="col">분류</th>
+							<th scope="col">제목</th>
+							<th scope="col">글쓴이</th>
+							<th scope="col">작성일</th>
+							<th scope="col">조회</th>
 						</tr>
-					</c:forEach>
-					<!--게시판 내용 반복처리 끝  -->
+					</thead>
 				</c:if>
-			</tbody>
-		</table>
+				<!-- 관리자일 경우 -->
+				<c:if test="${authMap['AUTH_LEVEL']!=1 }">
+					<colgroup>
+						<!-- <col style="width: 5%;" /> -->
+						<col style="width: 10%;" />
+						<col style="width: 10%;" />
+						<col style="width: 40%;" />
+						<col style="width: 15%;" />
+						<col style="width: 15%;" />
+						<col style="width: 10%;" />
+					</colgroup>
+					<thead>
+						<tr>
+							<!-- <th scope="col"><input type="checkbox" id="chkAll" /></th> -->
+							<th scope="col">번호</th>
+							<th scope="col">분류</th>
+							<th scope="col">제목</th>
+							<th scope="col">글쓴이</th>
+							<th scope="col">작성일</th>
+							<th scope="col">조회</th>
+						</tr>
+					</thead>
+				</c:if>
+				<tbody>
+					<!-- DB 없을 때 -->
+					<c:if test="${empty userList }">
+						<tr>
+							<td colspan="6">데이터가 존재하지 않습니다.</td>
+						</tr>
+					</c:if>
+					<!-- DB 있을 때 -->
+					<c:if test="${!empty userList }">
+						<c:set var="boardFilename" value="0" />
+						<!--게시판 내용 반복문 시작  -->
+						<c:forEach var="map" items="${userList }">
+							<c:set var="boardNo" value="${map['BOARD_NO'] }" />
+							<c:set var="boardFilename" value="${map['BOARD_FILENAME'] }" />
+							<tr>
+								<!-- 관리자일 경우 -->
+								<%-- <c:if test="${authMap['AUTH_LEVEL']!=1 }">
+									<td><input type="checkbox" name="boardNoArray[]" id="chk" 
+										value="${map['BOARD_NO'] }" /></td>
+								</c:if> --%>
+								<td>${map['BOARD_NO'] }</td>
+								<td>${map['BOARD_CTG_NAME'] }</td>
+								<td>
+									<c:if test="${!empty map['BOARD_FILENAME'] }">
+										<img alt="파일이미지" src="<c:url value='/resources/aptUser_images/file.gif'/>">
+									</c:if>
+									<a href="<c:url value='/userBoard/userBoardDetail.do?boardNo=${boardNo }'/>"
+										style="color: black;">
+										<!-- 제목이 긴 경우 일부만 보여주기 -->
+										<c:if test="${fn:length(map['BOARD_TITLE'])>=25}">
+											${fn:substring(map['BOARD_TITLE'],0,25) } ... <span style="color: #7DB249;">[${map['COMM_COUNT'] }]</span>
+										</c:if>
+										<c:if test="${fn:length(map['BOARD_TITLE'])<25}">
+											${map['BOARD_TITLE'] } <span style="color: #7DB249;">[${map['COMM_COUNT'] }]</span>
+										</c:if></a>
+									</td>
+								<td>${map['MEMBER_NAME'] }</td>
+								<td><fmt:formatDate value="${map['BOARD_REGDATE'] }"
+										pattern="yyyy-MM-dd" /></td>
+								<td>${map['BOARD_READCOUNT'] }</td>
+							</tr>
+						</c:forEach>
+						<!--게시판 내용 반복처리 끝  -->
+					</c:if>
+				</tbody>
+			</table>
+		</form>
 	</div>
 	<div class="divPage">
 		<!-- 페이지 번호 추가 -->

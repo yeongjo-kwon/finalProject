@@ -51,6 +51,20 @@
 			$('#editNo').val(editNo);
 			$('#editName').val(editName);
 		});
+		
+		/* $('#btDel').click(function(){
+			var len=$('.suggFrm').find('input[type=checkbox]:checked').length;
+			if(len==0){
+				alert('삭제할 글을 선택하세요.');
+				return false;
+			}else{
+				if(confirm('선택한 글(들)을 삭제하시겠습니까?')){
+					$('.suggFrm').prop('action','<c:url value="/suggestBoard/deleteSuggBoardMulti.do"/>');
+					$('.suggFrm').submit();
+				}
+			}
+		}); */
+		
 	});
 	
 	function pageFunc(curPage){
@@ -156,6 +170,10 @@
 										</div>
 									</form>
 								</div>
+								<!-- <div class="col-2">
+									<button id="btDel" style="float: left; width: max-content;"
+										class="mt-2 mb-2 btn btn-primary" type="submit">삭제</button>
+								</div> -->
 							</div>
 						</div>
 					</div>
@@ -167,7 +185,7 @@
 							<thead class="thead-dark"
 								style="background-color: #0E515F; color: #fff; font-size: 1.2em; font-weight: 200;">
 								<tr>
-									<th><input type="checkbox" id="chkAll" /></th>
+									<!-- <th><input type="checkbox" id="chkAll" /></th> -->
 									<th class="font-medium-1 text-center">번호</th>
 									<th class="font-medium-1 text-center">카테고리 이름</th>
 									<th class="font-medium-1 text-center">분류</th>
@@ -176,14 +194,14 @@
 							<tbody class="ctgTbody">
 								<c:if test="${empty ctgList }">
 									<tr>
-										<td colspan="4">등록된 카테고리가 없습니다.</td>
+										<td colspan="3">등록된 카테고리가 없습니다.</td>
 									</tr>
 								</c:if>
 								<!-- 레코드반복시작 -->
 								<c:if test="${!empty ctgList }">
 									<c:forEach var="vo" items="${ctgList }">
 										<tr>
-											<td><input type="checkbox" name="chk" id="chk" /></td>
+											<!-- <td><input type="checkbox" name="chk" id="chk" /></td> -->
 											<td><span class="font-weight-bold"></span>
 												${vo.boardCtgNo }</td>
 											<td>

@@ -72,7 +72,7 @@ table.tbUserBoard {
 }
 
 table.tbBoard {
-    width: inherit;
+    width: 100%;
     text-align: center;
 }
 
@@ -134,7 +134,7 @@ div#divFile {
 	padding: 10px;
 }
 
-.userBoard .frmUserBoard input[name="btCancel"], .userBoard .frmUserBoard button[name="btCancel"] {
+.userBoard .frmUserBoard input[name="btCancel"], .userBoard .frmUserBoard button[name="btCancel"], button[name="btCancel"]{
   background: #5c9f24;
   border: 0;
   padding: 10px 30px 12px 30px;

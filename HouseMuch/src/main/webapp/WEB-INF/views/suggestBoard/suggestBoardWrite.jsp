@@ -46,7 +46,7 @@ $(function(){
 			alert('제목을 입력하세요.');
 			event.preventDefault();
 			$('#suggTitle').focus();
-		}else if(content=="" || content==null){
+		}else if(content=="" && content==null){
 			alert('내용을 입력하세요.');
 			event.preventDefault();
 			$('[name="suggContent"]').focus();

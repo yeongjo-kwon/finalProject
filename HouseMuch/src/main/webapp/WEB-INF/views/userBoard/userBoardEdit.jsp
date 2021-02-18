@@ -13,15 +13,47 @@
 <script type="text/javascript" src="${pageContext.request.contextPath}/SmartEditor2/js/HuskyEZCreator.js"></script>
 <script type="text/javascript" src="//code.jquery.com/jquery-1.11.0.min.js"></script>
 
+<!-- style -->
+<style type="text/css">
+.input-file-button{
+ 	padding: 6px 25px;
+    background-color: #7db249;
+    border-radius: 4px;
+    color: white;
+    cursor: pointer;
+    width: 170px;
+    text-align: center;
+}
+</style>
+
 <!-- js 작업 -->
 <script type="text/javascript">
 $(function(){
+	var oEditors = [];
+	nhn.husky.EZCreator.createInIFrame({ 
+		oAppRef : oEditors, 
+		elPlaceHolder : "smartEditor", 
+		sSkinURI : "${pageContext.request.contextPath}/SmartEditor2/SmartEditor2Skin.html", 
+		fCreator : "createSEditor2", 
+		htParams : { 
+		// 툴바 사용 여부 (true:사용/ false:사용하지 않음) 
+		bUseToolbar : true, 
+		// 입력창 크기 조절바 사용 여부 (true:사용/ false:사용하지 않음) 
+		bUseVerticalResizer : false, 
+		// 모드 탭(Editor | HTML | TEXT) 사용 여부 (true:사용/ false:사용하지 않음) 
+		bUseModeChanger : false 
+		}
+	});
+	
 	/* 
 	-유효성 검사 Ajax사용
 	*/
 	$('#boardTitle').focus();
 	
 	$('#btOk').click(function(){
+		oEditors.getById["smartEditor"].exec("UPDATE_CONTENTS_FIELD", []);
+	    var content=$('#smartEditor').val().replace(/<br>$/, "");
+		
 		if($('#boardCtgNo').val()==0){
 			alert('카테고리를 선택하세요.');
 			event.preventDefault();
@@ -30,15 +62,12 @@ $(function(){
 			alert('제목을 입력하세요.');
 			event.preventDefault();
 			$('#boardTitle').focus();
-		}else if($('[name="boardContent"]').val()==0){
+		}else if(content=="" || content==null){
 			alert('내용을 입력하세요.');
 			event.preventDefault();
-			$('[name="boardContent"]').focus();
+			content.focus();
 		}
 		
-		oEditors.getById["smartEditor"].exec("UPDATE_CONTENTS_FIELD", []);
-		$("#smartEditor").value = $("#smartEditor").value.replace(/<br>$/, "");
-		location.href='<c:url value="/userBoard/userBoardEdit.do"/>';
 	});
 	
 });
@@ -86,38 +115,35 @@ function exit(){
 						<div class="validate"></div>
 					</div>
 				</div>
-				<div class="divFile" id="divFile">
-					<input type="file" name="upfile" id="upfile" size="45">
-					<c:if test="${!empty map['boardFilename'] }">
-						<span style="color:#7DB249;font-weight:bold;font-size:0.8em;">
-							※ 첨부 파일을 새로 지정할 경우 기존 파일
-							<img src='<c:url value="/resources/aptUser_images/file.gif" />'>
-							${map['boardOriginalFilename'] }은(는) 삭제됩니다
-						</span>
-					</c:if>
+				<div class="row">
+					<div class="divFile form-group col-2 col-xl-2" id="divFile">
+						<label for="input-file" class="input-file-button">
+							첨부파일
+						</label>
+							<input type="file" name="upfile" id="input-file" style="display: none;"
+								onchange="javascript: document.getElementById('fileName').value=this.value">
+					</div>
+					<div class="col-10 col-xl-10">
+						<input type="text" id="fileName" class="form-control" readonly="readonly" 
+							placeholder="선택된 파일 없음">
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-12 col-xl-12">
+						<c:if test="${!empty map['boardFilename'] }">
+							<span style="color:#7DB249;font-weight:bold;font-size:0.8em;">
+								※ 첨부 파일을 새로 지정할 경우 기존 파일
+								<img src='<c:url value="/resources/aptUser_images/file.gif" />'>
+								${map['boardOriginalFilename'] }은(는) 삭제됩니다
+							</span>
+						</c:if>
+					</div>
 				</div>
 				<div class="form-group">
-					<textarea class="form-control" rows="5" id="smartEditor"
-						name="boardContent" data-rule="required"
-						data-msg="Please write something for us" placeholder="내용을 입력하세요.">${map['boardContent'] }</textarea>
+					<textarea class="form-control" rows="20" id="smartEditor" 
+						name="boardContent" data-rule="required" style="width:100%;"
+						placeholder="내용을 입력하세요.">${map['boardContent'] }</textarea>
 					<div class="validate"></div>
-					<script>
-						var oEditors = [];
-						nhn.husky.EZCreator.createInIFrame({ 
-							oAppRef : oEditors, 
-							elPlaceHolder : "smartEditor", 
-							sSkinURI : "${pageContext.request.contextPath}/SmartEditor2/SmartEditor2Skin.html", 
-							fCreator : "createSEditor2", 
-							htParams : { 
-							// 툴바 사용 여부 (true:사용/ false:사용하지 않음) 
-							bUseToolbar : true, 
-							// 입력창 크기 조절바 사용 여부 (true:사용/ false:사용하지 않음) 
-							bUseVerticalResizer : false, 
-							// 모드 탭(Editor | HTML | TEXT) 사용 여부 (true:사용/ false:사용하지 않음) 
-							bUseModeChanger : false 
-							}
-						}); 
-					</script>
 					<div class="validate"></div>
 				</div>
 				<div class="text-center">

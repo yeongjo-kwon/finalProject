@@ -64,10 +64,10 @@ $(function(){
 			alert('제목을 입력하세요.');
 			event.preventDefault();
 			$('#boardTitle').focus();
-		}else if(content=="" || content==null){
+		}else if(content=="" && content==null){
 			alert('내용을 입력하세요.');
 			event.preventDefault();
-			$('[name="boardContent"]').focus();
+			content.focus();
 		}
 		
 		oEditors.getById["smartEditor"].exec("UPDATE_CONTENTS_FIELD", []);

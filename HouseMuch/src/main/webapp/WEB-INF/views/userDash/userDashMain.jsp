@@ -96,12 +96,12 @@ form[name="hiddenFrm"] {
 
 	/* 내 차량 등록 내역으로 이동 */
 	function moveToCar() {
-		location.href = "";
+		location.href = "<c:url value='/living/car/carMainList.do'/>";
 	}
 	
 	/* 관리비 납부 페이지로 이동 */
 	function moveToPay(){
-		location.href = "<c:url value='/mngcost/mngcostPayment.do'/>";
+		location.href = "<c:url value='/userDash/myMngcost/myMngcostPayment.do'/>";
 	}
 	
 	/* 공백 및 '원' 제거 */
@@ -456,6 +456,7 @@ form[name="hiddenFrm"] {
 							</div>
 							<div class="card-body">
 								<table summary="최근 차량내역 5건을 보여주는 표입니다." class="dashTb">
+									<c:import url="/living/car/carMainList.do" />
 									<!-- 내역 없을 때 -->
 									<%-- <c:if test="">
 										<tr>
