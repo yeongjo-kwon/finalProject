@@ -668,27 +668,17 @@ ul.dept02 li#subMenu:first-child {
 				<li class=" nav-item"><a class="d-flex align-items-center"
 					href="#"><i data-feather='menu'></i><span
 						class="menu-title text-truncate" data-i18n="eCommerce">내
-							차량내역</span></a>
+							차량관리</span></a>
 					<ul class="menu-content">
 						<!-- 내 차량내역 조회 -->
 						<li><a class="d-flex align-items-center"
-							href="<c:url value='#'/>"> <i data-feather="circle"></i><span
-								class="menu-item" data-i18n="Shop">내 차량내역 조회</span>
+							href="<c:url value='/living/car/dashCar.do'/>"> <i data-feather="circle"></i><span
+								class="menu-item" data-i18n="Shop">차량 관리</span>
 						</a></li>
 					</ul></li>
 
 				<!-- 내 친구목록-->
-				<li class=" nav-item"><a class="d-flex align-items-center"
-					href="#"><i data-feather='menu'></i><span
-						class="menu-title text-truncate" data-i18n="eCommerce">내
-							친구목록</span></a>
-					<ul class="menu-content">
-						<!-- 내 친구목록 조회 -->
-						<li><a class="d-flex align-items-center"
-							href="<c:url value='#'/>"> <i data-feather="circle"></i><span
-								class="menu-item" data-i18n="Shop">내 친구목록 조회</span>
-						</a></li>
-					</ul></li>
+				
 
 				<!-- 내 계정관리-->
 				<li class=" nav-item"><a class="d-flex align-items-center"

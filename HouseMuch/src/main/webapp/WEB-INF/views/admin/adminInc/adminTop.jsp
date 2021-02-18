@@ -315,10 +315,8 @@ function subMenuScroll(){
 								href="<c:url value='/living/add/addFacilityList.do'/>">
 									부가시설 </a>
 							</li>
-							<li id="subMenu"><a href="#"> 차량관리 </a></li>
-							<li id="subMenu"><a
-								href="<c:url value='/suggestBoard/suggestBoardList.do'/>">
-									건의 게시판 </a>
+							<li id="subMenu"><a href="<c:url value='/living/car/carRegister.do'/>"> 차량관리 </a></li>
+							<li id="subMenu"><a href="<c:url value='/suggestBoard/suggestBoardList.do'/>"> 건의 게시판 </a>
 							</li>
 						</ul>
 					</li>
@@ -372,10 +370,8 @@ function subMenuScroll(){
 								class="mr-50" data-feather="user"></i>내 계정 관리</a><a
 								class="dropdown-item"
 								href="<c:url value='/admin/adminAll/adminAllMain.do'/>"><i
-								class="mr-50" data-feather="check-square"></i>관리자 페이지</a><a
-								class="dropdown-item" href="#"><i class="mr-50"
-								data-feather="message-square"></i> 1:1채팅</a> <a
-								class="dropdown-item" href="<c:url value='/login/logout.do'/>"><i
+								class="mr-50" data-feather="check-square"></i>관리자 페이지</a> 
+								<a class="dropdown-item" href="<c:url value='/login/logout.do'/>"><i
 								class="mr-50" data-feather="power"></i>로그아웃</a>
 						</div></li>
 				</ul>
@@ -568,14 +564,14 @@ function subMenuScroll(){
 					<ul class="menu-content">
 						<!-- 행정3-1 : 방문차량 등록현황 -->
 						<li><a class="d-flex align-items-center"
-							href="<c:url value='#'/>">
+							href="<c:url value='/admin/adminLiving/adminCar/adminCarResidence.do'/>">
 								<i data-feather="circle"></i><span class="menu-item"
-								data-i18n="Shop">세대별 등록 차량 조회</span>
+								data-i18n="Shop">세대별 차량 조회</span>
 						</a></li>
 
 						<!-- 행정3-2 : 차량 등록 상세 -->
 						<li><a class="d-flex align-items-center"
-							href="<c:url value='/admin/adminLiving/adminCar/adminCarDetail.do'/>">
+							href="<c:url value='/admin/adminLiving/adminCar/adminCarVisit.do'/>">
 								<i data-feather="circle"></i><span class="menu-item"
 								data-i18n="Details">방문 차량 조회</span>
 						</a></li>
