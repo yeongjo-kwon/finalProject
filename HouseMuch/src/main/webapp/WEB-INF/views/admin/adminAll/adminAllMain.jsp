@@ -83,8 +83,85 @@
 					<!--/ default swiper -->
 				</div>
 				<!-- 첫번째 DIV END -->
-
-				<!-- 두번째 DIV START -->
+				
+				<!-- 두번째 DIV START by yina -->
+				<div class="row match-height mt-2"> 
+					<div class="col yinaCol">
+						<div class="card card-statistics">
+							<div class="card-body">
+								<!-- <div class="col-xl-6 pl-0 pl-lg-5 pr-lg-1 d-flex align-items-stretch">
+									<div class="content d-flex flex-column justify-content-center"> -->
+								<h3>아파트 일정</h3>
+								<div class="d-flex w-100">
+									<c:import url="/main/mainScheduler.do"></c:import>
+								</div>
+							</div>
+						</div>
+					</div>
+					<!-- yinaCol -->
+					
+					<!--/ Statistics Card -->
+                    <!-- Medal Card -->
+					<!--  <div class="col-xl-6 col-md-7 col-12">
+                            <div class="card card-congratulation-medal">
+                                <div class="card-body">
+                                    <h5 class="primary-color" >이번 주 날씨</h5>
+                                    <i class="animated-weather-icons svg"></i>
+                        
+								<div class="col-md-6" "style="float:left;width:20%;">
+	                                    <p class="card-text font-lg-5">건의사항 제목 1</p>
+	                                    <p class="card-text font-small-3">건의사항 제목 2</p>
+	                                    <p class="card-text font-small-3">건의사항 제목 3</p>
+                                    </div>
+                                    
+                                    <div class="col-md-6" style="float:left">
+	                                    <h3 class="mb-75 mt-2 pt-50" style="display:inline;">
+	                                        <a href="javascript:void(0);">총 2 건</a>
+	                                    </h3>
+	                                    
+	                                    <button type="button" class="btn btn-primary">건의 답변 하기</button>
+	                                    <img src="" class="congratulation-medal" alt="" />
+                                    </div> 
+                                </div>
+                            </div>
+                        </div>
+ 					-->  <!--/ Medal Card -->
+		
+					<div class="col yinaCol">
+						<!-- openWeather api 날씨 시작-->    
+						<div class="card p-1">
+                  			<div class="card-body">
+								<iframe id="yinaWeather" 
+									src="${pageContext.request.contextPath}/admin/adminLiving/openWeather.do"  
+									id="weather" width="100%" height="100%" background-color="#fff" 
+									frameborder=0 framespacing=0 marginheight=0 marginwidth=0 scrolling=no vspace=0>
+								</iframe>
+							</div>
+							<!-- card-body -->
+						</div>
+						<!-- openWeather api 날씨 끝-->    
+                    
+                   		<!-- ======= About Section ======= -->
+	
+						<!-- <div class="col-xl-6 d-flex align-items-stretch box-bin" style="width:50%"> -->
+						<div class="card ">
+							<div class="card-body">
+								<div class="p-5">
+									<h3 class="d-inline" style="font-weight:700; font-size:34px;"><a href="<c:url value='/living/noti/noticeList.do'/>"> 우리아파트 공지사항</a></h3>
+									<br>
+									<div class="mt-2">
+										<c:import url="/main/mainNotice.do"></c:import>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<!-- yinaCol -->
+				</div>
+				<!-- row -->
+				<!-- 두번째 DIV END by yina -->
+				
+				<!-- 세번째 DIV START -->
 				<div class="row match-height">
 					<!-- 2-1 -->
 					<div class="col-xl-4 col-md-6 col-12 mt-2">
@@ -119,16 +196,11 @@
 						</div>
 					</div>
 				</div>
-				<!-- 두번째 DIV END -->
-
-				<!-- 세번째 DIV START -->
-				<div></div>
 				<!-- 세번째 DIV END -->
 			</section>
 			<!-- SECTION END -->
 		</div>
 		<!-- BODY END -->
-
 	</div>
 	<!-- 찐 END -->
 </div>

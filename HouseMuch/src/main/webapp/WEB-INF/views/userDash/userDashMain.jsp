@@ -20,7 +20,7 @@ div#dash-title {
 
 #chooseDate{
 	margin: 25px 20px 20px 20px;
-    width: 100px;
+    width: 140px;
 	padding-bottom: 0;
 }
 
@@ -116,6 +116,11 @@ form[name="hiddenFrm"] {
 	}
 	
 	$(function(){
+		/* if($('#mngcostClaimdate').val()==0){
+			$('.doughnutDiv').html("<span>조회할 달을 선택하세요.</span>");
+		} */
+		document.getElementById("myDoughnutChart");
+		
 		/* 월별 관리비 조회 차트 */
 		var labels=[];
 		var data=[];
@@ -319,6 +324,7 @@ form[name="hiddenFrm"] {
 									<h2>관리비 내역 차트</h2>
 									<select id="chooseDate" onchange="chooseDate(this.value)">
 										<!-- 반복 시작 -->
+										<option value="">날짜를 선택하세요.</option>
 										<c:forEach var="sVo" items="${sList }">
 											<option value="${sVo.mngcostClaimdate }">
 												<fmt:formatDate value="${sVo.mngcostClaimdate }" pattern="yyyy-MM"/>
@@ -334,7 +340,7 @@ form[name="hiddenFrm"] {
 								</div>
 							</div>
 							<div class="card-body">
-								<div>
+								<div class="doughnutDiv">
 									<canvas id="myDoughnutChart" width="550" height="400"></canvas>
 								</div>
 							</div>

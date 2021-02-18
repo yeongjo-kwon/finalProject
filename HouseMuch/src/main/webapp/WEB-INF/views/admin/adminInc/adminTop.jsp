@@ -195,6 +195,12 @@ ul.dept01, ul.dept02 {
     padding: 0 20px 0 20px;
 }
 
+a {
+	color: #7DB249;
+	text-decoration: none;
+	background-color: transparent;
+}
+
 ul.dept02 {
 	display: none;
 }
@@ -211,6 +217,24 @@ ul.dept02 li#subMenu:first-child {
 .brand-text img {
     object-fit: cover;
     height: 3rem;
+}
+
+.topMenu > .dept01 > li > a:before {
+	content: "";
+    position: absolute;
+    width: 100%;
+    height: 2px;
+    bottom: -6px;
+    left: 0;
+    background-color: #5c9f24;
+    visibility: hidden;
+    width: 0px;
+    transition: all 0.3s ease-in-out 0s;
+}
+
+.topMenu a:hover:before, .topMenu li:hover > a:before, .topMenu .active > a:before {
+  visibility: visible;
+  width: 100%;
 }
 </style>
 
@@ -242,63 +266,87 @@ function subMenuScroll(){
 		class="header-navbar navbar navbar-expand-lg align-items-center floating-nav navbar-light navbar-shadow">
 		<div class="navbar-container d-flex content">
 			<!-- 전체 드롭다운 메뉴 감싸기 -->
-			<div class="nav-menu d-none d-lg-block" class="topMenu"
+			<!-- 반응형 START -->
+			<div class="bookmark-wrapper d-flex align-items-center">
+             <ul class="nav navbar-nav d-xl-none">
+               <li class="nav-item"><a class="nav-link menu-toggle" href="javascript:void(0);"><i class="ficon" data-feather="menu"></i></a></li>
+             </ul>
+           </div>
+			<!-- 반응형 END -->
+			<div class="nav-menu d-none d-lg-block topMenu"
 				style="width: 100%;">
 				<!-- 메뉴넣기 -->
 				<!-- 첫번째 -->
 				<!-- dept 1 -->
 				<ul class="dept01">
-					<li><a href="#">관리비 조회</a> <!-- dept 2 -->
+					<li><a href="<c:url value='/mngcost/mngcostInquiry.do'/>">관리비 조회</a> 
+						<!-- dept 2 -->
 						<ul class="dept02">
 							<li id="subMenu"><a
-								href="<c:url value='/mngcost/mngcostInquiry.do'/>"> 관리비 조회 </a></li>
-						</ul></li>
+								href="<c:url value='/mngcost/mngcostInquiry.do'/>"> 관리비 조회 </a>
+							</li>
+						</ul>
+					</li>
 				</ul>
 				<!-- 두번째 -->
 				<!-- dept 1 -->
 				<ul class="dept01">
-					<li><a href="#">에너지 조회</a> <!-- dept 2 -->
+					<li><a href="<c:url value='/energy/energyChart.do'/>">에너지 조회</a> 
+						<!-- dept 2 -->
 						<ul class="dept02">
 							<li id="subMenu"><a
-								href="<c:url value='/energy/energyChart.do'/>"> 공과금 조회 </a></li>
-						</ul></li>
+								href="<c:url value='/energy/energyChart.do'/>"> 공과금 조회 </a>
+							</li>
+						</ul>
+					</li>
 				</ul>
 				<!-- 세번째 -->
 				<ul class="dept01">
-					<li><a href="#">생활지원 센터</a> <!-- dept 2 -->
+					<li><a href="<c:url value='/living/noti/noticeList.do'/>">생활지원 센터</a> 
+						<!-- dept 2 -->
 						<ul class="dept02">
 							<li id="subMenu"><a
-								href="<c:url value='/living/noti/noticeList.do'/>"> 공지사항 </a></li>
+								href="<c:url value='/living/noti/noticeList.do'/>"> 공지사항 </a>
+							</li>
 							<li id="subMenu"><a
-								href="<c:url value='/living/noti/aptScheduler.do'/>"> 아파트 일정
-							</a></li>
+								href="<c:url value='/living/noti/aptScheduler.do'/>"> 아파트 일정</a>
+							</li>
 							<li id="subMenu"><a
 								href="<c:url value='/living/add/addFacilityList.do'/>">
-									부가시설 </a></li>
+									부가시설 </a>
+							</li>
 							<li id="subMenu"><a href="#"> 차량관리 </a></li>
 							<li id="subMenu"><a
 								href="<c:url value='/suggestBoard/suggestBoardList.do'/>">
-									건의 게시판 </a></li>
-						</ul></li>
+									건의 게시판 </a>
+							</li>
+						</ul>
+					</li>
 				</ul>
 				<!-- 네번째 -->
 				<!-- dept 1 -->
 				<ul class="dept01">
-					<li><a href="#">입주민 커뮤니티</a> <!-- dept 2 -->
+					<li><a href="<c:url value='/userBoard/userBoardList.do'/>">입주민 커뮤니티</a> 
+						<!-- dept 2 -->
 						<ul class="dept02">
 							<li id="subMenu"><a
 								href="<c:url value='/userBoard/userBoardList.do'/>"> 입주민 게시판
-							</a></li>
-						</ul></li>
+							</a>
+						</li>
+						</ul>
+					</li>
 				</ul>
 				<!-- 다섯번째 -->
 				<!-- dept 1 -->
 				<ul class="dept01">
-					<li><a>관리비 납부</a> <!-- dept 2 -->
+					<li><a href="<c:url value='/mngcost/mngcostPayment.do'/>">관리비 납부</a> 
+						<!-- dept 2 -->
 						<ul class="dept02">
 							<li id="subMenu"><a
-								href="<c:url value='/mngcost/mngcostPayment.do'/>"> 납부하기 </a></li>
-						</ul></li>
+								href="<c:url value='/mngcost/mngcostPayment.do'/>"> 납부하기 </a>
+							</li>
+						</ul>
+					</li>
 				</ul>
 				<!--  -->
 				<ul class="nav navbar-nav align-items-center ml-auto ">
@@ -412,12 +460,12 @@ function subMenuScroll(){
 						<!-- 시설1-1 :  -->
 						<li><a class="d-flex align-items-center"
 							href="<c:url value='/admin/adminFacility/facilityCompanyList.do'/>"> <i data-feather="circle"></i><span
-								class="menu-item" data-i18n="Wish List">업체 계약 내역</span></a></li>
+								class="menu-item" data-i18n="Wish List">계약 업체 목록</span></a></li>
 
 						<!-- 시설1-2 :  -->
 						<li><a class="d-flex align-items-center"
 							href="<c:url value='/admin/adminFacility/facilityCompanyReg.do'/>"> <i data-feather="circle"></i><span
-								class="menu-item" data-i18n="Shop">업체 계약 등록</span></a></li>
+								class="menu-item" data-i18n="Shop">계약 업체 등록</span></a></li>
 					</ul></li>
 
 				<!-- 시설2 :  -->

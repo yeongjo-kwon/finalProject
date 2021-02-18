@@ -17,17 +17,45 @@
 <style type="text/css">
 input#upfile {padding: px 0 15px 0;}
 
+.input-file-button{
+ 	padding: 6px 25px;
+    background-color: #7db249;
+    border-radius: 4px;
+    color: white;
+    cursor: pointer;
+    width: 170px;
+    text-align: center;
+}
 </style>
 
 <!-- js 작업 -->
 <script type="text/javascript">
 $(function(){
+	/* 스마트에디터 적용 */
+	var oEditors = [];
+	nhn.husky.EZCreator.createInIFrame({ 
+		oAppRef : oEditors, 
+		elPlaceHolder : "smartEditor", 
+		sSkinURI : "${pageContext.request.contextPath}/SmartEditor2/SmartEditor2Skin.html", 
+		fCreator : "createSEditor2", 
+		htParams : { 
+		// 툴바 사용 여부 (true:사용/ false:사용하지 않음) 
+		bUseToolbar : true, 
+		// 입력창 크기 조절바 사용 여부 (true:사용/ false:사용하지 않음) 
+		bUseVerticalResizer : false, 
+		// 모드 탭(Editor | HTML | TEXT) 사용 여부 (true:사용/ false:사용하지 않음) 
+		bUseModeChanger : false 
+		}
+	}); 
+	
 	/* 
 	-유효성 검사 Ajax사용
 	*/
 	$('#boardTitle').focus();
 	
 	$('#btOk').click(function(){
+		var content=$('#smartEditor').val();
+		
 		if($('#boardCtgNo').val()==0){
 			alert('카테고리를 선택하세요.');
 			event.preventDefault();
@@ -36,7 +64,7 @@ $(function(){
 			alert('제목을 입력하세요.');
 			event.preventDefault();
 			$('#boardTitle').focus();
-		}else if($('[name="boardContent"]').val()==0){
+		}else if(content=="" || content==null){
 			alert('내용을 입력하세요.');
 			event.preventDefault();
 			$('[name="boardContent"]').focus();
@@ -65,24 +93,6 @@ function exit(){
 			<form class="frmUserBoard" method="post"
 				enctype="multipart/form-data" action="<c:url value='/userBoard/userBoardWrite.do'/>">
 				<div class="row">
-					<!-- <div class="btn-group">
-		              <button
-		                class="btn btn-success dropdown-toggle"
-		                type="button"
-		                id="dropdownMenuButton2"
-		                data-toggle="dropdown"
-		                aria-haspopup="true"
-		                aria-expanded="false"
-		                name="boardCtgNo"
-		              >
-		              </button>
-		              <div class="dropdown-menu" aria-labelledby="dropdownMenuButton2">
-		                <a class="dropdown-item" href="javascript:void(0);">Option 1</a>
-		                <a class="dropdown-item" href="javascript:void(0);">Option 2</a>
-		                <a class="dropdown-item" href="javascript:void(0);">Option 3</a>
-		              </div>
-		            </div> -->
-				
 					<div class="form-group col-2 col-xl-2" id="divLeft">
 						<select name="boardCtgNo" id="boardCtgNo">
 							<option value="">말머리</option>
@@ -104,33 +114,23 @@ function exit(){
 						<div class="validate"></div>
 					</div>
 				</div>
-				<div class="divFile" id="divFile">
-					<input type="file" name="upfile" id="upfile">
+				<div class="row">
+					<div class="divFile form-group col-2 col-xl-2" id="divFile">
+						<label for="input-file" class="input-file-button">
+							첨부파일
+						</label>
+							<input type="file" name="upfile" id="input-file" style="display: none;"
+								onchange="javascript: document.getElementById('fileName').value=this.value">
+					</div>
+					<div class="col-10 col-xl-10">
+						<input type="text" id="fileName" class="form-control" readonly="readonly" 
+							placeholder="선택된 파일 없음">
+					</div>
 				</div>
 				<div class="form-group">
-					<textarea class="form-control" rows="5" id="smartEditor"
-						name="boardContent" data-rule="required"
-						data-msg="Please write something for us" placeholder="내용을 입력하세요."></textarea>
-					<div class="validate"></div>
-					<script>
-						var oEditors = [];
-						nhn.husky.EZCreator.createInIFrame({ 
-							oAppRef : oEditors, 
-							elPlaceHolder : "smartEditor", 
-							sSkinURI : "${pageContext.request.contextPath}/SmartEditor2/SmartEditor2Skin.html", 
-							fCreator : "createSEditor2", 
-							htParams : { 
-							// 툴바 사용 여부 (true:사용/ false:사용하지 않음) 
-							bUseToolbar : true, 
-							// 입력창 크기 조절바 사용 여부 (true:사용/ false:사용하지 않음) 
-							bUseVerticalResizer : false, 
-							// 모드 탭(Editor | HTML | TEXT) 사용 여부 (true:사용/ false:사용하지 않음) 
-							bUseModeChanger : false 
-							}
-						}); 
-						
-						
-					</script>
+					<textarea class="form-control" rows="20" id="smartEditor"
+						name="boardContent" data-rule="required" style="width:100%;"
+						placeholder="내용을 입력하세요."></textarea>
 					<div class="validate"></div>
 				</div>
 				<div class="text-center">

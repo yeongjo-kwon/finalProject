@@ -18,6 +18,11 @@
 table.table {
 	TEXT-ALIGN: center;
 }
+
+.page-item.active {
+	background-color: #E5F9F0;
+	border-color: #82E3C8;
+}
 </style>
 <script type="text/javascript">
 	$(function(){

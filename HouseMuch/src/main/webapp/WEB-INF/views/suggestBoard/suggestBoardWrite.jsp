@@ -13,12 +13,31 @@
 <!-- js작업 -->
 <script type="text/javascript">
 $(function(){
+	/* 스마트에디터 적용 */
+	var oEditors = [];
+	nhn.husky.EZCreator.createInIFrame({ 
+		oAppRef : oEditors, 
+		elPlaceHolder : "smartEditor", 
+		sSkinURI : "${pageContext.request.contextPath}/SmartEditor2/SmartEditor2Skin.html", 
+		fCreator : "createSEditor2", 
+		htParams : { 
+		// 툴바 사용 여부 (true:사용/ false:사용하지 않음) 
+		bUseToolbar : true, 
+		// 입력창 크기 조절바 사용 여부 (true:사용/ false:사용하지 않음) 
+		bUseVerticalResizer : false, 
+		// 모드 탭(Editor | HTML | TEXT) 사용 여부 (true:사용/ false:사용하지 않음) 
+		bUseModeChanger : false 
+		}
+	}); 
+	
 	/* 
 	-유효성 검사 Ajax사용
 	*/
 	$('#suggTitle').focus();
 	
 	$('form[name=frmWrite]').find('#btOk').click(function(){
+		var content=$('#smartEditor').val();
+		
 		if($('#suggCtgNo').val()==0){
 			alert('카테고리를 선택하세요.');
 			event.preventDefault();
@@ -27,7 +46,7 @@ $(function(){
 			alert('제목을 입력하세요.');
 			event.preventDefault();
 			$('#suggTitle').focus();
-		}else if($('[name="suggContent"]').val()==0){
+		}else if(content=="" || content==null){
 			alert('내용을 입력하세요.');
 			event.preventDefault();
 			$('[name="suggContent"]').focus();
@@ -72,32 +91,15 @@ function exit(){
 					</div>
 					<div class="form-group col-10 col-xl-10">
 						<input type="text" class="form-control" name="suggTitle"
-							id="suggTitle" placeholder="제목" data-rule="minlen:4"
-							data-msg="Please enter at least 8 chars of subject" />
+							id="suggTitle" placeholder="제목" data-rule="minlen:4" />
 						<div class="validate"></div>
 					</div>
 				</div>
 				<div class="form-group">
-					<textarea class="form-control" name="suggContent" rows="5"
-						id="smartEditor" data-rule="required"
+					<textarea class="form-control" name="suggContent" rows="20"
+						id="smartEditor" data-rule="required" style="width:100%;"
 						data-msg="Please write something for us" placeholder="내용을 입력하세요."></textarea>
-					<script>
-						var oEditors = [];
-						nhn.husky.EZCreator.createInIFrame({ 
-							oAppRef : oEditors, 
-							elPlaceHolder : "smartEditor", 
-							sSkinURI : "${pageContext.request.contextPath}/SmartEditor2/SmartEditor2Skin.html", 
-							fCreator : "createSEditor2", 
-							htParams : { 
-							// 툴바 사용 여부 (true:사용/ false:사용하지 않음) 
-							bUseToolbar : true, 
-							// 입력창 크기 조절바 사용 여부 (true:사용/ false:사용하지 않음) 
-							bUseVerticalResizer : false, 
-							// 모드 탭(Editor | HTML | TEXT) 사용 여부 (true:사용/ false:사용하지 않음) 
-							bUseModeChanger : false 
-							}
-						}); 
-					</script>
+					<div class="validate"></div>
 				</div>
 				<div class="text-center">
 					<button type="submit" id="btOk">건의 신청</button>

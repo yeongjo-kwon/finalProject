@@ -15,6 +15,11 @@
 	color: #2FA599;
 	margin-left: 10px;
 }
+
+.page-item.active {
+	background-color: #E5F9F0;
+	border-color: #82E3C8;
+}
 </style>
 
 <script type="text/javascript">

@@ -241,6 +241,23 @@ ul.dept02 li#subMenu:first-child {
     height: 3rem;
 }
 
+.nav-menu > .dept01 > li > a:before {
+	content: "";
+    position: absolute;
+    width: 100%;
+    height: 2px;
+    bottom: -6px;
+    left: 0;
+    background-color: #5c9f24;
+    visibility: hidden;
+    width: 0px;
+    transition: all 0.3s ease-in-out 0s;
+}
+
+.nav-menu a:hover:before, .nav-menu li:hover > a:before, .nav-menu .active > a:before {
+  visibility: visible;
+  width: 100%;
+}
 </style>
 
 <script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/jquery-3.5.1.min.js"></script>
@@ -262,13 +279,20 @@ ul.dept02 li#subMenu:first-child {
 		class="header-navbar navbar navbar-expand-lg align-items-center floating-nav navbar-light navbar-shadow">
 		<div class="navbar-container d-flex content">
 			<!-- 전체 드롭다운 메뉴 감싸기 -->
-			<div class="nav-menu d-none d-lg-block" class="topMenu" style="width: 100%;">
+			<!-- 반응형 START -->
+			<div class="bookmark-wrapper d-flex align-items-center">
+             <ul class="nav navbar-nav d-xl-none">
+               <li class="nav-item"><a class="nav-link menu-toggle" href="javascript:void(0);"><i class="ficon" data-feather="menu"></i></a></li>
+             </ul>
+           </div>
+			<!-- 반응형 END -->
+			<div class="nav-menu d-none d-lg-block topMenu" style="width: 100%;">
 				<!-- 메뉴넣기 -->
 				<!-- 첫번째 -->
 				<!-- dept 1 -->
 				<ul class="dept01">
 					<li>
-						<a href="#">관리비 조회</a>
+						<a href="<c:url value='/mngcost/mngcostInquiry.do'/>">관리비 조회</a>
 						<!-- dept 2 -->
 						<ul class="dept02">
 							<li id="subMenu"><a href="<c:url value='/mngcost/mngcostInquiry.do'/>">
@@ -281,7 +305,7 @@ ul.dept02 li#subMenu:first-child {
 				<!-- dept 1 -->
 				<ul class="dept01">
 					<li>
-						<a href="#">에너지 조회</a>
+						<a href="<c:url value='/energy/energyChart.do'/>">에너지 조회</a>
 						<!-- dept 2 -->
 						<ul class="dept02">
 							<li id="subMenu"><a href="<c:url value='/energy/energyChart.do'/>">
@@ -293,7 +317,7 @@ ul.dept02 li#subMenu:first-child {
 				<!-- 세번째 -->
 				<ul class="dept01">
 					<li>
-						<a href="#">생활지원 센터</a>
+						<a href="<c:url value='/living/noti/noticeList.do'/>">생활지원 센터</a>
 						<!-- dept 2 -->
 						<ul class="dept02">
 							<li id="subMenu"><a href="<c:url value='/living/noti/noticeList.do'/>">
@@ -318,7 +342,7 @@ ul.dept02 li#subMenu:first-child {
 				<!-- dept 1 -->
 				<ul class="dept01">
 					<li>
-						<a href="#">입주민 커뮤니티</a>
+						<a href="<c:url value='/userBoard/userBoardList.do'/>">입주민 커뮤니티</a>
 						<!-- dept 2 -->
 						<ul class="dept02">
 							<li id="subMenu"><a href="<c:url value='/userBoard/userBoardList.do'/>">
@@ -331,7 +355,7 @@ ul.dept02 li#subMenu:first-child {
 				<!-- dept 1 -->
 				<ul class="dept01">
 					<li>
-						<a>관리비 납부</a>
+						<a href="<c:url value='/mngcost/mngcostPayment.do'/>">관리비 납부</a>
 						<!-- dept 2 -->
 						<ul class="dept02">
 							<li id="subMenu"><a href="<c:url value='/mngcost/mngcostPayment.do'/>">
@@ -342,7 +366,6 @@ ul.dept02 li#subMenu:first-child {
 				</ul>
 				<!--  -->
 				<ul class="nav navbar-nav align-items-center ml-auto ">
-
 
 				<!-- <li class="nav-item nav-search"><a
 					class="nav-link nav-link-search"><i class="ficon"
@@ -485,33 +508,42 @@ ul.dept02 li#subMenu:first-child {
 							class="btn btn-primary btn-block" href="javascript:void(0)">Read
 								all notifications</a></li>
 					</ul></li> --%>
-				<li class="nav-item dropdown dropdown-user"><a
-					class="nav-link dropdown-toggle dropdown-user-link"
-					id="dropdown-user" href="javascript:void(0);"
-					data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-						<div class="user-nav d-sm-flex d-none">
-							<span class="user-name font-weight-bolder">${memVo.memberName }</span>
-							<span class="user-status">${memVo.id }</span>
-						</div>
-						<span class="avatar">
-							<img class="round"
-								src="${pageContext.request.contextPath}/resources/user_images/${memVo.memberImgFilename }"
-								alt="avatar" height="40" width="40">
-							<span class="avatar-status-online"></span>
-						</span>
-				</a>
-					<div class="dropdown-menu dropdown-menu-right"
-						aria-labelledby="dropdown-user">
-						<a class="dropdown-item" href="<c:url value='/userDash/myAccount/memberEdit.do'/>"><i class="mr-50"
-							data-feather="user"></i>내 계정 관리</a><a class="dropdown-item"
-							href="<c:url value='/userDash/userDashMain.do'/>"><i
-							class="mr-50" data-feather="check-square"></i>마이페이지</a><a
-							class="dropdown-item" href="#"><i class="mr-50"
-							data-feather="message-square"></i> 1:1채팅</a> <a class="dropdown-item"
-							href="<c:url value='/login/logout.do'/>"><i class="mr-50"
-							data-feather="power"></i>로그아웃</a>
-					</div></li>
-			</ul>
+					<li class="nav-item dropdown dropdown-user">
+						<a class="nav-link dropdown-toggle dropdown-user-link"
+							id="dropdown-user" href="javascript:void(0);"
+							data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+							<div class="user-nav d-sm-flex d-none">
+								<span class="user-name font-weight-bolder">${memVo.memberName }</span>
+								<span class="user-status">${memVo.id }</span>
+							</div>
+							<span class="avatar">
+								<img class="round"
+									src="${pageContext.request.contextPath}/resources/user_images/${memVo.memberImgFilename }"
+									alt="avatar" height="40" width="40">
+								<span class="avatar-status-online"></span>
+							</span>
+					</a>
+						<div class="dropdown-menu dropdown-menu-right"
+							aria-labelledby="dropdown-user">
+							<a class="dropdown-item" href="<c:url value='/userDash/myAccount/memberEdit.do'/>">
+								<i class="mr-50" data-feather="user">
+								</i>내 계정 관리
+							</a>
+							<a class="dropdown-item" href="<c:url value='/userDash/userDashMain.do'/>">
+								<i class="mr-50" data-feather="check-square">
+								</i>마이페이지
+							</a>
+							<a class="dropdown-item" href="#">
+								<i class="mr-50" data-feather="message-square">
+								</i> 1:1채팅
+							</a> 
+							<a class="dropdown-item" href="<c:url value='/login/logout.do'/>">
+							<i class="mr-50" data-feather="power">
+							</i>로그아웃
+							</a>
+						</div>	
+					</li>
+				</ul>
 			</div>
 			<!-- 메뉴 여기까지 -->
 			

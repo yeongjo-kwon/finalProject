@@ -18,6 +18,11 @@
 table.table {
 	TEXT-ALIGN: center;
 }
+
+.page-item.active {
+	background-color: #E5F9F0;
+	border-color: #82E3C8;
+}
 </style>
 <script type="text/javascript">
 	$(function(){
@@ -29,6 +34,19 @@ table.table {
 				$('input[name=chk]').prop("checked",true); //전체 선택
 			}else{ //아니면
 				$('input[name=chk]').prop("checked",false); //전체 해제
+			}
+		});
+		
+		//유효성 검사
+		$('form[name=frmUserBoard]').submit(function(){
+			if($('#basicSelect').val()==0){
+				alert('카테고리를 선택하세요.');
+				event.preventDefault();
+				$('#basicSelect').focus();
+			}else if($('#searchKeyword').val()==0){
+				alert('내용을 입력하세요.');
+				event.preventDefault();
+				$('#searchKeyword').focus();
 			}
 		});
 		
@@ -109,11 +127,6 @@ table.table {
 												<c:if test="${param.searchCondition=='BOARD_CTG_NAME' }">
 							            		selected="selected"
 							            	</c:if>>분류</option>
-											<option value="MEMBER_NAME"
-												<c:if test="${param.searchCondition=='MEMBER_NAME' }">
-							            		selected="selected"
-							            	</c:if>>글쓴이
-											</option>
 											<option value="BOARD_FILENAME"
 												<c:if test="${param.searchCondition=='BOARD_FILENAME' }">
 							            		selected="selected"
@@ -128,7 +141,7 @@ table.table {
 									<div class="input-group">
 
 										<input type="text" class="form-control" id="searchKeyword"
-											name="searchKeyword" placeholder="제목을 입력하세요"
+											name="searchKeyword" placeholder="내용을 입력하세요"
 											aria-label="Amount" />
 										<div class="input-group-prepend">
 											<button class="btn btn-outline-primary" type="submit"
