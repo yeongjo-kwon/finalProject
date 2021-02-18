@@ -134,7 +134,7 @@
 			     		<li><a href="<c:url value='/living/noti/noticeList.do'/>">공지사항</a>
 			     		 <li><a href="<c:url value='/living/noti/aptScheduler.do'/>">아파트 일정</a>
 			     		<li><a href="<c:url value='/living/add/addFacilityList.do'/>">부가시설</a>
-			     		<li><a href="#">차량관리</a>
+			     		<li><a href="<c:url value='/living/car/carRegister.do'/>">차량관리</a>
 			     		<li><a href="<c:url value='/suggestBoard/suggestBoardList.do'/>">건의 게시판</a>
 			     	</ul>
 		     	</li>

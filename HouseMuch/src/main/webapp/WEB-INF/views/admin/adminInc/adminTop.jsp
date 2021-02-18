@@ -471,7 +471,7 @@ function subMenuScroll(){
 				<!-- 시설2 :  -->
 				<li class=" nav-item"><a class="d-flex align-items-center"
 					href="#"><span class="menu-title text-truncate"
-						data-i18n="eCommerce">보수 비용 추가 청구</span></a>
+						data-i18n="eCommerce">보수 비용 청구</span></a>
 					<ul class="menu-content">
 
 						<!-- 시설1-1 :  -->
@@ -562,24 +562,25 @@ function subMenuScroll(){
 					</ul></li>
 
 				<!-- 행정3 : 차량 관리 -->
-				<%-- <li class=" nav-item"><a class="d-flex align-items-center"
+				 <li class=" nav-item"><a class="d-flex align-items-center"
 					href="#"><span class="menu-title text-truncate"
 						data-i18n="eCommerce">차량 관리</span></a>
 					<ul class="menu-content">
 						<!-- 행정3-1 : 방문차량 등록현황 -->
 						<li><a class="d-flex align-items-center"
-							href="<c:url value='/admin/adminLiving/adminCar/adminCarVisit.do'/>">
+							href="<c:url value='#'/>">
 								<i data-feather="circle"></i><span class="menu-item"
-								data-i18n="Shop">방문 차량 관리</span>
+								data-i18n="Shop">세대별 등록 차량 조회</span>
 						</a></li>
 
 						<!-- 행정3-2 : 차량 등록 상세 -->
 						<li><a class="d-flex align-items-center"
 							href="<c:url value='/admin/adminLiving/adminCar/adminCarDetail.do'/>">
 								<i data-feather="circle"></i><span class="menu-item"
-								data-i18n="Details">등록 차량 상세조회</span>
+								data-i18n="Details">방문 차량 조회</span>
 						</a></li>
-
+						
+						<%--
 						<!-- 행정3-3 : 세대차량관리 -->
 						<li><a class="d-flex align-items-center"
 							href="<c:url value='/admin/adminLiving/adminCar/adminCarResidence.do'/>">
@@ -684,13 +685,9 @@ function subMenuScroll(){
 
 						<!-- 소유주1-1 : 보수 비용 확인 -->
 						<li><a class="d-flex align-items-center"
-							href="<c:url value='#'/>"> <i data-feather="circle"></i><span
-								class="menu-item" data-i18n="Wish List">비용결제 관리</span></a></li>
+							href="<c:url value='/admin/adminOwner/facilityPayCost.do'/>"> <i data-feather="circle"></i><span
+								class="menu-item" data-i18n="Wish List">추가 비용 결제 관리</span></a></li>
 
-						<!-- 소유주1-2 : 결제내역 조회 -->
-						<li><a class="d-flex align-items-center"
-							href="<c:url value='#'/>"> <i data-feather="circle"></i><span
-								class="menu-item" data-i18n="Shop">결제내역 조회</span></a></li>
 					</ul></li>
 				<!----------------------------------------------- 여기까지 단독메뉴  ------------------------------------------------------------->
 
