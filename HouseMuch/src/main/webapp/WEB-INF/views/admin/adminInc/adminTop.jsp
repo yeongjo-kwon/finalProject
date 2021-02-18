@@ -579,7 +579,7 @@ function subMenuScroll(){
 								<i data-feather="circle"></i><span class="menu-item"
 								data-i18n="Details">방문 차량 조회</span>
 						</a></li>
-						
+					</ul></li>
 						<%--
 						<!-- 행정3-3 : 세대차량관리 -->
 						<li><a class="d-flex align-items-center"
