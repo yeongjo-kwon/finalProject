@@ -179,8 +179,10 @@ function listAddCost(){
 					str+="</div></div></td>"
 					str+="</tr>";
 				});
-				$('#noList').html(str);
+			}else{
+				str="<tr><td colspan='6' style='text-align:center;'>데이터가 존재하지 않습니다.</td></tr>"
 			}
+			$('#noList').html(str);
 			
 		},
 		error:function(xhr, status, error){
@@ -242,7 +244,7 @@ function editVal(costNo){
        <div class="content-header row">
 			<div class="content-header-left col-md-9 col-12 mb-2">
 				<div class="col-12">
-					<h2 class="content-header-title float-left mb-0">보수 업체 계약 내역</h2>
+					<h2 class="content-header-title float-left mb-0">보수 비용 청구</h2>
 					<div class="breadcrumb-wrapper">
 						<ol class="breadcrumb">
 							<li class="breadcrumb-item">추가 비용 관리</li>

@@ -69,7 +69,7 @@ public class EnergyController {
 			ho = (String) electList.get(i).get("HO");
 			
 		}
-		String DongHo = dong + ho;
+		String DongHo = dong+"동 "+ho+"호";
 		
 		
 		

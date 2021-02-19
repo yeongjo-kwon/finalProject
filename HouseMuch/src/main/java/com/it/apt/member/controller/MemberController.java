@@ -262,7 +262,7 @@ public class MemberController {
 			// 파일을 실제 서버에 저장
 			// 웹서비스 root 경로​
 			String root_path = request.getSession().getServletContext().getRealPath("/");  
-			String attach_path = "resources/user_images/";
+			String attach_path = "resources\\user_images\\";
 			String safeFile=root_path+attach_path+fileName;
 			logger.info("safeFile={}", safeFile);
 			
