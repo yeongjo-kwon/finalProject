@@ -129,8 +129,10 @@ function listCarInfo(){
 					str+="<td>"+item.orderdate+"</td>";
 					str+="<td>"+visit(item.isVisitor)+"</td>";
 				});
-				$('#carInfo').html(str);
+			}else{
+				str="<tr><td colspan='5' style='text-align:center;'>등록 되어있는 데이터가 없습니다.</td></tr>";
 			}
+			$('#carInfo').html(str);
 			
 		},
 		error:function(xhr, status, error){

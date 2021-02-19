@@ -76,15 +76,9 @@ public class LoginController {
 				url="/main/main.do";
 			}else if(authCode.equals("ADMIN")) {
 				url="/admin/adminMaster/adminMaster.do";
-			}else if(authCode.equals("OWNER")) {
-				url="/admin/adminOwner/adminOwnerMain.do";
-			}else if(authCode.equals("ACCOUNT_MNG")) {	//회계관리자
+			}else{
 				url="/admin/adminAll/adminAllMain.do";
-			}else if(authCode.equals("FACILITY_MNG")) {	//시설관리자 - 수정해야함
-				url="/admin/adminAll/adminAllMain.do";
-			}else if(authCode.equals("LIVING_MNG")) {
-				url="/admin/adminLiving/adminLiving.do";
-			}//
+			}
 			
 			logger.info("authCode={}", authCode);
 			session.setAttribute("authCodeMain", authCode);   

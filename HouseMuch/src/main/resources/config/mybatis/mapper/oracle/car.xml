@@ -25,7 +25,7 @@
 		<if test="isVisitor != null">
 			and is_visitor=#{isVisitor}
 		</if>
-		order by car_reg_no
+		order by car_reg_no desc
 	</select>
 	
 	<select id="aptCarList" parameterType="hashMap" resultType="map">

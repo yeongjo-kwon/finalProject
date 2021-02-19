@@ -139,7 +139,7 @@ function validate_tel(tel){
                 <div class="col-md-12">
                     <div class="card">
                         <div class="card-body">
-                        	<form action="<c:url value='/admin/adminFacility/facilityCompanyEdit.do'/>" method="post" id="editFrm">
+                        	<form action="<c:url value='/admin/adminFacility/facilityCompanyEditOk.do'/>" method="post" id="editFrm">
                             	<div class="row">
                             	<!-- <form>  -->
                             		<input type="hidden" name="mngCompNo" value="${cVo.mngCompNo }">

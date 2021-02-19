@@ -124,8 +124,8 @@ public class AdminFacilityController {
 		
 	}
 
-	@RequestMapping(value="/facilityCompanyEdit.do", method=RequestMethod.POST)
-	public void companyEdit_post(@ModelAttribute CompanyVO vo,Model model) {
+	@RequestMapping(value="/facilityCompanyEditOk.do", method=RequestMethod.POST)
+	public String companyEdit_post(@ModelAttribute CompanyVO vo,Model model) {
 		logger.info("[[[[[[[[[시설 관리자 - 보수 업체 수정 GOGO vo={}]]]]]]]]]]]]", vo);
 		
 		logger.info("-------------mngCompNo={}, contractNo={}-------------", vo.getMngCompNo(), vo.getContractNo());
@@ -139,8 +139,10 @@ public class AdminFacilityController {
 		}
 		model.addAttribute("msg", msg);
 		model.addAttribute("url", url);
-		
+
 		logger.info("[[[[[[[[[[[[[[[[[수정 마무리]]]]]]]]]]]]]]]]]]]");
+		
+		return "common/message";
 	}
 	
 	@RequestMapping("/contractDel.do")

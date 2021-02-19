@@ -79,29 +79,29 @@
        </ul>
       
       <ul style="float: right">  
-          <li class="nav-item d-none d-lg-block">
-          	<a href="javascript:void(window.open('<c:url value="/user/chat/chat.do"/>', 'chat','width=1000, height=800'))">
-         		<svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 30 30" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-message-square"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
-          	</a>
-          </li>
           <li class="drop-down" style="padding-top:0;">
           <a href="#" >
          	<img class="round" src="${pageContext.request.contextPath}/resources/user_images/${memVo.memberImgFilename }" alt="avatar" height="40" width="40" style="background-color: #fff; padding-top:0px; border-radius : 50%; overflow: hidden;">
           </a>
             <ul style="text-align: left; width:150px;">
               <li>
-              	<a href="<c:url value='/userDash/myAccount/memberEdit.do'/>">내 계정 관리</a>          	
-              	
-              	<!-- <a href="<c:url value='/admin/adminEdit.do'/>">내 계정 관리</a>    -->
+              	<c:if test="${authCodeMain=='RESIDENT' }">
+              		<a href="<c:url value='/userDash/myAccount/memberEdit.do'/>">내 계정 관리</a>          	
+              	</c:if>
+              	<c:if test="${authCodeMain!='RESIDENT' }">          
+              		<a href="<c:url value='/admin/adminEdit.do'/>">내 계정 관리</a> 
+              	</c:if>
               </li>
               
-              <li><a href="<c:url value='/userDash/userDashMain.do'/>">마이 페이지</a></li>
+              <c:if test="${authCodeMain=='RESIDENT' }">          
+	              <li><a href="<c:url value='/userDash/userDashMain.do'/>">마이 페이지</a></li>
+              </c:if>
+              <c:if test="${authCodeMain!='RESIDENT' }">          
+    	          <!-- 관리자 대시보드로 들어가는 링크  -->
+	              <li><a href="<c:url value='/admin/adminAll/adminAllMain.do'/>">관리자 페이지</a></li>
+              </c:if>
               
-              <!-- 관리자 대시보드로 들어가는 링크  -->
-              <li><a href="<c:url value='/admin/adminAll/adminAllMain.do'/>">관리자 페이지</a></li>
               
-              
-              <li><a href="javascript:void(window.open('<c:url value="/user/chat/chat.do"/>', 'chat','width=1000, height=800'))">1:1 채팅 </a></li>
               <li><a href="<c:url value='/login/logout.do'/>">로그아웃</a></li>
             </ul>
           </li>
