@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.it.apt.adminAll.model.BoardCtgService;
 import com.it.apt.adminAll.model.BoardCtgVO;
-import com.it.apt.adminAll.model.adminAllService;
 import com.it.apt.apart.model.ApartService;
 import com.it.apt.apart.model.ApartVO;
 import com.it.apt.common.BoardUtility;
@@ -38,7 +37,6 @@ public class AdminAllController {
 	@Autowired BoardCtgService ctgService;
 	@Autowired MemberService memberService;
 	@Autowired SuggestBoardService suggService;
-	@Autowired adminAllService adminAllService;
 	@Autowired ApartService aptService;
 
 	@RequestMapping("/adminAllMain.do")

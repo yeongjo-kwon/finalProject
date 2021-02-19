@@ -36,14 +36,6 @@
 			}
 		});
 		
-		$('#btSearchSubmit').click(function(){
-			if($('#searchKeyword').val()==0){
-				alert('검색어를 입력하세요.');
-				event.preventDefault();
-				$('#searchKeyword').focus();
-			}
-		});
-		
 		$('button[name=editBtn]').on('click',function(){
 			var editNo=$(this).next().val(); //boardCtgNo
 			var editName=$(this).next().next().val(); //boardCtgName
