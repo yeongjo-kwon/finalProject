@@ -86,7 +86,9 @@
 				</c:if>
 			</div>
 			<div class="col-2">
-				<button type="button" id="btDel" style="float: right;" name="btCancel" class="mb-2">삭제</button>
+				<c:if test="${authMap['AUTH_LEVEL']!=1 }">
+					<button type="button" id="btDel" style="float: right;" name="btCancel" class="mb-2">삭제</button>
+				</c:if>
 			</div>
 		</div>
 		<form class="suggFrm">
