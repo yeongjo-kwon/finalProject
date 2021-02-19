@@ -168,7 +168,7 @@ table.table {
 							<thead class="thead-dark"
 								style="background-color: #0E515F; color: #fff; font-size: 1.2em; font-weight: 200;">
 								<tr>
-									<th scope="col"><input type="checkbox" id="chkAll" /></th>
+									<!-- <th scope="col"><input type="checkbox" id="chkAll" /></th> -->
 									<th class="font-medium-1 text-center">번호</th>
 									<th class="font-medium-1 text-center">분류</th>
 									<th class="font-medium-1 text-center">제목</th>
@@ -182,7 +182,7 @@ table.table {
 								<!-- DB 없을 때 -->
 								<c:if test="${empty userList }">
 									<tr>
-										<td colspan="7">데이터가 존재하지 않습니다.</td>
+										<td colspan="6">데이터가 존재하지 않습니다.</td>
 									</tr>
 								</c:if>
 								<!-- DB 있을 때 -->
@@ -191,7 +191,7 @@ table.table {
 									<c:forEach var="map" items="${userList }">
 										<c:set var="boardNo" value="${map['BOARD_NO'] }" />
 										<tr>
-											<td><input type="checkbox" name="chk" id="chk" /></td>
+											<!-- <td><input type="checkbox" name="chk" id="chk" /></td> -->
 											<td>${boardNo}</td>
 											<td>${map['BOARD_CTG_NAME'] }</td>
 											<td><a

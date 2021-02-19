@@ -155,7 +155,7 @@ table.table {
 							<thead class="thead-dark"
 								style="background-color: #0E515F; color: #fff; font-size: 1.2em; font-weight: 200;">
 								<tr>
-									<th scope="col"><input type="checkbox" id="chkAll" /></th>
+									<!-- <th scope="col"><input type="checkbox" id="chkAll" /></th> -->
 									<th class="font-medium-1 text-center">번호</th>
 									<th class="font-medium-1 text-center">분류</th>
 									<th class="font-medium-1 text-center">제목</th>
@@ -179,7 +179,7 @@ table.table {
 									<c:forEach var="map" items="${suggList }">
 										<c:set var="suggBoardNo" value="${map['SUGG_BOARD_NO'] }" />
 										<tr>
-											<td><input type="checkbox" name="chk" id="chk" /></td>
+											<!-- <td><input type="checkbox" name="chk" id="chk" /></td> -->
 											<td>${suggBoardNo}</td>
 											<td>${map['SUGG_CTG_NAME'] }</td>
 											<td><a
